@@ -32,8 +32,7 @@
       "category": "Utility"
     },
     "publish": {
-      "provider": "github",
-      "repo": "https://github.com/swivvel/swivvel-electron.git"
+      "provider": "github"
     }
   },
   "scripts": {
