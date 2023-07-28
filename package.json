@@ -1,0 +1,54 @@
+{
+  "name": "swivvel",
+  "productName": "Swivvel",
+  "version": "1.0.0",
+  "author": {
+    "name": "Swivvel",
+    "email": "support@swivvel.io"
+  },
+  "description": "Swivvel gets your whole team on the same page, literally. Swivvel brings your team’s meetings to life in a whole new way.",
+  "homepage": "https://www.swivvel.io",
+  "main": "src/main/background.js",
+  "build": {
+    "appId": "com.electron.swivvel",
+    "productName": "Swivvel",
+    "copyright": "Copyright © 2023 Swivvel",
+    "executableName": "swivvel",
+    "beforeBuild": false,
+    "npmRebuild": false,
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": "deb",
+      "category": "Utility",
+      "icon": "build/icon.icns"
+    }
+  },
+  "scripts": {
+    "check": "npx npm-check --skip-unused",
+    "dev": "electron .",
+    "dist": "electron-builder",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "electron-serve": "^1.1.0",
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "25.3.1",
+    "electron-builder": "^24.6.3",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-filenames": "^1.3.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "prettier": "^3.0.0"
+  }
+}
