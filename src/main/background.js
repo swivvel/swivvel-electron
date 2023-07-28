@@ -95,6 +95,10 @@ let allowQuit = false;
 (async () => {
   await app.whenReady();
 
+  app.setLoginItemSettings({
+    openAtLogin: true,
+  });
+
   const primaryDisplay = screen.getPrimaryDisplay();
 
   const mainWindow = createWindow(`main`, {
