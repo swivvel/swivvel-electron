@@ -6,6 +6,9 @@ jobs:
   release:
     runs-on: ${{ matrix.os }}
 
+    env:
+      SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
+
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
@@ -20,12 +23,9 @@ jobs:
           node-version: 18
 
       - name: Install Snapcraft
-        uses: samuelmeuli/action-snapcraft@v1
+        uses: samuelmeuli/action-snapcraft@v2
         # Only install Snapcraft on Ubuntu
         if: startsWith(matrix.os, 'ubuntu')
-        with:
-          # Log in to Snap Store
-          snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
