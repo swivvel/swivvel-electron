@@ -84,6 +84,7 @@ module.exports = {
         'prefer-object-spread': `error`,
         'prefer-rest-params': `error`,
         'prefer-template': `error`,
+        quotes: [`error`, `backtick`],
         'spaced-comment': [`error`, `always`],
       },
     },
