@@ -163,60 +163,95 @@ const createTray = (mainWindow) => {
   tray.setContextMenu(contextMenu);
 };
 
-const createNotificationsWindow = () => {
-  // See: https://github.com/electron/electron/issues/15947
-  const timeout = isLinux ? 5000 : 0;
-
-  setTimeout(async () => {
-    const primaryDisplay = screen.getPrimaryDisplay();
-
-    const notificationsWindow = createWindow(`notifications`, {
-      alwaysOnTop: true,
-      autoHideMenuBar: true,
-      closable: false,
-      focusable: false,
-      frame: false,
-      hasShadow: false,
-      height: primaryDisplay.workAreaSize.height,
-      hiddenInMissionControl: true,
-      maximizable: false,
-      minimizable: false,
-      resizable: false,
-      skipTaskbar: true,
-      transparent: true,
-      width: primaryDisplay.workAreaSize.width,
-      x: 0,
-      y: 0,
-    });
-
-    notificationsWindow.setIgnoreMouseEvents(true, { forward: true });
-    notificationsWindow.setVisibleOnAllWorkspaces(true, {
-      visibleOnFullScreen: true,
-    });
-
-    notificationsWindow.on(`close`, (event) => {
-      if (!allowQuit) {
-        event.preventDefault();
-        notificationsWindow.hide();
-      }
-    });
-
-    if (isProduction) {
-      await notificationsWindow.loadURL(`https://app.swivvel.io/notifications`);
-    } else {
-      await notificationsWindow.loadURL(
-        `${process.env.ELECTRON_APP_DEV_URL}/notifications`
-      );
-    }
-  }, timeout);
+const sleep = (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 };
 
-configureApp();
+const handleNotificationsMouseEventsLinux = (notificationsWindow) => {
+  setInterval(async () => {
+    const point = screen.getCursorScreenPoint();
+    const [x, y] = notificationsWindow.getPosition();
+    const [w, h] = notificationsWindow.getSize();
+
+    if (point.x > x && point.x < x + w && point.y > y && point.y < y + h) {
+      const mouseX = point.x - x;
+      const mouseY = point.y - y;
+
+      // Capture 1x1 image of mouse position
+      const capture = { x: mouseX, y: mouseY, width: 1, height: 1 };
+      const image = await notificationsWindow.webContents.capturePage(capture);
+      const buffer = image.getBitmap();
+      const mouseIsOverTransparent = buffer[3] === 0;
+      notificationsWindow.setIgnoreMouseEvents(mouseIsOverTransparent);
+    }
+  }, 300);
+};
+
+const createNotificationsWindow = async () => {
+  // See: https://github.com/electron/electron/issues/15947
+  if (isLinux) {
+    await sleep(1000);
+  }
+
+  // Mouse event forwarding isn't supported on Linux so we have to use a
+  // different strategy
+  const preloadScript = isLinux
+    ? null
+    : path.join(__dirname, `preloadNotifications.js`);
+
+  const primaryDisplay = screen.getPrimaryDisplay();
+
+  const notificationsWindow = createWindow(`notifications`, {
+    alwaysOnTop: true,
+    autoHideMenuBar: true,
+    closable: false,
+    frame: false,
+    hasShadow: false,
+    height: primaryDisplay.workAreaSize.height,
+    hiddenInMissionControl: true,
+    maximizable: false,
+    minimizable: false,
+    resizable: false,
+    skipTaskbar: true,
+    transparent: true,
+    webPreferences: preloadScript ? { preload: preloadScript } : undefined,
+    width: primaryDisplay.workAreaSize.width,
+    x: 0,
+    y: 0,
+  });
+
+  notificationsWindow.setIgnoreMouseEvents(true, { forward: true });
+  notificationsWindow.setVisibleOnAllWorkspaces(true, {
+    visibleOnFullScreen: true,
+  });
+
+  notificationsWindow.on(`close`, (event) => {
+    if (!allowQuit) {
+      event.preventDefault();
+      notificationsWindow.hide();
+    }
+  });
+
+  // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
+  if (isLinux) {
+    handleNotificationsMouseEventsLinux(notificationsWindow);
+  }
+
+  if (isProduction) {
+    await notificationsWindow.loadURL(`https://app.swivvel.io/notifications`);
+  } else {
+    await notificationsWindow.loadURL(
+      `${process.env.ELECTRON_APP_DEV_URL}/notifications`
+    );
+  }
+};
 
 (async () => {
+  configureApp();
   await app.whenReady();
-
   const mainWindow = await createMainWindow();
   createTray(mainWindow);
-  createNotificationsWindow();
+  await createNotificationsWindow();
 })();
