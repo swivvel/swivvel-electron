@@ -4,10 +4,30 @@ const { app, BrowserWindow, Menu, screen, Tray } = require(`electron`);
 const Store = require(`electron-store`);
 
 const isProduction = app.isPackaged;
+const isLinux = process.platform === `linux`;
 
-if (!isProduction) {
-  app.setPath(`userData`, `${app.getPath(`userData`)} (development)`);
-}
+let allowQuit = false;
+
+const configureApp = () => {
+  if (!isProduction) {
+    app.setPath(`userData`, `${app.getPath(`userData`)} (development)`);
+  }
+
+  // See: https://github.com/electron/electron/issues/15947
+  if (isLinux) {
+    app.commandLine.appendSwitch(`enable-transparent-visuals`);
+    app.commandLine.appendSwitch(`disable-gpu`);
+    app.disableHardwareAcceleration();
+  }
+
+  app.setLoginItemSettings({ openAtLogin: true });
+
+  app.on(`window-all-closed`, () => {
+    if (allowQuit) {
+      app.quit();
+    }
+  });
+};
 
 const createWindow = (windowName, options) => {
   const key = `window-state`;
@@ -77,10 +97,6 @@ const createWindow = (windowName, options) => {
   const browserOptions = {
     ...state,
     ...options,
-    webPreferences: {
-      contextIsolation: false,
-      ...options.webPreferences,
-    },
   };
   win = new BrowserWindow(browserOptions);
 
@@ -89,48 +105,17 @@ const createWindow = (windowName, options) => {
   return win;
 };
 
-let tray = null;
-let allowQuit = false;
-
-(async () => {
-  await app.whenReady();
-
-  app.setLoginItemSettings({
-    openAtLogin: true,
-  });
-
+const createMainWindow = async () => {
   const primaryDisplay = screen.getPrimaryDisplay();
 
   const mainWindow = createWindow(`main`, {
     autoHideMenuBar: true,
     frame: false,
     height: primaryDisplay.workAreaSize.height,
+    show: true,
     width: primaryDisplay.workAreaSize.width,
     x: primaryDisplay.workAreaSize.x,
     y: primaryDisplay.workAreaSize.y,
-  });
-
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.includes(`meetingAssistantNotification=`)) {
-      return {
-        action: `allow`,
-        overrideBrowserWindowOptions: {
-          alwaysOnTop: true,
-          autoHideMenuBar: true,
-          closable: false,
-          frame: false,
-          fullscreenable: false,
-          height: 200,
-          maximizable: false,
-          minimizable: false,
-          width: 300,
-          x: primaryDisplay.workAreaSize.width - 350,
-          y: 50,
-        },
-      };
-    }
-
-    return { action: `allow` };
   });
 
   mainWindow.on(`close`, (event) => {
@@ -143,11 +128,15 @@ let allowQuit = false;
   if (isProduction) {
     await mainWindow.loadURL(`https://app.swivvel.io/`);
   } else {
-    await mainWindow.loadURL(process.env.ELECTRON_APP_DEV_URL);
+    await mainWindow.loadURL(`${process.env.ELECTRON_APP_DEV_URL}/`);
     mainWindow.webContents.openDevTools();
   }
 
-  tray = new Tray(path.join(__dirname, `logoTemplate.png`));
+  return mainWindow;
+};
+
+const createTray = (mainWindow) => {
+  const tray = new Tray(path.join(__dirname, `logoTemplate.png`));
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -168,10 +157,92 @@ let allowQuit = false;
   ]);
 
   tray.setContextMenu(contextMenu);
-})();
+};
 
-app.on(`window-all-closed`, () => {
-  if (allowQuit) {
-    app.quit();
+const sleep = (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+};
+
+const handleNotificationsMouseEvents = (notificationsWindow) => {
+  setInterval(async () => {
+    const point = screen.getCursorScreenPoint();
+    const [x, y] = notificationsWindow.getPosition();
+    const [w, h] = notificationsWindow.getSize();
+
+    if (point.x > x && point.x < x + w && point.y > y && point.y < y + h) {
+      const mouseX = point.x - x;
+      const mouseY = point.y - y;
+
+      // Capture 1x1 image of mouse position
+      const capture = { x: mouseX, y: mouseY, width: 1, height: 1 };
+      const image = await notificationsWindow.webContents.capturePage(capture);
+      const buffer = image.getBitmap();
+      const mouseIsOverTransparent = buffer[3] === 0;
+      notificationsWindow.setIgnoreMouseEvents(mouseIsOverTransparent);
+    }
+  }, 300);
+};
+
+const createNotificationsWindow = async () => {
+  // See: https://github.com/electron/electron/issues/15947
+  if (isLinux) {
+    await sleep(1000);
   }
-});
+
+  const primaryDisplay = screen.getPrimaryDisplay();
+
+  const notificationsWindow = createWindow(`notifications`, {
+    alwaysOnTop: true,
+    autoHideMenuBar: true,
+    closable: false,
+    focusable: false,
+    frame: false,
+    hasShadow: false,
+    height: primaryDisplay.workAreaSize.height,
+    hiddenInMissionControl: true,
+    maximizable: false,
+    minimizable: false,
+    resizable: false,
+    skipTaskbar: true,
+    transparent: true,
+    webPreferences: {
+      preload: path.join(__dirname, `preloadNotifications.js`),
+    },
+    width: primaryDisplay.workAreaSize.width,
+    x: 0,
+    y: 0,
+  });
+
+  notificationsWindow.setIgnoreMouseEvents(true, { forward: true });
+  notificationsWindow.setVisibleOnAllWorkspaces(true, {
+    visibleOnFullScreen: true,
+  });
+
+  notificationsWindow.on(`close`, (event) => {
+    if (!allowQuit) {
+      event.preventDefault();
+      notificationsWindow.hide();
+    }
+  });
+
+  // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
+  handleNotificationsMouseEvents(notificationsWindow);
+
+  if (isProduction) {
+    await notificationsWindow.loadURL(`https://app.swivvel.io/notifications`);
+  } else {
+    await notificationsWindow.loadURL(
+      `${process.env.ELECTRON_APP_DEV_URL}/notifications`
+    );
+  }
+};
+
+(async () => {
+  configureApp();
+  await app.whenReady();
+  const mainWindow = await createMainWindow();
+  createTray(mainWindow);
+  await createNotificationsWindow();
+})();

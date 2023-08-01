@@ -10,7 +10,7 @@ module.exports = {
       files: `*.{js,ts,tsx}`,
       // Tell ESLint that our files are running in a Node environment so
       // it doesn't complain about Node features like `module.exports`
-      env: { node: true },
+      env: { node: true, es6: true },
       parserOptions: { ecmaVersion: 2018 },
       extends: [`eslint:recommended`, `prettier`],
       plugins: [`filenames`],
@@ -84,6 +84,7 @@ module.exports = {
         'prefer-object-spread': `error`,
         'prefer-rest-params': `error`,
         'prefer-template': `error`,
+        quotes: [`error`, `backtick`],
         'spaced-comment': [`error`, `always`],
       },
     },
