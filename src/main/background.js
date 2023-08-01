@@ -135,30 +135,6 @@ const createMainWindow = async () => {
   return mainWindow;
 };
 
-const createTray = (mainWindow) => {
-  const tray = new Tray(path.join(__dirname, `logoTemplate.png`));
-
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: `Open Swivvel`,
-      type: `normal`,
-      click: () => {
-        mainWindow.show();
-      },
-    },
-    {
-      label: `Quit`,
-      type: `normal`,
-      click: () => {
-        allowQuit = true;
-        app.quit();
-      },
-    },
-  ]);
-
-  tray.setContextMenu(contextMenu);
-};
-
 const sleep = (ms) => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -238,12 +214,40 @@ const createNotificationsWindow = async () => {
       `${process.env.ELECTRON_APP_DEV_URL}/notifications`
     );
   }
+
+  return notificationsWindow;
+};
+
+const createTray = (mainWindow, notificationsWindow) => {
+  const tray = new Tray(path.join(__dirname, `logoTemplate.png`));
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: `Open Swivvel`,
+      type: `normal`,
+      click: () => {
+        mainWindow.show();
+      },
+    },
+    {
+      label: `Quit`,
+      type: `normal`,
+      click: () => {
+        allowQuit = true;
+        mainWindow.destroy();
+        notificationsWindow.destroy();
+        app.quit();
+      },
+    },
+  ]);
+
+  tray.setContextMenu(contextMenu);
 };
 
 (async () => {
   configureApp();
   await app.whenReady();
   const mainWindow = await createMainWindow();
-  createTray(mainWindow);
-  await createNotificationsWindow();
+  const notificationsWindow = await createNotificationsWindow();
+  createTray(mainWindow, notificationsWindow);
 })();
