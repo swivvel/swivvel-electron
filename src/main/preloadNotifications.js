@@ -2,30 +2,25 @@
 /* eslint-disable no-restricted-syntax */
 const { ipcRenderer } = require(`electron`);
 
-console.log(`preloadNotifications`);
-
 const refreshClickableElements = () => {
   // eslint-disable-next-line no-undef
-  const notificationsElem = document.querySelector(`[data-notifications]`);
+  const notificationElems = document.querySelectorAll(`[data-notification]`);
 
-  if (!notificationsElem || notificationsElem.dataset.listeningForMouse) {
-    return;
-  }
+  notificationElems.forEach((notificationElem) => {
+    if (notificationElem.dataset.listeningForMouse) {
+      return;
+    }
 
-  console.log(`refreshClickableElements`);
-  console.log(notificationsElem);
+    notificationElem.addEventListener(`mouseenter`, () => {
+      ipcRenderer.invoke(`set-ignore-mouse-events`, false);
+    });
 
-  notificationsElem.addEventListener(`mouseenter`, () => {
-    console.log(`mouseenter`);
-    ipcRenderer.invoke(`set-ignore-mouse-events`, false);
+    notificationElem.addEventListener(`mouseleave`, () => {
+      ipcRenderer.invoke(`set-ignore-mouse-events`, true, { forward: true });
+    });
+
+    notificationElem.dataset.listeningForMouse = true;
   });
-
-  notificationsElem.addEventListener(`mouseleave`, () => {
-    console.log(`mouseleave`);
-    ipcRenderer.invoke(`set-ignore-mouse-events`, true, { forward: true });
-  });
-
-  notificationsElem.dataset.listeningForMouse = true;
 };
 
 // eslint-disable-next-line no-undef

@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 const path = require(`path`);
-const { app, BrowserWindow, Menu, screen, Tray } = require(`electron`);
+const { app, BrowserWindow, ipcMain, Menu, screen, Tray } = require(`electron`);
 const Store = require(`electron-store`);
 
 const isProduction = app.isPackaged;
@@ -195,12 +195,6 @@ const createNotificationsWindow = async () => {
     await sleep(1000);
   }
 
-  // Mouse event forwarding isn't supported on Linux so we have to use a
-  // different strategy
-  const preloadScript = isLinux
-    ? null
-    : path.join(__dirname, `preloadNotifications.js`);
-
   const primaryDisplay = screen.getPrimaryDisplay();
 
   const notificationsWindow = createWindow(`notifications`, {
@@ -216,7 +210,9 @@ const createNotificationsWindow = async () => {
     resizable: false,
     skipTaskbar: true,
     transparent: true,
-    webPreferences: preloadScript ? { preload: preloadScript } : undefined,
+    webPreferences: {
+      preload: path.join(__dirname, `preloadNotifications.js`),
+    },
     width: primaryDisplay.workAreaSize.width,
     x: 0,
     y: 0,
@@ -248,10 +244,21 @@ const createNotificationsWindow = async () => {
   }
 };
 
+const instantiateEventHandlers = () => {
+  ipcMain.handle(`set-ignore-mouse-events`, (e, ...args) => {
+    const win = BrowserWindow.fromWebContents(e.sender);
+    // Linux mouse-over detection is handled elsewhere
+    if (!isLinux) {
+      win.setIgnoreMouseEvents(...args);
+    }
+  });
+};
+
 (async () => {
   configureApp();
   await app.whenReady();
   const mainWindow = await createMainWindow();
   createTray(mainWindow);
   await createNotificationsWindow();
+  instantiateEventHandlers();
 })();
