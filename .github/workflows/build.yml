@@ -56,4 +56,4 @@ jobs:
         run: |
           pwd
           ls
-          cat notarization-error.log
+          cat notarization-error.log || true
