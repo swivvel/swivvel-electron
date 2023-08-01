@@ -36,6 +36,7 @@ jobs:
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
+        continue-on-error: true
         with:
           github_token: ${{ secrets.github_token }}
 
@@ -52,8 +53,8 @@ jobs:
           API_KEY_ISSUER_ID: ${{ secrets.api_key_issuer_id }}
 
       - name: Debug
-        if: always()
+        if: startsWith(matrix.os, 'macos')
         run: |
           pwd
           ls
-          cat notarization-error.log || true
+          cat notarization-error.log
