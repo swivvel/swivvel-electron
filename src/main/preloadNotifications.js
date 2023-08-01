@@ -1,6 +1,10 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-restricted-syntax */
-const { ipcRenderer } = require(`electron`);
+const { contextBridge, ipcRenderer } = require(`electron`);
+
+contextBridge.exposeInMainWorld(`electron`, {
+  isLinux: process.platform === `linux`,
+});
 
 const refreshClickableElements = () => {
   // eslint-disable-next-line no-undef

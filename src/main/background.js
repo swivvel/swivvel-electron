@@ -97,10 +97,6 @@ const createWindow = (windowName, options) => {
   const browserOptions = {
     ...state,
     ...options,
-    webPreferences: {
-      contextIsolation: false,
-      ...options.webPreferences,
-    },
   };
   win = new BrowserWindow(browserOptions);
 
