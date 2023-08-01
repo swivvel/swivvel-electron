@@ -201,6 +201,7 @@ const createNotificationsWindow = async () => {
     alwaysOnTop: true,
     autoHideMenuBar: true,
     closable: false,
+    focusable: false,
     frame: false,
     hasShadow: false,
     height: primaryDisplay.workAreaSize.height,
