@@ -54,4 +54,6 @@ jobs:
       - name: Debug
         if: always()
         run: |
+          pwd
+          ls
           cat notarization-error.log
