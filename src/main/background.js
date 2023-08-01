@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 const path = require(`path`);
-const { app, BrowserWindow, ipcMain, Menu, screen, Tray } = require(`electron`);
+const { app, BrowserWindow, Menu, screen, Tray } = require(`electron`);
 const Store = require(`electron-store`);
 
 const isProduction = app.isPackaged;
@@ -165,7 +165,7 @@ const sleep = (ms) => {
   });
 };
 
-const handleNotificationsMouseEventsLinux = (notificationsWindow) => {
+const handleNotificationsMouseEvents = (notificationsWindow) => {
   setInterval(async () => {
     const point = screen.getCursorScreenPoint();
     const [x, y] = notificationsWindow.getPosition();
@@ -228,9 +228,7 @@ const createNotificationsWindow = async () => {
   });
 
   // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
-  if (isLinux) {
-    handleNotificationsMouseEventsLinux(notificationsWindow);
-  }
+  handleNotificationsMouseEvents(notificationsWindow);
 
   if (isProduction) {
     await notificationsWindow.loadURL(`https://app.swivvel.io/notifications`);
@@ -241,21 +239,10 @@ const createNotificationsWindow = async () => {
   }
 };
 
-const instantiateEventHandlers = () => {
-  ipcMain.handle(`set-ignore-mouse-events`, (e, ...args) => {
-    const win = BrowserWindow.fromWebContents(e.sender);
-    // Linux mouse-over detection is handled elsewhere
-    if (!isLinux) {
-      win.setIgnoreMouseEvents(...args);
-    }
-  });
-};
-
 (async () => {
   configureApp();
   await app.whenReady();
   const mainWindow = await createMainWindow();
   createTray(mainWindow);
   await createNotificationsWindow();
-  instantiateEventHandlers();
 })();
