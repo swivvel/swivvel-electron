@@ -109,8 +109,8 @@ const createMainWindow = async () => {
   const primaryDisplay = screen.getPrimaryDisplay();
 
   const mainWindow = createWindow(`main`, {
-    autoHideMenuBar: true,
-    frame: false,
+    autoHideMenuBar: isLinux,
+    frame: !isLinux,
     height: primaryDisplay.workAreaSize.height,
     show: true,
     width: primaryDisplay.workAreaSize.width,
@@ -205,6 +205,7 @@ const createNotificationsWindow = async () => {
     maximizable: false,
     minimizable: false,
     resizable: false,
+    roundedCorners: false,
     skipTaskbar: true,
     transparent: true,
     webPreferences: {
