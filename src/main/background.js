@@ -199,6 +199,7 @@ const createNotificationsWindow = async () => {
   notificationsWindow.setIgnoreMouseEvents(true, { forward: true });
   notificationsWindow.setVisibleOnAllWorkspaces(true, {
     visibleOnFullScreen: true,
+    skipTransformProcessType: true,
   });
 
   notificationsWindow.on(`close`, (event) => {
@@ -255,8 +256,8 @@ const checkForUpdates = () => {
 (async () => {
   configureApp();
   await app.whenReady();
-  const notificationsWindow = await createNotificationsWindow();
   const mainWindow = await createMainWindow();
+  const notificationsWindow = await createNotificationsWindow();
   createTray(mainWindow, notificationsWindow);
   checkForUpdates();
 })();
