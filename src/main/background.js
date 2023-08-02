@@ -239,8 +239,8 @@ const createTray = (mainWindow, notificationsWindow) => {
       type: `normal`,
       click: () => {
         allowQuit = true;
-        mainWindow.close();
-        notificationsWindow.close();
+        mainWindow.destroy();
+        notificationsWindow.destroy();
         app.quit();
       },
     },
