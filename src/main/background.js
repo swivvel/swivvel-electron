@@ -111,9 +111,12 @@ const createMainWindow = async () => {
 
   const mainWindow = createWindow(`main`, {
     autoHideMenuBar: isLinux,
+    backgroundColor: `#ffffff`,
+    focusable: true,
     frame: !isLinux,
     height: primaryDisplay.workAreaSize.height,
-    show: true,
+    hiddenInMissionControl: false,
+    skipTaskbar: false,
     width: primaryDisplay.workAreaSize.width,
     x: primaryDisplay.workAreaSize.x,
     y: primaryDisplay.workAreaSize.y,
@@ -235,8 +238,8 @@ const createTray = (mainWindow, notificationsWindow) => {
       type: `normal`,
       click: () => {
         allowQuit = true;
-        mainWindow.destroy();
-        notificationsWindow.destroy();
+        mainWindow.close();
+        notificationsWindow.close();
         app.quit();
       },
     },
@@ -252,8 +255,8 @@ const checkForUpdates = () => {
 (async () => {
   configureApp();
   await app.whenReady();
-  const mainWindow = await createMainWindow();
   const notificationsWindow = await createNotificationsWindow();
+  const mainWindow = await createMainWindow();
   createTray(mainWindow, notificationsWindow);
   checkForUpdates();
 })();
