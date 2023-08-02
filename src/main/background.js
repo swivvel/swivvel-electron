@@ -251,13 +251,6 @@ const createTray = (mainWindow, notificationsWindow) => {
       },
     },
     {
-      label: `Test`,
-      type: `normal`,
-      click: () => {
-        mainWindow.webContents.send(`message`, `test`);
-      },
-    },
-    {
       label: `Quit`,
       type: `normal`,
       click: () => {
