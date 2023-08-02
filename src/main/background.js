@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 const path = require(`path`);
 const { app, BrowserWindow, Menu, screen, Tray } = require(`electron`);
+const log = require(`electron-log`);
 const Store = require(`electron-store`);
 const { autoUpdater } = require(`electron-updater`);
 
@@ -10,6 +11,8 @@ const isLinux = process.platform === `linux`;
 let allowQuit = false;
 
 const configureApp = () => {
+  log.verbose(`Configuring app...`);
+
   if (!isProduction) {
     app.setPath(`userData`, `${app.getPath(`userData`)} (development)`);
   }
@@ -28,6 +31,8 @@ const configureApp = () => {
       app.quit();
     }
   });
+
+  log.verbose(`Configured app`);
 };
 
 const createWindow = (windowName, options) => {
@@ -107,6 +112,8 @@ const createWindow = (windowName, options) => {
 };
 
 const createMainWindow = async () => {
+  log.verbose(`Creating main window...`);
+
   const primaryDisplay = screen.getPrimaryDisplay();
 
   const mainWindow = createWindow(`main`, {
@@ -135,6 +142,8 @@ const createMainWindow = async () => {
     await mainWindow.loadURL(`${process.env.ELECTRON_APP_DEV_URL}/`);
     mainWindow.webContents.openDevTools();
   }
+
+  log.verbose(`Created main window`);
 
   return mainWindow;
 };
@@ -166,6 +175,8 @@ const handleNotificationsMouseEvents = (notificationsWindow) => {
 };
 
 const createNotificationsWindow = async () => {
+  log.verbose(`Creating notifications window...`);
+
   // See: https://github.com/electron/electron/issues/15947
   if (isLinux) {
     await sleep(1000);
@@ -199,6 +210,7 @@ const createNotificationsWindow = async () => {
   notificationsWindow.setIgnoreMouseEvents(true, { forward: true });
   notificationsWindow.setVisibleOnAllWorkspaces(true, {
     visibleOnFullScreen: true,
+    // See: https://github.com/electron/electron/issues/25368
     skipTransformProcessType: true,
   });
 
@@ -220,10 +232,14 @@ const createNotificationsWindow = async () => {
     );
   }
 
+  log.verbose(`Created notifications window`);
+
   return notificationsWindow;
 };
 
 const createTray = (mainWindow, notificationsWindow) => {
+  log.verbose(`Creating tray...`);
+
   const tray = new Tray(path.join(__dirname, `logoTemplate.png`));
 
   const contextMenu = Menu.buildFromTemplate([
@@ -232,6 +248,13 @@ const createTray = (mainWindow, notificationsWindow) => {
       type: `normal`,
       click: () => {
         mainWindow.show();
+      },
+    },
+    {
+      label: `Test`,
+      type: `normal`,
+      click: () => {
+        mainWindow.webContents.send(`message`, `test`);
       },
     },
     {
@@ -247,17 +270,55 @@ const createTray = (mainWindow, notificationsWindow) => {
   ]);
 
   tray.setContextMenu(contextMenu);
+
+  log.verbose(`Created tray`);
 };
 
 const checkForUpdates = () => {
+  autoUpdater.logger = log;
+  autoUpdater.logger.transports.file.level = `verbose`;
+
+  autoUpdater.on(`checking-for-update`, () => {
+    log.verbose(`Checking for update...`);
+  });
+
+  autoUpdater.on(`update-available`, () => {
+    log.verbose(`Update available.`);
+  });
+
+  autoUpdater.on(`update-not-available`, () => {
+    log.verbose(`Update not available.`);
+  });
+
+  autoUpdater.on(`error`, (err) => {
+    log.verbose(`Error in auto-updater. ${err}`);
+  });
+
+  autoUpdater.on(`download-progress`, (progressObj) => {
+    let logMessage = `Download speed: ${progressObj.bytesPerSecond}`;
+    logMessage = `${logMessage} - Downloaded ${progressObj.percent}%`;
+    logMessage = `${logMessage} (${progressObj.transferred}/${progressObj.total})`;
+    log.verbose(logMessage);
+  });
+
+  autoUpdater.on(`update-downloaded`, () => {
+    log.verbose(`Update downloaded`);
+  });
+
+  log.verbose(`Checking for updates...`);
+
   autoUpdater.checkForUpdatesAndNotify();
 };
 
 (async () => {
+  log.info(`App starting...`);
+
   configureApp();
   await app.whenReady();
   const mainWindow = await createMainWindow();
   const notificationsWindow = await createNotificationsWindow();
   createTray(mainWindow, notificationsWindow);
   checkForUpdates();
+
+  log.info(`App started`);
 })();
