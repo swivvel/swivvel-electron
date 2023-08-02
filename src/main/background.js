@@ -267,7 +267,7 @@ const createTray = (mainWindow, notificationsWindow) => {
   log.verbose(`Created tray`);
 };
 
-const checkForUpdates = () => {
+const handleUpdates = () => {
   autoUpdater.logger = log;
   autoUpdater.logger.transports.file.level = `verbose`;
 
@@ -296,13 +296,20 @@ const checkForUpdates = () => {
 
   autoUpdater.on(`update-downloaded`, () => {
     log.verbose(`Update downloaded`);
-    log.verbose(`Quitting and installing...`);
+    log.verbose(`Installing new version and relaunching app...`);
     autoUpdater.quitAndInstall();
+    app.relaunch();
+    app.exit(0);
   });
 
   log.verbose(`Checking for updates...`);
 
   autoUpdater.checkForUpdatesAndNotify();
+
+  setInterval(() => {
+    log.verbose(`Checking for updates...`);
+    autoUpdater.checkForUpdatesAndNotify();
+  }, 1000 * 60);
 };
 
 (async () => {
@@ -313,7 +320,7 @@ const checkForUpdates = () => {
   const mainWindow = await createMainWindow();
   const notificationsWindow = await createNotificationsWindow();
   createTray(mainWindow, notificationsWindow);
-  checkForUpdates();
+  handleUpdates();
 
   log.info(`App started`);
 })();
