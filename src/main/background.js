@@ -281,6 +281,11 @@ const handleUpdates = () => {
 
   autoUpdater.on(`update-not-available`, () => {
     log.verbose(`Update not available.`);
+
+    setTimeout(() => {
+      log.verbose(`Checking for updates...`);
+      autoUpdater.checkForUpdatesAndNotify();
+    }, 1000 * 60);
   });
 
   autoUpdater.on(`error`, (err) => {
@@ -296,20 +301,31 @@ const handleUpdates = () => {
 
   autoUpdater.on(`update-downloaded`, () => {
     log.verbose(`Update downloaded`);
-    log.verbose(`Installing new version and relaunching app...`);
-    autoUpdater.quitAndInstall();
-    app.relaunch();
-    app.exit(0);
+
+    const now = new Date();
+    const restartTime = new Date(now);
+    restartTime.setMinutes(restartTime.getMinutes() + 1);
+    const restartMs = restartTime.getTime() - now.getTime();
+
+    log.verbose(`Scheduling app relaunch for ${restartTime.toISOString()}...`);
+
+    setTimeout(() => {
+      log.verbose(`Installing new version and relaunching app...`);
+      allowQuit = true;
+      // See: https://github.com/electron-userland/electron-builder/issues/3402
+      setImmediate(() => {
+        autoUpdater.quitAndInstall();
+        setTimeout(() => {
+          app.relaunch();
+          app.exit(0);
+        }, 6000);
+      });
+    }, restartMs);
   });
 
   log.verbose(`Checking for updates...`);
 
   autoUpdater.checkForUpdatesAndNotify();
-
-  setInterval(() => {
-    log.verbose(`Checking for updates...`);
-    autoUpdater.checkForUpdatesAndNotify();
-  }, 1000 * 60);
 };
 
 (async () => {
