@@ -2,6 +2,7 @@
 const path = require(`path`);
 const { app, BrowserWindow, Menu, screen, Tray } = require(`electron`);
 const Store = require(`electron-store`);
+const { autoUpdater } = require(`electron-updater`);
 
 const isProduction = app.isPackaged;
 const isLinux = process.platform === `linux`;
@@ -244,10 +245,15 @@ const createTray = (mainWindow, notificationsWindow) => {
   tray.setContextMenu(contextMenu);
 };
 
+const checkForUpdates = () => {
+  autoUpdater.checkForUpdatesAndNotify();
+};
+
 (async () => {
   configureApp();
   await app.whenReady();
   const mainWindow = await createMainWindow();
   const notificationsWindow = await createNotificationsWindow();
   createTray(mainWindow, notificationsWindow);
+  checkForUpdates();
 })();
