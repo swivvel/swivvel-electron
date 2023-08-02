@@ -296,6 +296,8 @@ const checkForUpdates = () => {
 
   autoUpdater.on(`update-downloaded`, () => {
     log.verbose(`Update downloaded`);
+    log.verbose(`Quitting and installing...`);
+    autoUpdater.quitAndInstall();
   });
 
   log.verbose(`Checking for updates...`);
