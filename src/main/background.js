@@ -61,11 +61,6 @@ const configureApp = () => {
     }
   });
 
-  powerMonitor.on(`shutdown`, () => {
-    log.info(`System shutdown detected`);
-    quitApp();
-  });
-
   log.info(`Configured app`);
 };
 
@@ -367,6 +362,13 @@ const handleUpdates = (mainWindow, notificationsWindow) => {
   checkForUpdatesInterval = pollForUpdates();
 };
 
+const handleSystemShutdown = (mainWindow, notificationsWindow) => {
+  powerMonitor.on(`shutdown`, () => {
+    log.info(`System shutdown detected`);
+    quitApp(mainWindow, notificationsWindow);
+  });
+};
+
 (async () => {
   log.info(`App starting...`);
 
@@ -376,6 +378,7 @@ const handleUpdates = (mainWindow, notificationsWindow) => {
   const notificationsWindow = await createNotificationsWindow();
   createTray(mainWindow, notificationsWindow);
   handleUpdates(mainWindow, notificationsWindow);
+  handleSystemShutdown(mainWindow, notificationsWindow);
 
   log.info(`App started`);
 })();
