@@ -31,10 +31,10 @@ const quitApp = (mainWindow, notificationsWindow, options) => {
   notificationsWindow.destroy();
 
   if (quitAndInstall) {
-    log.info(`Calling autoUpdater.quitAndInstall()...`);
+    log.info(`Quitting app and installing updates`);
     autoUpdater.quitAndInstall();
   } else {
-    log.info(`Calling app.quit()...`);
+    log.info(`Quitting app`);
     app.quit();
   }
 };
