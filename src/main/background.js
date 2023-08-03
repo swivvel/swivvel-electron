@@ -306,11 +306,9 @@ const createTray = (mainWindow, notificationsWindow) => {
 };
 
 const pollForUpdates = () => {
-  log.info(`Checking for updates...`);
   autoUpdater.checkForUpdatesAndNotify();
 
   return setInterval(() => {
-    log.info(`Checking for updates...`);
     autoUpdater.checkForUpdatesAndNotify();
   }, 1000 * 60);
 };
