@@ -319,20 +319,16 @@ const handleUpdates = (mainWindow, notificationsWindow) => {
   autoUpdater.logger = log;
   autoUpdater.logger.transports.file.level = `info`;
 
-  autoUpdater.on(`checking-for-update`, () => {
-    log.info(`Checking for update...`);
-  });
-
   autoUpdater.on(`update-available`, () => {
-    log.info(`Update available.`);
+    log.info(`Update available`);
   });
 
   autoUpdater.on(`update-not-available`, () => {
-    log.info(`Update not available.`);
+    log.info(`Update not available`);
   });
 
   autoUpdater.on(`error`, (err) => {
-    log.info(`Error in auto-updater. ${err}`);
+    log.info(`Error in auto-updater: ${err}`);
   });
 
   autoUpdater.on(`download-progress`, (progressObj) => {
