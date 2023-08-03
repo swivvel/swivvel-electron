@@ -32,10 +32,6 @@
     "linux": {
       "icon": "build/icon.icns",
       "category": "Utility"
-    },
-    "publish": {
-      "provider": "github",
-      "releaseType": "release"
     }
   },
   "scripts": {
