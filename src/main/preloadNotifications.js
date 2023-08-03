@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 const { contextBridge, ipcRenderer } = require(`electron`);
 
 const isLinux = process.platform === `linux`;
@@ -24,12 +26,10 @@ const makeElementClickable = (element) => {
 
 const isBody = (element) => {
   return Boolean(element && element === document.body);
-}
+};
 
 if (!isLinux) {
-  // eslint-disable-next-line no-undef
   window.addEventListener(`DOMNodeInserted`, (event) => {
-    // eslint-disable-next-line no-undef
     if (!(event.target instanceof HTMLElement)) {
       return;
     }
@@ -52,5 +52,5 @@ if (!isLinux) {
     if (event.target.dataset.hasMouseEvents) {
       ipcRenderer.invoke(`set-ignore-mouse-events`, true);
     }
-  })
+  });
 }
