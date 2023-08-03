@@ -3,6 +3,7 @@ const path = require(`path`);
 const {
   app,
   BrowserWindow,
+  ipcMain,
   Menu,
   powerMonitor,
   screen,
@@ -188,7 +189,7 @@ const sleep = (ms) => {
   });
 };
 
-const handleNotificationsMouseEvents = (notificationsWindow) => {
+const pollForNotificationsMouseEvents = (notificationsWindow) => {
   const interval = setInterval(async () => {
     if (notificationsWindow.isDestroyed()) {
       clearInterval(interval);
@@ -227,7 +228,7 @@ const createNotificationsWindow = async () => {
     alwaysOnTop: true,
     autoHideMenuBar: true,
     closable: false,
-    focusable: false,
+    //focusable: false,
     frame: false,
     hasShadow: false,
     height: primaryDisplay.workAreaSize.height,
@@ -261,7 +262,15 @@ const createNotificationsWindow = async () => {
   });
 
   // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
-  handleNotificationsMouseEvents(notificationsWindow);
+  if (isLinux) {
+    pollForNotificationsMouseEvents(notificationsWindow);
+  }
+
+  ipcMain.handle(`set-ignore-mouse-events`, (e, ...args) => {
+    log.info(`setIgnoreMouseEvents`, ...args);
+    const win = BrowserWindow.fromWebContents(e.sender);
+    win.setIgnoreMouseEvents(...args);
+  })
 
   if (isProduction) {
     await notificationsWindow.loadURL(`https://app.swivvel.io/notifications`);
