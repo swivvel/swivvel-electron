@@ -346,11 +346,14 @@ const handleUpdates = (mainWindow, notificationsWindow) => {
     }
 
     const now = new Date();
-    const restartTime = new Date(now);
-    restartTime.setMinutes(restartTime.getMinutes() + 1);
-    const restartMs = restartTime.getTime() - now.getTime();
+    const midnight = new Date(now);
+    midnight.setHours(24);
+    midnight.setMinutes(0);
+    midnight.setSeconds(0);
+    midnight.setMilliseconds(0);
+    const msUntilMidnight = midnight.getTime() - now.getTime();
 
-    log.info(`Scheduling app relaunch for ${restartTime.toISOString()}...`);
+    log.info(`Scheduling app relaunch for ${midnight.toISOString()}...`);
 
     setTimeout(() => {
       log.info(`Installing new version and relaunching app...`);
@@ -358,7 +361,7 @@ const handleUpdates = (mainWindow, notificationsWindow) => {
       setImmediate(() => {
         quitApp(mainWindow, notificationsWindow, { quitAndInstall: true });
       });
-    }, restartMs);
+    }, msUntilMidnight);
   });
 
   checkForUpdatesInterval = pollForUpdates();
