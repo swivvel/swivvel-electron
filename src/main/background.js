@@ -261,7 +261,6 @@ const createNotificationsWindow = async () => {
   }
 
   ipcMain.handle(`set-ignore-mouse-events`, (e, ...args) => {
-    log.info(`setIgnoreMouseEvents`, ...args);
     const win = BrowserWindow.fromWebContents(e.sender);
     win.setIgnoreMouseEvents(...args);
   });
