@@ -372,7 +372,7 @@ const handleUpdates = (mainWindow, notificationsWindow) => {
   const mainWindow = await createMainWindow();
   const notificationsWindow = await createNotificationsWindow();
   createTray(mainWindow, notificationsWindow);
-  handleUpdates();
+  handleUpdates(mainWindow, notificationsWindow);
 
   log.info(`App started`);
 })();
