@@ -22,6 +22,10 @@ const makeElementClickable = (element) => {
   element.dataset.hasMouseEvents = `true`;
 };
 
+const isBody = (element) => {
+  return Boolean(element && element === document.body);
+}
+
 if (!isLinux) {
   // eslint-disable-next-line no-undef
   window.addEventListener(`DOMNodeInserted`, (event) => {
@@ -36,6 +40,17 @@ if (!isLinux) {
       return;
     }
 
-    makeElementClickable(event.target);
+    const parent = event.target.parentElement;
+    const grandparent = parent ? parent.parentElement : null;
+
+    if (isBody(parent) || isBody(grandparent)) {
+      makeElementClickable(event.target);
+    }
   });
+
+  window.addEventListener(`DOMNodeRemoved`, (event) => {
+    if (event.target.dataset.hasMouseEvents) {
+      ipcRenderer.invoke(`set-ignore-mouse-events`, true);
+    }
+  })
 }
