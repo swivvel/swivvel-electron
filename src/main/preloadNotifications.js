@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld(`electron`, {
 });
 
 const makeElementClickable = (element) => {
-  if (element.dataset.hasMouseEnter) {
+  if (element.dataset.hasMouseEvents) {
     return;
   }
 
@@ -19,7 +19,7 @@ const makeElementClickable = (element) => {
     ipcRenderer.invoke(`set-ignore-mouse-events`, true);
   });
 
-  element.dataset.hasMouseEnter = `true`;
+  element.dataset.hasMouseEvents = `true`;
 };
 
 if (!isLinux) {
