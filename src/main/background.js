@@ -223,7 +223,6 @@ const createNotificationsWindow = async () => {
     alwaysOnTop: true,
     autoHideMenuBar: true,
     closable: false,
-    //focusable: false,
     frame: false,
     hasShadow: false,
     height: primaryDisplay.workAreaSize.height,
@@ -265,7 +264,7 @@ const createNotificationsWindow = async () => {
     log.info(`setIgnoreMouseEvents`, ...args);
     const win = BrowserWindow.fromWebContents(e.sender);
     win.setIgnoreMouseEvents(...args);
-  })
+  });
 
   if (isProduction) {
     await notificationsWindow.loadURL(`https://app.swivvel.io/notifications`);
