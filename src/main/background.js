@@ -1,6 +1,13 @@
 /* eslint-disable prefer-const */
 const path = require(`path`);
-const { app, BrowserWindow, Menu, screen, Tray } = require(`electron`);
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  powerMonitor,
+  screen,
+  Tray,
+} = require(`electron`);
 const log = require(`electron-log`);
 const Store = require(`electron-store`);
 const { autoUpdater } = require(`electron-updater`);
@@ -8,10 +15,32 @@ const { autoUpdater } = require(`electron-updater`);
 const isProduction = app.isPackaged;
 const isLinux = process.platform === `linux`;
 
-let allowQuit = false;
+const allowQuit = { current: false };
+
+const quitApp = (mainWindow, notificationsWindow, options) => {
+  const quitAndInstall = Boolean(options && options.quitAndInstall);
+
+  log.info(`Preparing to quit app (quitAndInstall=${quitAndInstall})...`);
+  allowQuit.current = true;
+  app.removeAllListeners(`window-all-closed`);
+  mainWindow.removeAllListeners(`close`);
+  notificationsWindow.removeAllListeners(`close`);
+
+  log.info(`Closing windows...`);
+  mainWindow.destroy();
+  notificationsWindow.destroy();
+
+  if (quitAndInstall) {
+    log.info(`Calling autoUpdater.quitAndInstall()...`);
+    autoUpdater.quitAndInstall();
+  } else {
+    log.info(`Calling app.quit()...`);
+    app.quit();
+  }
+};
 
 const configureApp = () => {
-  log.verbose(`Configuring app...`);
+  log.info(`Configuring app...`);
 
   if (!isProduction) {
     app.setPath(`userData`, `${app.getPath(`userData`)} (development)`);
@@ -27,12 +56,17 @@ const configureApp = () => {
   app.setLoginItemSettings({ openAtLogin: true });
 
   app.on(`window-all-closed`, () => {
-    if (allowQuit) {
+    if (allowQuit.current) {
       app.quit();
     }
   });
 
-  log.verbose(`Configured app`);
+  powerMonitor.on(`shutdown`, () => {
+    log.info(`System shutdown detected`);
+    quitApp();
+  });
+
+  log.info(`Configured app`);
 };
 
 const createWindow = (windowName, options) => {
@@ -112,7 +146,7 @@ const createWindow = (windowName, options) => {
 };
 
 const createMainWindow = async () => {
-  log.verbose(`Creating main window...`);
+  log.info(`Creating main window...`);
 
   const primaryDisplay = screen.getPrimaryDisplay();
 
@@ -130,7 +164,7 @@ const createMainWindow = async () => {
   });
 
   mainWindow.on(`close`, (event) => {
-    if (!allowQuit) {
+    if (!allowQuit.current) {
       event.preventDefault();
       mainWindow.hide();
     }
@@ -143,7 +177,7 @@ const createMainWindow = async () => {
     mainWindow.webContents.openDevTools();
   }
 
-  log.verbose(`Created main window`);
+  log.info(`Created main window`);
 
   return mainWindow;
 };
@@ -155,7 +189,12 @@ const sleep = (ms) => {
 };
 
 const handleNotificationsMouseEvents = (notificationsWindow) => {
-  setInterval(async () => {
+  const interval = setInterval(async () => {
+    if (notificationsWindow.isDestroyed()) {
+      clearInterval(interval);
+      return;
+    }
+
     const point = screen.getCursorScreenPoint();
     const [x, y] = notificationsWindow.getPosition();
     const [w, h] = notificationsWindow.getSize();
@@ -175,7 +214,7 @@ const handleNotificationsMouseEvents = (notificationsWindow) => {
 };
 
 const createNotificationsWindow = async () => {
-  log.verbose(`Creating notifications window...`);
+  log.info(`Creating notifications window...`);
 
   // See: https://github.com/electron/electron/issues/15947
   if (isLinux) {
@@ -215,7 +254,7 @@ const createNotificationsWindow = async () => {
   });
 
   notificationsWindow.on(`close`, (event) => {
-    if (!allowQuit) {
+    if (!allowQuit.current) {
       event.preventDefault();
       notificationsWindow.hide();
     }
@@ -232,13 +271,13 @@ const createNotificationsWindow = async () => {
     );
   }
 
-  log.verbose(`Created notifications window`);
+  log.info(`Created notifications window`);
 
   return notificationsWindow;
 };
 
 const createTray = (mainWindow, notificationsWindow) => {
-  log.verbose(`Creating tray...`);
+  log.info(`Creating tray...`);
 
   const tray = new Tray(path.join(__dirname, `logoTemplate.png`));
 
@@ -254,78 +293,79 @@ const createTray = (mainWindow, notificationsWindow) => {
       label: `Quit`,
       type: `normal`,
       click: () => {
-        allowQuit = true;
-        mainWindow.destroy();
-        notificationsWindow.destroy();
-        app.quit();
+        quitApp(mainWindow, notificationsWindow);
       },
     },
   ]);
 
   tray.setContextMenu(contextMenu);
 
-  log.verbose(`Created tray`);
+  log.info(`Created tray`);
 };
 
-const handleUpdates = () => {
+const pollForUpdates = () => {
+  log.info(`Checking for updates...`);
+  autoUpdater.checkForUpdatesAndNotify();
+
+  return setInterval(() => {
+    log.info(`Checking for updates...`);
+    autoUpdater.checkForUpdatesAndNotify();
+  }, 1000 * 60);
+};
+
+const handleUpdates = (mainWindow, notificationsWindow) => {
+  let checkForUpdatesInterval;
+
   autoUpdater.logger = log;
-  autoUpdater.logger.transports.file.level = `verbose`;
+  autoUpdater.logger.transports.file.level = `info`;
 
   autoUpdater.on(`checking-for-update`, () => {
-    log.verbose(`Checking for update...`);
+    log.info(`Checking for update...`);
   });
 
   autoUpdater.on(`update-available`, () => {
-    log.verbose(`Update available.`);
+    log.info(`Update available.`);
   });
 
   autoUpdater.on(`update-not-available`, () => {
-    log.verbose(`Update not available.`);
-
-    setTimeout(() => {
-      log.verbose(`Checking for updates...`);
-      autoUpdater.checkForUpdatesAndNotify();
-    }, 1000 * 60);
+    log.info(`Update not available.`);
   });
 
   autoUpdater.on(`error`, (err) => {
-    log.verbose(`Error in auto-updater. ${err}`);
+    log.info(`Error in auto-updater. ${err}`);
   });
 
   autoUpdater.on(`download-progress`, (progressObj) => {
     let logMessage = `Download speed: ${progressObj.bytesPerSecond}`;
     logMessage = `${logMessage} - Downloaded ${progressObj.percent}%`;
     logMessage = `${logMessage} (${progressObj.transferred}/${progressObj.total})`;
-    log.verbose(logMessage);
+    log.info(logMessage);
   });
 
   autoUpdater.on(`update-downloaded`, () => {
-    log.verbose(`Update downloaded`);
+    log.info(`Update downloaded`);
+
+    if (checkForUpdatesInterval) {
+      clearInterval(checkForUpdatesInterval);
+    }
 
     const now = new Date();
     const restartTime = new Date(now);
     restartTime.setMinutes(restartTime.getMinutes() + 1);
     const restartMs = restartTime.getTime() - now.getTime();
 
-    log.verbose(`Scheduling app relaunch for ${restartTime.toISOString()}...`);
+    log.info(`Scheduling app relaunch for ${restartTime.toISOString()}...`);
 
     setTimeout(() => {
-      log.verbose(`Installing new version and relaunching app...`);
-      allowQuit = true;
-      // See: https://github.com/electron-userland/electron-builder/issues/3402
+      log.info(`Installing new version and relaunching app...`);
+      // See: https://github.com/electron-userland/electron-builder/issues/1604
       setImmediate(() => {
-        autoUpdater.quitAndInstall();
-        setTimeout(() => {
-          app.relaunch();
-          app.exit(0);
-        }, 6000);
+        quitApp(mainWindow, notificationsWindow, { quitAndInstall: true });
       });
     }, restartMs);
   });
 
-  log.verbose(`Checking for updates...`);
-
-  autoUpdater.checkForUpdatesAndNotify();
+  checkForUpdatesInterval = pollForUpdates();
 };
 
 (async () => {
