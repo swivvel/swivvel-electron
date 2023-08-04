@@ -166,6 +166,11 @@ const createMainWindow = async () => {
     }
   });
 
+  // Show the main window when user clicks on dock on Mac
+  app.on(`activate`, () => {
+    mainWindow.show();
+  })
+
   if (isProduction) {
     await mainWindow.loadURL(`https://app.swivvel.io/`);
   } else {
