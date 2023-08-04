@@ -3,21 +3,24 @@ const path = require(`path`);
 const {
   app,
   BrowserWindow,
-  ipcMain,
   Menu,
   powerMonitor,
   screen,
   Tray,
 } = require(`electron`);
 const log = require(`electron-log`);
-const Store = require(`electron-store`);
 const { autoUpdater } = require(`electron-updater`);
 
 const isProduction = app.isPackaged;
 const isLinux = process.platform === `linux`;
 
+// Since Swivvel has a tray icon, we don't want the app to quit unless the user
+// explicitly quits the app from the tray menu
 const allowQuit = { current: false };
 
+/**
+ * Perform the necessary steps to quit the app.
+ */
 const quitApp = (mainWindow, notificationsWindow, options) => {
   const quitAndInstall = Boolean(options && options.quitAndInstall);
 
@@ -27,6 +30,8 @@ const quitApp = (mainWindow, notificationsWindow, options) => {
   mainWindow.removeAllListeners(`close`);
   notificationsWindow.removeAllListeners(`close`);
 
+  // `close()` wasn't successfully closing the app on Mac so we're
+  // using `destroy()` instead
   log.info(`Closing windows...`);
   mainWindow.destroy();
   notificationsWindow.destroy();
@@ -40,13 +45,20 @@ const quitApp = (mainWindow, notificationsWindow, options) => {
   }
 };
 
+/**
+ * Configure the global app settings.
+ */
 const configureApp = () => {
   log.info(`Configuring app...`);
 
+  // Electron stores everything related to the app (cache, local storage,
+  // databases, logs, etc.) in a directory in the user's home directory.
+  // Prevent dev from colliding with prod by adding a suffix.
   if (!isProduction) {
-    app.setPath(`userData`, `${app.getPath(`userData`)} (development)`);
+    app.setPath(`userData`, `${app.getPath(`userData`)}-development`);
   }
 
+  // Transparent windows don't work in Linux without these settings
   // See: https://github.com/electron/electron/issues/15947
   if (isLinux) {
     app.commandLine.appendSwitch(`enable-transparent-visuals`);
@@ -54,6 +66,7 @@ const configureApp = () => {
     app.disableHardwareAcceleration();
   }
 
+  // Configure the app to open automatically when the user logs in to their OS
   app.setLoginItemSettings({ openAtLogin: true });
 
   app.on(`window-all-closed`, () => {
@@ -65,88 +78,15 @@ const configureApp = () => {
   log.info(`Configured app`);
 };
 
-const createWindow = (windowName, options) => {
-  const key = `window-state`;
-  const name = `window-state-${windowName}`;
-  const store = new Store({ name });
-  const defaultSize = {
-    width: options.width,
-    height: options.height,
-  };
-  let state = {};
-  let win;
-
-  const restore = () => {
-    return store.get(key, defaultSize);
-  };
-
-  const getCurrentPosition = () => {
-    const position = win.getPosition();
-    const size = win.getSize();
-    return {
-      x: position[0],
-      y: position[1],
-      width: size[0],
-      height: size[1],
-    };
-  };
-
-  const windowWithinBounds = (windowState, bounds) => {
-    return (
-      windowState.x >= bounds.x &&
-      windowState.y >= bounds.y &&
-      windowState.x + windowState.width <= bounds.x + bounds.width &&
-      windowState.y + windowState.height <= bounds.y + bounds.height
-    );
-  };
-
-  const resetToDefaults = () => {
-    const bounds = screen.getPrimaryDisplay().bounds;
-    return {
-      ...defaultSize,
-      x: (bounds.width - defaultSize.width) / 2,
-      y: (bounds.height - defaultSize.height) / 2,
-    };
-  };
-
-  const ensureVisibleOnSomeDisplay = (windowState) => {
-    const visible = screen.getAllDisplays().some((display) => {
-      return windowWithinBounds(windowState, display.bounds);
-    });
-    if (!visible) {
-      // Window is partially or fully not visible now.
-      // Reset it to safe defaults.
-      return resetToDefaults();
-    }
-    return windowState;
-  };
-
-  const saveState = () => {
-    if (!win.isMinimized() && !win.isMaximized()) {
-      Object.assign(state, getCurrentPosition());
-    }
-    store.set(key, state);
-  };
-
-  state = ensureVisibleOnSomeDisplay(restore());
-
-  const browserOptions = {
-    ...state,
-    ...options,
-  };
-  win = new BrowserWindow(browserOptions);
-
-  win.on(`close`, saveState);
-
-  return win;
-};
-
+/**
+ * Create the main window that contains the web app.
+ */
 const createMainWindow = async () => {
   log.info(`Creating main window...`);
 
   const primaryDisplay = screen.getPrimaryDisplay();
 
-  const mainWindow = createWindow(`main`, {
+  const mainWindow = new BrowserWindow({
     autoHideMenuBar: isLinux,
     backgroundColor: `#ffffff`,
     focusable: true,
@@ -169,7 +109,7 @@ const createMainWindow = async () => {
   // Show the main window when user clicks on dock on Mac
   app.on(`activate`, () => {
     mainWindow.show();
-  })
+  });
 
   if (isProduction) {
     await mainWindow.loadURL(`https://app.swivvel.io/`);
@@ -183,12 +123,31 @@ const createMainWindow = async () => {
   return mainWindow;
 };
 
+/**
+ * Pause execution for the given number of milliseconds.
+ */
 const sleep = (ms) => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 };
 
+/**
+ * Support mouse events on the transparent notification window.
+ *
+ * The transparent notification window is always on top of all other windows,
+ * so we need to ignore mouse events by default. When the user's cursor moves
+ * over an element that we rendered in the notification window, we need to stop
+ * ignoring mouse events so that the user can interact with the element.
+ *
+ * There are a few strategies to accomplish this, but the most reliable we found
+ * was https://github.com/electron/electron/issues/1335#issuecomment-1585787243.
+ * This works by periodically capturing a 1x1 image of the pixel at the user's
+ * current cursor position. If the pixel is transparent, then the user's cursor
+ * is over a transparent part of the window and we should ignore mouse events.
+ * If the pixel is not transparent, then the user's cursor is over a non-
+ * transparent part of the window and we should not ignore mouse events.
+ */
 const pollForNotificationsMouseEvents = (notificationsWindow) => {
   const interval = setInterval(async () => {
     if (notificationsWindow.isDestroyed()) {
@@ -214,9 +173,14 @@ const pollForNotificationsMouseEvents = (notificationsWindow) => {
   }, 50);
 };
 
+/**
+ * Create the transparent window for displaying notifications.
+ */
 const createNotificationsWindow = async () => {
   log.info(`Creating notifications window...`);
 
+  // Transparent windows don't work on Linux without some hacks
+  // like this short delay
   // See: https://github.com/electron/electron/issues/15947
   if (isLinux) {
     await sleep(1000);
@@ -224,10 +188,14 @@ const createNotificationsWindow = async () => {
 
   const primaryDisplay = screen.getPrimaryDisplay();
 
-  const notificationsWindow = createWindow(`notifications`, {
+  const notificationsWindow = new BrowserWindow({
     alwaysOnTop: true,
     autoHideMenuBar: true,
     closable: false,
+    // On Mac, the window needs to be focusable for the mouse cursor to appear
+    // as a pointer. On Linux, the mouse cursor appears as a pointer on a
+    // non-focusable window, but if the window is focusable then it appears
+    // when using alt+tab to switch between windows.
     focusable: !isLinux,
     frame: false,
     hasShadow: false,
@@ -277,6 +245,9 @@ const createNotificationsWindow = async () => {
   return notificationsWindow;
 };
 
+/**
+ * Add the Swivvel icon to the OS system tray.
+ */
 const createTray = (mainWindow, notificationsWindow) => {
   log.info(`Creating tray...`);
 
@@ -304,6 +275,11 @@ const createTray = (mainWindow, notificationsWindow) => {
   log.info(`Created tray`);
 };
 
+/**
+ * Check if there are any updates available for the app. If so, download
+ * the update and send an OS notification informing the user that a new
+ * version is available and can be installed by restarting the app.
+ */
 const pollForUpdates = () => {
   autoUpdater.checkForUpdatesAndNotify();
 
@@ -312,7 +288,10 @@ const pollForUpdates = () => {
   }, 1000 * 60);
 };
 
-const handleUpdates = (mainWindow, notificationsWindow) => {
+/**
+ * Configure automatic updates of the app.
+ */
+const configureAutoUpdates = (mainWindow, notificationsWindow) => {
   let checkForUpdatesInterval;
 
   autoUpdater.logger = log;
@@ -366,6 +345,9 @@ const handleUpdates = (mainWindow, notificationsWindow) => {
   checkForUpdatesInterval = pollForUpdates();
 };
 
+/**
+ * Make sure the app quits when the OS shuts down.
+ */
 const handleSystemShutdown = (mainWindow, notificationsWindow) => {
   powerMonitor.on(`shutdown`, () => {
     log.info(`System shutdown detected`);
@@ -373,6 +355,9 @@ const handleSystemShutdown = (mainWindow, notificationsWindow) => {
   });
 };
 
+/**
+ * Initialization
+ */
 (async () => {
   log.info(`App starting...`);
 
@@ -381,7 +366,7 @@ const handleSystemShutdown = (mainWindow, notificationsWindow) => {
   const mainWindow = await createMainWindow();
   const notificationsWindow = await createNotificationsWindow();
   createTray(mainWindow, notificationsWindow);
-  handleUpdates(mainWindow, notificationsWindow);
+  configureAutoUpdates(mainWindow, notificationsWindow);
   handleSystemShutdown(mainWindow, notificationsWindow);
 
   log.info(`App started`);
