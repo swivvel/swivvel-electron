@@ -211,7 +211,7 @@ const pollForNotificationsMouseEvents = (notificationsWindow) => {
       const mouseIsOverTransparent = buffer[3] === 0;
       notificationsWindow.setIgnoreMouseEvents(mouseIsOverTransparent);
     }
-  }, 100);
+  }, 50);
 };
 
 const createNotificationsWindow = async () => {
