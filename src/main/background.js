@@ -21,10 +21,8 @@ const allowQuit = { current: false };
 /**
  * Perform the necessary steps to quit the app.
  */
-const quitApp = (mainWindow, notificationsWindow, options) => {
-  const quitAndInstall = Boolean(options && options.quitAndInstall);
-
-  log.info(`Preparing to quit app (quitAndInstall=${quitAndInstall})...`);
+const prepareToQuitApp = (mainWindow, notificationsWindow) => {
+  log.info(`Preparing to quit app...`);
   allowQuit.current = true;
   app.removeAllListeners(`window-all-closed`);
   mainWindow.removeAllListeners(`close`);
@@ -35,6 +33,12 @@ const quitApp = (mainWindow, notificationsWindow, options) => {
   log.info(`Closing windows...`);
   mainWindow.destroy();
   notificationsWindow.destroy();
+};
+
+const quitApp = (mainWindow, notificationsWindow, options) => {
+  prepareToQuitApp(mainWindow, notificationsWindow);
+
+  const quitAndInstall = Boolean(options && options.quitAndInstall);
 
   if (quitAndInstall) {
     log.info(`Quitting app and installing updates`);
@@ -368,6 +372,12 @@ const handleSystemShutdown = (mainWindow, notificationsWindow) => {
   createTray(mainWindow, notificationsWindow);
   configureAutoUpdates(mainWindow, notificationsWindow);
   handleSystemShutdown(mainWindow, notificationsWindow);
+
+  // Make sure the app closes if someone clicks "Quit" from the OS top bar
+  // or from the app icon in the dock
+  app.on(`before-quit`, () => {
+    prepareToQuitApp(mainWindow, notificationsWindow);
+  });
 
   log.info(`App started`);
 })();
