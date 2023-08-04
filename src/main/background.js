@@ -256,14 +256,7 @@ const createNotificationsWindow = async () => {
   });
 
   // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
-  if (isLinux) {
-    pollForNotificationsMouseEvents(notificationsWindow);
-  }
-
-  ipcMain.handle(`set-ignore-mouse-events`, (e, ...args) => {
-    const win = BrowserWindow.fromWebContents(e.sender);
-    win.setIgnoreMouseEvents(...args);
-  });
+  pollForNotificationsMouseEvents(notificationsWindow);
 
   if (isProduction) {
     await notificationsWindow.loadURL(`https://app.swivvel.io/notifications`);

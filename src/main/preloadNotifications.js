@@ -1,56 +1,9 @@
 /* eslint-env browser */
 
-const { contextBridge, ipcRenderer } = require(`electron`);
+const { contextBridge } = require(`electron`);
 
 const isLinux = process.platform === `linux`;
 
 contextBridge.exposeInMainWorld(`electron`, {
   isLinux,
 });
-
-const makeElementClickable = (element) => {
-  if (element.dataset.hasMouseEvents) {
-    return;
-  }
-
-  element.addEventListener(`mouseenter`, () => {
-    ipcRenderer.invoke(`set-ignore-mouse-events`, false);
-  });
-
-  element.addEventListener(`mouseleave`, () => {
-    ipcRenderer.invoke(`set-ignore-mouse-events`, true);
-  });
-
-  element.dataset.hasMouseEvents = `true`;
-};
-
-const isBody = (element) => {
-  return Boolean(element && element === document.body);
-};
-
-if (!isLinux) {
-  window.addEventListener(`DOMNodeInserted`, (event) => {
-    if (!(event.target instanceof HTMLElement)) {
-      return;
-    }
-
-    if (
-      [`NEXT-ROUTE-ANNOUNCER`, `SCRIPT`, `STYLE`].includes(event.target.tagName)
-    ) {
-      return;
-    }
-
-    const parent = event.target.parentElement;
-    const grandparent = parent ? parent.parentElement : null;
-
-    if (isBody(parent) || isBody(grandparent)) {
-      makeElementClickable(event.target);
-    }
-  });
-
-  window.addEventListener(`DOMNodeRemoved`, (event) => {
-    if (event.target.dataset.hasMouseEvents) {
-      ipcRenderer.invoke(`set-ignore-mouse-events`, true);
-    }
-  });
-}
