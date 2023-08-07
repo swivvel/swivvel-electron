@@ -98,6 +98,7 @@ const createMainWindow = async () => {
     height: primaryDisplay.workAreaSize.height,
     hiddenInMissionControl: false,
     skipTaskbar: false,
+    webPreferences: { preload: path.join(__dirname, `preload.js`) },
     width: primaryDisplay.workAreaSize.width,
     x: primaryDisplay.workAreaSize.x,
     y: primaryDisplay.workAreaSize.y,
@@ -211,9 +212,7 @@ const createNotificationsWindow = async () => {
     roundedCorners: false,
     skipTaskbar: true,
     transparent: true,
-    webPreferences: {
-      preload: path.join(__dirname, `preloadNotifications.js`),
-    },
+    webPreferences: { preload: path.join(__dirname, `preload.js`) },
     width: primaryDisplay.workAreaSize.width,
     x: 0,
     y: 0,
