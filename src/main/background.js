@@ -6,6 +6,7 @@ const {
   Menu,
   powerMonitor,
   screen,
+  shell,
   Tray,
 } = require(`electron`);
 const log = require(`electron-log`);
@@ -102,6 +103,17 @@ const createMainWindow = async () => {
     width: primaryDisplay.workAreaSize.width,
     x: primaryDisplay.workAreaSize.x,
     y: primaryDisplay.workAreaSize.y,
+  });
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    // Google Meet is showing "No video camera found", so we're opening it in
+    // the user's default browser for now
+    if (url.includes(`meet.google.com`)) {
+      shell.openExternal(url);
+      return { action: `deny` };
+    }
+
+    return { action: `allow` };
   });
 
   mainWindow.on(`close`, (event) => {
