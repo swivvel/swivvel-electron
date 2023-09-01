@@ -25,7 +25,9 @@
     "mac": {
       "icon": "build/icon.icns",
       "category": "public.app-category.productivity",
-      "hardenedRuntime": true
+      "hardenedRuntime": true,
+      "NSMicrophoneUsageDescription": "Swivvel uses your microphone for your team's audio room",
+      "com.apple.security.device.audio-input": true
     },
     "win": {
       "icon": "build/icon.ico"

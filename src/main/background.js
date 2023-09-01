@@ -7,6 +7,7 @@ const {
   powerMonitor,
   screen,
   shell,
+  systemPreferences,
   Tray,
 } = require(`electron`);
 const log = require(`electron-log`);
@@ -379,6 +380,7 @@ const handleSystemShutdown = (mainWindow, notificationsWindow) => {
   configureApp();
   await app.whenReady();
   const mainWindow = await createMainWindow();
+  await systemPreferences.askForMediaAccess(`microphone`);
   const notificationsWindow = await createNotificationsWindow();
   createTray(mainWindow, notificationsWindow);
   configureAutoUpdates(mainWindow, notificationsWindow);
