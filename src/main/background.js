@@ -362,6 +362,27 @@ const configureAutoUpdates = (mainWindow, notificationsWindow) => {
 };
 
 /**
+ * Tell the web app when the user is idle.
+ */
+const pollForIdleTime = (notificationsWindow) => {
+  let isIdle = false;
+
+  const interval = setInterval(async () => {
+    if (notificationsWindow.isDestroyed()) {
+      clearInterval(interval);
+      return;
+    }
+
+    const newIsIdle = powerMonitor.getSystemIdleTime() > 30;
+
+    if (newIsIdle !== isIdle) {
+      isIdle = newIsIdle;
+      notificationsWindow.webContents.send(`isIdle`, isIdle);
+    }
+  }, 1000);
+};
+
+/**
  * Make sure the app quits when the OS shuts down.
  */
 const handleSystemShutdown = (mainWindow, notificationsWindow) => {
@@ -380,10 +401,15 @@ const handleSystemShutdown = (mainWindow, notificationsWindow) => {
   configureApp();
   await app.whenReady();
   const mainWindow = await createMainWindow();
-  await systemPreferences.askForMediaAccess(`microphone`);
+
+  if (systemPreferences.askForMediaAccess) {
+    await systemPreferences.askForMediaAccess(`microphone`);
+  }
+
   const notificationsWindow = await createNotificationsWindow();
   createTray(mainWindow, notificationsWindow);
   configureAutoUpdates(mainWindow, notificationsWindow);
+  pollForIdleTime(notificationsWindow);
   handleSystemShutdown(mainWindow, notificationsWindow);
 
   // Make sure the app closes if someone clicks "Quit" from the OS top bar
