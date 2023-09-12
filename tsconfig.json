@@ -16,7 +16,6 @@
   },
   "include": [
     ".eslintrc.js",
-    ".lintstagedrc.js",
     "src/**/*.d.ts",
     "src/**/*.js",
     "src/**/*.ts",

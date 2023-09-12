@@ -1,8 +1,7 @@
 module.exports = {
-  ignorePatterns: [`!.eslintrc.js`, `!.lintstagedrc.js`],
+  ignorePatterns: [`!.eslintrc.js`],
   overrides: [
     { files: `.eslintrc.js`, env: { node: true } },
-    { files: `.lintstagedrc.js`, env: { node: true } },
     {
       files: `*.{js,ts,tsx}`,
       extends: [
