@@ -5,6 +5,10 @@ import log from 'electron-log';
 
 import { ErrorCode, showGenericErrorMessage } from './utils';
 
+const removeQueryParams = (url: string): string => {
+  return url.split(`?`)[0];
+};
+
 /**
  * Configure URL protocol used for deep linking to the desktop app.
  *
@@ -34,7 +38,10 @@ export default (deepLinkHandler: (url: string) => void): void => {
     app.on(`second-instance`, (event, commandLine, workingDirectory) => {
       const url = commandLine?.pop()?.slice(0, -1);
 
-      log.info(`Deep link detected from second-instance: ${url}`);
+      // Query params can be sensitive (e.g. OAuth codes)
+      const urlForLog = url ? removeQueryParams(url) : null;
+
+      log.info(`Deep link detected from second-instance: ${urlForLog}`);
       log.info(`commandLine=${commandLine}`);
       log.info(`workingDirectory=${workingDirectory}`);
       log.info(`url=${url}`);
@@ -49,7 +56,11 @@ export default (deepLinkHandler: (url: string) => void): void => {
     });
 
     app.on(`open-url`, (event, url) => {
-      log.info(`Deep link detected from open-url: ${url}`);
+      // Query params can be sensitive (e.g. OAuth codes)
+      const urlForLog = url ? removeQueryParams(url) : null;
+
+      log.info(`Deep link detected from open-url: ${urlForLog}`);
+
       deepLinkHandler(url);
     });
   }

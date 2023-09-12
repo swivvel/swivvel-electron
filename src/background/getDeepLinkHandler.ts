@@ -4,14 +4,16 @@ import log from 'electron-log';
 import createLogInWindow from './createLogInWindow';
 import { State } from './types';
 
+const convertDeeplinkUrlToHttps = (url: string): string => {
+  return url.replace(/^swivvel:\/\//, `https://`);
+};
+
 export default (
   state: State,
   preloadPath: string,
   siteUrl: string
 ): ((url: string) => Promise<void>) => {
   return async (url) => {
-    log.info(`Handling deep link for URL: ${url}`);
-
     if (url.includes(`/api/auth/callback`)) {
       log.info(`Running log in callback handler...`);
 
@@ -22,10 +24,12 @@ export default (
       } else {
         log.info(`Log in window missing, recreating...`);
         logInWindow = await createLogInWindow(preloadPath, siteUrl);
+        log.info(`Recreated log in window`);
       }
 
       log.info(`Loading OAuth callback URL into log in window...`);
-      await logInWindow.loadURL(url);
+      await logInWindow.loadURL(convertDeeplinkUrlToHttps(url));
+      log.info(`Loaded OAuth callback URL into log in window`);
     }
   };
 };

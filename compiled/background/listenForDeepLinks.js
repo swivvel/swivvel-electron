@@ -7,6 +7,9 @@ const path_1 = __importDefault(require("path"));
 const electron_1 = require("electron");
 const electron_log_1 = __importDefault(require("electron-log"));
 const utils_1 = require("./utils");
+const removeQueryParams = (url) => {
+    return url.split(`?`)[0];
+};
 exports.default = (deepLinkHandler) => {
     electron_log_1.default.info(`Configuring deep linking...`);
     if (process.defaultApp) {
@@ -30,7 +33,8 @@ exports.default = (deepLinkHandler) => {
         electron_1.app.on(`second-instance`, (event, commandLine, workingDirectory) => {
             var _a;
             const url = (_a = commandLine === null || commandLine === void 0 ? void 0 : commandLine.pop()) === null || _a === void 0 ? void 0 : _a.slice(0, -1);
-            electron_log_1.default.info(`Deep link detected from second-instance: ${url}`);
+            const urlForLog = url ? removeQueryParams(url) : null;
+            electron_log_1.default.info(`Deep link detected from second-instance: ${urlForLog}`);
             electron_log_1.default.info(`commandLine=${commandLine}`);
             electron_log_1.default.info(`workingDirectory=${workingDirectory}`);
             electron_log_1.default.info(`url=${url}`);
@@ -44,7 +48,8 @@ exports.default = (deepLinkHandler) => {
             }
         });
         electron_1.app.on(`open-url`, (event, url) => {
-            electron_log_1.default.info(`Deep link detected from open-url: ${url}`);
+            const urlForLog = url ? removeQueryParams(url) : null;
+            electron_log_1.default.info(`Deep link detected from open-url: ${urlForLog}`);
             deepLinkHandler(url);
         });
     }
