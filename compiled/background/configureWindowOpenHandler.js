@@ -16,7 +16,7 @@ exports.default = (transparentWindow, siteUrl, callbacks) => {
                 electron_1.shell.openExternal(url);
                 return { action: `deny` };
             }
-            if (url.endsWith(`/?desktopLogin=true`)) {
+            if (url.endsWith(`/electron/login`)) {
                 callbacks.onLogInPageOpened();
                 return { action: `deny` };
             }

@@ -27,7 +27,10 @@ export default (
         return { action: `deny` };
       }
 
-      if (url.endsWith(`/?desktopLogin=true`)) {
+      // When the transparent window opens, it detects if the user is not logged
+      // in and opens this special URL. We catch the URL and open a new Electron
+      // window with the log in page.
+      if (url.endsWith(`/electron/login`)) {
         callbacks.onLogInPageOpened();
         return { action: `deny` };
       }
