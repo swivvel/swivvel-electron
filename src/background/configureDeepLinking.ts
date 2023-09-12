@@ -1,29 +1,15 @@
 import path from 'path';
 
 import { app, dialog } from 'electron';
-import electronAppUniversalProtocolClient from 'electron-app-universal-protocol-client';
 import log from 'electron-log';
-
-import { isProduction } from './utils';
 
 /**
  * Configure URL protocol used for deep linking to the desktop app.
+ *
+ * Note: registering the `swivvel://` protocol only works on production.
  */
 export default async (): Promise<void> => {
   log.info(`Configuring deep linking...`);
-
-  // electronAppUniversalProtocolClient.on(`request`, (url) => {
-  //   console.log(`electronAppUniversalProtocolClient`);
-  //   console.log(url);
-  //   log.info(`electronAppUniversalProtocolClient`);
-  //   log.info(url);
-  //   dialog.showErrorBox(`Welcome Back`, `You arrived from: ${url}`);
-  // });
-
-  // await electronAppUniversalProtocolClient.initialize({
-  //   protocol: `swivvel`,
-  //   mode: isProduction() ? `production` : `development`,
-  // });
 
   if (process.defaultApp) {
     log.info(`  process.defaultApp=true`);

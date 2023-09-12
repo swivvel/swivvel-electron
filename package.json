@@ -59,7 +59,6 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "electron-app-universal-protocol-client": "^1.1.2",
     "electron-log": "^4.4.8",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
