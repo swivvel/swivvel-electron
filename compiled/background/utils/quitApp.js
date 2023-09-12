@@ -17,4 +17,5 @@ exports.default = (state, options) => {
         electron_log_1.default.info(`Quitting app`);
         electron_1.app.quit();
     }
+    electron_log_1.default.info(`App closed`);
 };

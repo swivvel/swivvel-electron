@@ -1,4 +1,4 @@
-import { BrowserWindow, screen } from 'electron';
+import { BrowserWindow, screen, shell } from 'electron';
 import log from 'electron-log';
 
 import { State } from '../types';
@@ -33,30 +33,44 @@ export default async (
     // when using alt+tab to switch between windows.
     // focusable: !isLinux(),
     // frame: false,
-    hasShadow: false,
-    height: primaryDisplay.workAreaSize.height,
-    hiddenInMissionControl: true,
-    maximizable: false,
-    minimizable: false,
-    resizable: false,
-    roundedCorners: false,
+    // hasShadow: false,
+    // height: primaryDisplay.workAreaSize.height,
+    // hiddenInMissionControl: true,
+    // maximizable: false,
+    // minimizable: false,
+    // resizable: false,
+    // roundedCorners: false,
     // skipTaskbar: true,
     // transparent: true,
     webPreferences: { preload: preloadPath },
-    width: primaryDisplay.workAreaSize.width,
-    x: 0,
-    y: 0,
+    // width: primaryDisplay.workAreaSize.width,
+    // x: 0,
+    // y: 0,
+    width: 1000,
+    height: 1000,
+  });
+
+  transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
+    log.info(`!!!!`);
+    log.info(url);
+    log.info(`!!!!`);
+    if (url.includes(`/api/auth/login`)) {
+      shell.openExternal(url);
+      return { action: `deny` };
+    }
+
+    return { action: `allow` };
   });
 
   log.info(`  Setting up transparent window handlers...`);
 
-  transparentWindow.setIgnoreMouseEvents(true, { forward: true });
+  // transparentWindow.setIgnoreMouseEvents(true, { forward: true });
 
-  transparentWindow.setVisibleOnAllWorkspaces(true, {
-    visibleOnFullScreen: true,
-    // See: https://github.com/electron/electron/issues/25368
-    skipTransformProcessType: true,
-  });
+  // transparentWindow.setVisibleOnAllWorkspaces(true, {
+  //   visibleOnFullScreen: true,
+  //   // See: https://github.com/electron/electron/issues/25368
+  //   skipTransformProcessType: true,
+  // });
 
   transparentWindow.on(`close`, (event) => {
     if (!state.allowQuit) {
@@ -66,7 +80,7 @@ export default async (
   });
 
   // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
-  pollForMouseEvents(transparentWindow);
+  // pollForMouseEvents(transparentWindow);
 
   log.info(`  Loading Swivvel URL...`);
 
