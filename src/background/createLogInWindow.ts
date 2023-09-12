@@ -12,7 +12,8 @@ export default async (
   const logInWindow = new BrowserWindow({
     height: 700,
     webPreferences: { preload: preloadPath },
-    width: 720,
+    // width: 720,
+    width: 1400,
   });
 
   logInWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -31,6 +32,8 @@ export default async (
   });
 
   await loadInternalUrl(logInWindow, siteUrl, `/`);
+
+  logInWindow.webContents.openDevTools();
 
   log.info(`Created log in window`);
 

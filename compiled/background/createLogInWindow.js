@@ -11,7 +11,7 @@ exports.default = async (preloadPath, siteUrl) => {
     const logInWindow = new electron_1.BrowserWindow({
         height: 700,
         webPreferences: { preload: preloadPath },
-        width: 720,
+        width: 1400,
     });
     logInWindow.webContents.setWindowOpenHandler(({ url }) => {
         electron_log_1.default.info(`Caught URL opened by log in window: ${url}`);
@@ -23,6 +23,7 @@ exports.default = async (preloadPath, siteUrl) => {
         return (0, utils_1.getBaseWindowOpenHandler)(url, siteUrl);
     });
     await (0, utils_1.loadInternalUrl)(logInWindow, siteUrl, `/`);
+    logInWindow.webContents.openDevTools();
     electron_log_1.default.info(`Created log in window`);
     return logInWindow;
 };
