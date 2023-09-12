@@ -36,18 +36,21 @@
     },
     "linux": {
       "icon": "build/icon.icns",
-      "category": "Utility"
+      "category": "Utility",
+      "mimeTypes": [
+        "x-scheme-handler/swivvel"
+      ]
     }
   },
   "scripts": {
     "check": "npx npm-check --skip-unused",
     "compile": "rm -rf compiled && tsc && cp src/*.png compiled",
-    "dev": "npm run compile && electron .",
+    "dev": "npm run compile && electron compiled/background/background.js",
     "dist": "electron-builder",
     "lint": "eslint ."
   },
   "dependencies": {
-    "electron-deeplink": "^1.0.10",
+    "electron-app-universal-protocol-client": "^1.1.2",
     "electron-log": "^4.4.8",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",

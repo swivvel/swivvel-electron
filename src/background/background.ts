@@ -38,7 +38,7 @@ const run = async (): Promise<void> => {
 
   configureAppQuitHandling(state);
   createTray(state, LOGO_TEMPLATE_PATH);
-  configureDeepLinking(transparentWindow);
+  await configureDeepLinking();
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
 

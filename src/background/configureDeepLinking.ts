@@ -1,5 +1,4 @@
-import { app, BrowserWindow } from 'electron';
-import { Deeplink } from 'electron-deeplink';
+import electronAppUniversalProtocolClient from 'electron-app-universal-protocol-client';
 import log from 'electron-log';
 
 import { isProduction } from './utils';
@@ -7,20 +6,18 @@ import { isProduction } from './utils';
 /**
  * Configure URL protocol used for deep linking to the desktop app.
  */
-export default (transparentWindow: BrowserWindow): void => {
+export default async (): Promise<void> => {
   log.info(`Configuring deep linking...`);
+  Promise<void>;
 
-  const protocol = isProduction() ? `swivvel` : `swivvel-dev`;
-
-  const deeplink = new Deeplink({
-    app,
-    mainWindow: transparentWindow,
-    protocol,
-    isDev: !isProduction,
+  electronAppUniversalProtocolClient.on(`request`, (requestUrl) => {
+    console.log(`electronAppUniversalProtocolClient`);
+    console.log(requestUrl);
   });
 
-  deeplink.on(`received`, (link) => {
-    console.log(link);
+  await electronAppUniversalProtocolClient.initialize({
+    protocol: `swivvel`,
+    mode: isProduction() ? `production` : `development`,
   });
 
   log.info(`Configured deep linking`);

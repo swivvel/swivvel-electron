@@ -32,7 +32,7 @@ const run = async () => {
     state.transparentWindow = transparentWindow;
     (0, configureAppQuitHandling_1.default)(state);
     (0, createTray_1.default)(state, LOGO_TEMPLATE_PATH);
-    (0, configureDeepLinking_1.default)(transparentWindow);
+    await (0, configureDeepLinking_1.default)();
     (0, configureAutoUpdates_1.default)(state);
     (0, pollForIdleTime_1.default)(transparentWindow);
     electron_log_1.default.info(`App started`);
