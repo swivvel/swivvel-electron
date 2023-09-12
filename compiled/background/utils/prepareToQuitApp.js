@@ -11,13 +11,17 @@ exports.default = (state) => {
     electron_1.app.removeAllListeners(`window-all-closed`);
     Object.values(state).forEach((stateValue) => {
         if (stateValue && stateValue instanceof electron_1.BrowserWindow) {
-            stateValue.removeAllListeners(`close`);
+            if (!stateValue.isDestroyed()) {
+                stateValue.removeAllListeners(`close`);
+            }
         }
     });
     electron_log_1.default.info(`Closing windows...`);
     Object.values(state).forEach((stateValue) => {
         if (stateValue && stateValue instanceof electron_1.BrowserWindow) {
-            stateValue.destroy();
+            if (!stateValue.isDestroyed()) {
+                stateValue.destroy();
+            }
         }
     });
 };

@@ -15,7 +15,9 @@ export default (state: State): void => {
 
   Object.values(state).forEach((stateValue) => {
     if (stateValue && stateValue instanceof BrowserWindow) {
-      stateValue.removeAllListeners(`close`);
+      if (!stateValue.isDestroyed()) {
+        stateValue.removeAllListeners(`close`);
+      }
     }
   });
 
@@ -25,7 +27,9 @@ export default (state: State): void => {
 
   Object.values(state).forEach((stateValue) => {
     if (stateValue && stateValue instanceof BrowserWindow) {
-      stateValue.destroy();
+      if (!stateValue.isDestroyed()) {
+        stateValue.destroy();
+      }
     }
   });
 };

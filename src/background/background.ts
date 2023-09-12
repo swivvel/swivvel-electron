@@ -30,7 +30,9 @@ const run = async (): Promise<void> => {
   };
 
   configureApp();
-  await configureDeepLinking(state);
+  configureAppQuitHandling(state);
+  configureDeepLinking(state);
+
   await app.whenReady();
 
   if (systemPreferences.askForMediaAccess) {
@@ -50,7 +52,6 @@ const run = async (): Promise<void> => {
 
   state.transparentWindow = transparentWindow;
 
-  configureAppQuitHandling(state);
   createTray(state, LOGO_TEMPLATE_PATH);
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);

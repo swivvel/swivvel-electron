@@ -3,7 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sleep = exports.quitApp = exports.prepareToQuitApp = exports.loadInternalUrl = exports.isProduction = exports.isLinux = void 0;
+exports.sleep = exports.quitApp = exports.prepareToQuitApp = exports.loadInternalUrl = exports.isProduction = exports.isLinux = exports.getBaseWindowOpenHandler = void 0;
+const getBaseWindowOpenHandler_1 = __importDefault(require("./getBaseWindowOpenHandler"));
+exports.getBaseWindowOpenHandler = getBaseWindowOpenHandler_1.default;
 const isLinux_1 = __importDefault(require("./isLinux"));
 exports.isLinux = isLinux_1.default;
 const isProduction_1 = __importDefault(require("./isProduction"));

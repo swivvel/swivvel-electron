@@ -10,7 +10,7 @@ import { State } from './types';
  *
  * Note: registering the `swivvel://` protocol only works on production.
  */
-export default async (state: State): Promise<void> => {
+export default (state: State): void => {
   log.info(`Configuring deep linking...`);
 
   if (process.defaultApp) {

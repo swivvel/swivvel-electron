@@ -1,5 +1,7 @@
-import { BrowserWindow, shell } from 'electron';
+import { BrowserWindow } from 'electron';
 import log from 'electron-log';
+
+import { getBaseWindowOpenHandler } from '../utils';
 
 export default (
   transparentWindow: BrowserWindow,
@@ -11,41 +13,18 @@ export default (
   log.info(`  Configuring window open handler...`);
 
   transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
-    log.info(`!!!!`);
+    log.info(`!!!! configureWindowOpenHandler`);
     log.info(url);
     log.info(`!!!!`);
 
-    if (url.startsWith(siteUrl)) {
-      // We are temporarily serving some HTML static files for support pages.
-      // Eventually these will move to the public site but for now we want to
-      // make sure they open in the browser.
-      if (url.endsWith(`.html`)) {
-        shell.openExternal(url);
-        return { action: `deny` };
-      }
-
-      // When the transparent window opens, it detects if the user is not logged
-      // in and opens this special URL. We catch the URL and open a new Electron
-      // window with the log in page.
-      if (url.endsWith(`/electron/login`)) {
-        callbacks.onLogInPageOpened();
-        return { action: `deny` };
-      }
-
-      // We want to be able to reuse Google session cookies from the user's
-      // browser, so we send them to the browser to log in. Auth0 will redirect
-      // the user back to the desktop app using the `swivvel://` protocol.
-      if (url.includes(`/api/auth/login`)) {
-        shell.openExternal(url);
-        return { action: `deny` };
-      }
-
-      return { action: `allow` };
+    // When the transparent window opens, it detects if the user is not logged
+    // in and opens this special URL. We catch the URL and open a new Electron
+    // window with the log in page.
+    if (url === `${siteUrl}/electron/login`) {
+      callbacks.onLogInPageOpened();
+      return { action: `deny` };
     }
 
-    // Open all external URLs in the browser since we don't want users doing
-    // general web browsing in the desktop app.
-    shell.openExternal(url);
-    return { action: `deny` };
+    return getBaseWindowOpenHandler(url, siteUrl);
   });
 };

@@ -1,7 +1,7 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, shell } from 'electron';
 import log from 'electron-log';
 
-import { loadInternalUrl } from './utils';
+import { getBaseWindowOpenHandler, loadInternalUrl } from './utils';
 
 export default async (
   preloadPath: string,
@@ -13,6 +13,22 @@ export default async (
     height: 700,
     webPreferences: { preload: preloadPath },
     width: 720,
+  });
+
+  logInWindow.webContents.setWindowOpenHandler(({ url }) => {
+    log.info(`!!!! createLogInWindow`);
+    log.info(url);
+    log.info(`!!!!`);
+
+    // We want to be able to reuse Google session cookies from the user's
+    // browser, so we send them to the browser to log in. Auth0 will redirect
+    // the user back to the desktop app using the `swivvel://` protocol.
+    if (url === `${siteUrl}/api/auth/login`) {
+      shell.openExternal(url);
+      return { action: `deny` };
+    }
+
+    return getBaseWindowOpenHandler(url, siteUrl);
   });
 
   await loadInternalUrl(logInWindow, siteUrl, `/`);

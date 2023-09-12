@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const electron_1 = require("electron");
 const electron_log_1 = __importDefault(require("electron-log"));
-exports.default = async (state) => {
+exports.default = (state) => {
     electron_log_1.default.info(`Configuring deep linking...`);
     if (process.defaultApp) {
         electron_log_1.default.info(`  process.defaultApp=true`);

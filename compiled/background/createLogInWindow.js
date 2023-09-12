@@ -13,6 +13,16 @@ exports.default = async (preloadPath, siteUrl) => {
         webPreferences: { preload: preloadPath },
         width: 720,
     });
+    logInWindow.webContents.setWindowOpenHandler(({ url }) => {
+        electron_log_1.default.info(`!!!! createLogInWindow`);
+        electron_log_1.default.info(url);
+        electron_log_1.default.info(`!!!!`);
+        if (url === `${siteUrl}/api/auth/login`) {
+            electron_1.shell.openExternal(url);
+            return { action: `deny` };
+        }
+        return (0, utils_1.getBaseWindowOpenHandler)(url, siteUrl);
+    });
     await (0, utils_1.loadInternalUrl)(logInWindow, siteUrl, `/`);
     electron_log_1.default.info(`Created log in window`);
     return logInWindow;

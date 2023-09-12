@@ -3,30 +3,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const electron_1 = require("electron");
 const electron_log_1 = __importDefault(require("electron-log"));
+const utils_1 = require("../utils");
 exports.default = (transparentWindow, siteUrl, callbacks) => {
     electron_log_1.default.info(`  Configuring window open handler...`);
     transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
-        electron_log_1.default.info(`!!!!`);
+        electron_log_1.default.info(`!!!! configureWindowOpenHandler`);
         electron_log_1.default.info(url);
         electron_log_1.default.info(`!!!!`);
-        if (url.startsWith(siteUrl)) {
-            if (url.endsWith(`.html`)) {
-                electron_1.shell.openExternal(url);
-                return { action: `deny` };
-            }
-            if (url.endsWith(`/electron/login`)) {
-                callbacks.onLogInPageOpened();
-                return { action: `deny` };
-            }
-            if (url.includes(`/api/auth/login`)) {
-                electron_1.shell.openExternal(url);
-                return { action: `deny` };
-            }
-            return { action: `allow` };
+        if (url === `${siteUrl}/electron/login`) {
+            callbacks.onLogInPageOpened();
+            return { action: `deny` };
         }
-        electron_1.shell.openExternal(url);
-        return { action: `deny` };
+        return (0, utils_1.getBaseWindowOpenHandler)(url, siteUrl);
     });
 };
