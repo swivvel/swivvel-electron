@@ -1,5 +1,5 @@
 module.exports = {
-  ignorePatterns: [`!.eslintrc.js`],
+  ignorePatterns: [`!.eslintrc.js`, `compiled/`],
   overrides: [
     { files: `.eslintrc.js`, env: { node: true } },
     {

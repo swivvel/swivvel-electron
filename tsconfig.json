@@ -14,7 +14,7 @@
     "strict": true,
     "target": "ES2016"
   },
-  "include": ["*.d.ts", "*.js", "*.ts", "*.tsx"],
+  "include": [".eslintrc.js", "**/*.d.ts", "**/*.js", "**/*.ts", "**/*.tsx"],
   "paths": {
     "*": ["node_modules/*"]
   }
