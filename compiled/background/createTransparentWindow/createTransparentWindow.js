@@ -17,6 +17,12 @@ exports.default = async (state, preloadPath, siteUrl) => {
         webPreferences: { preload: preloadPath },
     });
     electron_log_1.default.info(`  Setting up transparent window handlers...`);
+    transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
+        electron_log_1.default.info(`XXXXX`);
+        electron_log_1.default.info(url);
+        electron_log_1.default.info(`XXXXX`);
+        return { action: `allow` };
+    });
     transparentWindow.on(`close`, (event) => {
         if (!state.allowQuit) {
             event.preventDefault();

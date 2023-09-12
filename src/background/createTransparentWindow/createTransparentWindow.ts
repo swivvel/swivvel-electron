@@ -59,6 +59,13 @@ export default async (
   //   skipTransformProcessType: true,
   // });
 
+  transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
+    log.info(`XXXXX`);
+    log.info(url);
+    log.info(`XXXXX`);
+    return { action: `allow` };
+  });
+
   transparentWindow.on(`close`, (event) => {
     if (!state.allowQuit) {
       event.preventDefault();
