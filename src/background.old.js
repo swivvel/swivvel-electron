@@ -3,6 +3,7 @@ const path = require(`path`);
 const {
   app,
   BrowserWindow,
+  ipcMain,
   Menu,
   powerMonitor,
   screen,
@@ -10,35 +11,33 @@ const {
   systemPreferences,
   Tray,
 } = require(`electron`);
+const { Deeplink } = require(`electron-deeplink`);
 const log = require(`electron-log`);
 const { autoUpdater } = require(`electron-updater`);
 
 const isProduction = app.isPackaged;
 const isLinux = process.platform === `linux`;
-
-// Since Swivvel has a tray icon, we don't want the app to quit unless the user
-// explicitly quits the app from the tray menu
-const allowQuit = { current: false };
+const protocol = isProduction ? `swivvel` : `swivvel-dev`;
 
 /**
  * Perform the necessary steps to quit the app.
  */
-const prepareToQuitApp = (mainWindow, notificationsWindow) => {
+const prepareToQuitApp = (hqWindow, notificationsWindow) => {
   log.info(`Preparing to quit app...`);
-  allowQuit.current = true;
+  state.allowQuit = true;
   app.removeAllListeners(`window-all-closed`);
-  mainWindow.removeAllListeners(`close`);
+  hqWindow.removeAllListeners(`close`);
   notificationsWindow.removeAllListeners(`close`);
 
   // `close()` wasn't successfully closing the app on Mac so we're
   // using `destroy()` instead
   log.info(`Closing windows...`);
-  mainWindow.destroy();
+  hqWindow.destroy();
   notificationsWindow.destroy();
 };
 
-const quitApp = (mainWindow, notificationsWindow, options) => {
-  prepareToQuitApp(mainWindow, notificationsWindow);
+const quitApp = (hqWindow, notificationsWindow, options) => {
+  prepareToQuitApp(hqWindow, notificationsWindow);
 
   const quitAndInstall = Boolean(options && options.quitAndInstall);
 
@@ -54,7 +53,7 @@ const quitApp = (mainWindow, notificationsWindow, options) => {
 /**
  * Configure the global app settings.
  */
-const configureApp = () => {
+const configureApp = (state) => {
   log.info(`Configuring app...`);
 
   // Electron stores everything related to the app (cache, local storage,
@@ -76,7 +75,7 @@ const configureApp = () => {
   app.setLoginItemSettings({ openAtLogin: true });
 
   app.on(`window-all-closed`, () => {
-    if (allowQuit.current) {
+    if (state.allowQuit) {
       app.quit();
     }
   });
@@ -85,14 +84,14 @@ const configureApp = () => {
 };
 
 /**
- * Create the main window that contains the web app.
+ * Create the HQ window that contains the HQ page of the web app.
  */
-const createMainWindow = async () => {
-  log.info(`Creating main window...`);
+const createHqWindow = async () => {
+  log.info(`Creating HQ window...`);
 
   const primaryDisplay = screen.getPrimaryDisplay();
 
-  const mainWindow = new BrowserWindow({
+  const hqWindow = new BrowserWindow({
     autoHideMenuBar: isLinux,
     backgroundColor: `#ffffff`,
     focusable: true,
@@ -106,7 +105,7 @@ const createMainWindow = async () => {
     y: primaryDisplay.workAreaSize.y,
   });
 
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+  hqWindow.webContents.setWindowOpenHandler(({ url }) => {
     // Google Meet is showing "No video camera found", so we're opening it in
     // the user's default browser for now
     if (url.includes(`meet.google.com`)) {
@@ -117,28 +116,28 @@ const createMainWindow = async () => {
     return { action: `allow` };
   });
 
-  mainWindow.on(`close`, (event) => {
-    if (!allowQuit.current) {
+  hqWindow.on(`close`, (event) => {
+    if (!state.allowQuit) {
       event.preventDefault();
-      mainWindow.hide();
+      hqWindow.hide();
     }
   });
 
-  // Show the main window when user clicks on dock on Mac
+  // Show the HQ window when user clicks on dock on Mac
   app.on(`activate`, () => {
-    mainWindow.show();
+    hqWindow.show();
   });
 
   if (isProduction) {
-    await mainWindow.loadURL(`https://app.swivvel.io/`);
+    await hqWindow.loadURL(`https://app.swivvel.io/`);
   } else {
-    await mainWindow.loadURL(`${process.env.ELECTRON_APP_DEV_URL}/`);
-    mainWindow.webContents.openDevTools();
+    await hqWindow.loadURL(`${process.env.ELECTRON_APP_DEV_URL}/`);
+    hqWindow.webContents.openDevTools();
   }
 
-  log.info(`Created main window`);
+  log.info(`Created HQ window`);
 
-  return mainWindow;
+  return hqWindow;
 };
 
 /**
@@ -194,7 +193,7 @@ const pollForNotificationsMouseEvents = (notificationsWindow) => {
 /**
  * Create the transparent window for displaying notifications.
  */
-const createNotificationsWindow = async () => {
+const createNotificationsWindow = async (state) => {
   log.info(`Creating notifications window...`);
 
   // Transparent windows don't work on Linux without some hacks
@@ -239,7 +238,7 @@ const createNotificationsWindow = async () => {
   });
 
   notificationsWindow.on(`close`, (event) => {
-    if (!allowQuit.current) {
+    if (!state.allowQuit) {
       event.preventDefault();
       notificationsWindow.hide();
     }
@@ -264,7 +263,7 @@ const createNotificationsWindow = async () => {
 /**
  * Add the Swivvel icon to the OS system tray.
  */
-const createTray = (mainWindow, notificationsWindow) => {
+const createTray = (hqWindow, notificationsWindow) => {
   log.info(`Creating tray...`);
 
   const tray = new Tray(path.join(__dirname, `logoTemplate.png`));
@@ -274,14 +273,14 @@ const createTray = (mainWindow, notificationsWindow) => {
       label: `Open Swivvel`,
       type: `normal`,
       click: () => {
-        mainWindow.show();
+        hqWindow.show();
       },
     },
     {
       label: `Quit`,
       type: `normal`,
       click: () => {
-        quitApp(mainWindow, notificationsWindow);
+        quitApp(hqWindow, notificationsWindow);
       },
     },
   ]);
@@ -307,7 +306,7 @@ const pollForUpdates = () => {
 /**
  * Configure automatic updates of the app.
  */
-const configureAutoUpdates = (mainWindow, notificationsWindow) => {
+const configureAutoUpdates = (hqWindow, notificationsWindow) => {
   let checkForUpdatesInterval;
 
   autoUpdater.logger = log;
@@ -353,7 +352,7 @@ const configureAutoUpdates = (mainWindow, notificationsWindow) => {
       log.info(`Installing new version and relaunching app...`);
       // See: https://github.com/electron-userland/electron-builder/issues/1604
       setImmediate(() => {
-        quitApp(mainWindow, notificationsWindow, { quitAndInstall: true });
+        quitApp(hqWindow, notificationsWindow, { quitAndInstall: true });
       });
     }, msUntilMidnight);
   });
@@ -385,10 +384,10 @@ const pollForIdleTime = (notificationsWindow) => {
 /**
  * Make sure the app quits when the OS shuts down.
  */
-const handleSystemShutdown = (mainWindow, notificationsWindow) => {
+const handleSystemShutdown = (hqWindow, notificationsWindow) => {
   powerMonitor.on(`shutdown`, () => {
     log.info(`System shutdown detected`);
-    quitApp(mainWindow, notificationsWindow);
+    quitApp(hqWindow, notificationsWindow);
   });
 };
 
@@ -398,24 +397,48 @@ const handleSystemShutdown = (mainWindow, notificationsWindow) => {
 (async () => {
   log.info(`App starting...`);
 
-  configureApp();
+  const state = {
+    // Since Swivvel has a tray icon, we don't want the app to quit unless the
+    // user explicitly quits the app from the tray menu
+    allowQuit: false,
+
+    // The transparent, always-on-top window
+    transparentWindow: null,
+
+    // The window that displays the HQ page of the web app
+    hqWindow: null,
+
+    // The window that displays the desktop app setup page
+    setupWindow: null,
+  };
+
+  configureApp(state);
   await app.whenReady();
-  const mainWindow = await createMainWindow();
 
   if (systemPreferences.askForMediaAccess) {
     await systemPreferences.askForMediaAccess(`microphone`);
   }
 
-  const notificationsWindow = await createNotificationsWindow();
-  createTray(mainWindow, notificationsWindow);
-  configureAutoUpdates(mainWindow, notificationsWindow);
+  const notificationsWindow = await createNotificationsWindow(state);
+
+  const deeplink = new Deeplink({
+    app,
+    mainWindow: notificationsWindow,
+    protocol,
+    isDev: !isProduction,
+  });
+
+  createTray(notificationsWindow, hqWindow);
+  configureAutoUpdates(notificationsWindow, hqWindow);
   pollForIdleTime(notificationsWindow);
-  handleSystemShutdown(mainWindow, notificationsWindow);
+  handleSystemShutdown(notificationsWindow, hqWindow);
+
+  ipcMain.on(`createHqWindow`, createHqWindow);
 
   // Make sure the app closes if someone clicks "Quit" from the OS top bar
   // or from the app icon in the dock
   app.on(`before-quit`, () => {
-    prepareToQuitApp(mainWindow, notificationsWindow);
+    prepareToQuitApp(notificationsWindow, hqWindow);
   });
 
   log.info(`App started`);

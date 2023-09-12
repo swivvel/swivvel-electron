@@ -29,11 +29,12 @@ Uses [electron-log](https://github.com/megahertz/electron-log) for logging. Logs
 ## Releasing
 
 1. Make sure all changes are committed or stashed and `git status` shows no changes and no untracked files
-2. Update the version in package.json file (e.g. 1.2.3)
-3. Commit that change (`git commit -am v1.2.3`)
-4. Tag the commit (`git tag v1.2.3`)
-5. Push the changes to GitHub (`git push && git push --tags`)
-6. Monitor the `Build/release` GitHub Action. This uses [action-electron-builder](https://github.com/samuelmeuli/action-electron-builder) to build, sign, notarize and publish the app.
-7. When the action is finished, a new draft release will appear on the [Releases](https://github.com/swivvel/swivvel-electron/releases) page
-8. Edit the release and click "Publish" to make the release live
-9. Clients will download the new version and notify users to restart the app (or automatically restart the app at midnight)
+2. Make sure the TypeScript has been compiled (run `npm run compile` and there should be no local changes)
+3. Update the version in package.json file (e.g. 1.2.3)
+4. Commit that change (`git commit -am v1.2.3`)
+5. Tag the commit (`git tag v1.2.3`)
+6. Push the changes to GitHub (`git push && git push --tags`)
+7. Monitor the `Build/release` GitHub Action. This uses [action-electron-builder](https://github.com/samuelmeuli/action-electron-builder) to build, sign, notarize and publish the app.
+8. When the action is finished, a new draft release will appear on the [Releases](https://github.com/swivvel/swivvel-electron/releases) page
+9. Edit the release and click "Publish" to make the release live
+10. Clients will download the new version and notify users to restart the app (or automatically restart the app at midnight)

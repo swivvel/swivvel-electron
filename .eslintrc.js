@@ -1,20 +1,97 @@
 module.exports = {
-  ignorePatterns: [
-    // Files starting with '.' are ignored by default and must be explicitly
-    // included
-    `!.eslintrc.js`,
-    `!.lintstagedrc.js`,
-  ],
+  ignorePatterns: [`!.eslintrc.js`, `!.lintstagedrc.js`],
   overrides: [
+    { files: `.eslintrc.js`, env: { node: true } },
+    { files: `.lintstagedrc.js`, env: { node: true } },
     {
       files: `*.{js,ts,tsx}`,
-      // Tell ESLint that our files are running in a Node environment so
-      // it doesn't complain about Node features like `module.exports`
-      env: { node: true, es6: true },
-      parserOptions: { ecmaVersion: 2018 },
-      extends: [`eslint:recommended`, `prettier`],
-      plugins: [`filenames`],
+      extends: [
+        `eslint:recommended`,
+        `plugin:@typescript-eslint/recommended`,
+        `prettier`,
+        `plugin:import/recommended`,
+        `plugin:import/typescript`,
+      ],
+      parser: `@typescript-eslint/parser`,
+      parserOptions: {
+        project: [`./tsconfig.json`],
+      },
+      plugins: [`filenames`, `import`],
+      settings: {
+        'import/external-module-folders': [`node_modules`, `@types`],
+        'import/parsers': {
+          '@typescript-eslint/parser': [`.ts`, `.tsx`],
+        },
+        'import/resolver': {
+          typescript: {
+            alwaysTryTypes: true,
+            project: `./tsconfig.json`,
+          },
+        },
+      },
       rules: {
+        '@typescript-eslint/array-type': [`error`, { default: `generic` }],
+        '@typescript-eslint/consistent-indexed-object-style': [
+          `error`,
+          `record`,
+        ],
+        '@typescript-eslint/explicit-function-return-type': `error`,
+        '@typescript-eslint/explicit-module-boundary-types': `error`,
+        '@typescript-eslint/naming-convention': [
+          `error`,
+          {
+            selector: `default`,
+            format: [`camelCase`],
+          },
+          {
+            selector: `objectLiteralProperty`,
+            format: null,
+          },
+          {
+            selector: `objectLiteralMethod`,
+            format: null,
+          },
+          {
+            selector: `variable`,
+            modifiers: [`destructured`],
+            format: null,
+          },
+          {
+            selector: `variable`,
+            modifiers: [`const`, `global`],
+            format: [`camelCase`, `PascalCase`, `UPPER_CASE`],
+          },
+          {
+            selector: `parameter`,
+            format: [`camelCase`, `PascalCase`],
+          },
+          {
+            selector: `typeLike`,
+            format: [`PascalCase`],
+          },
+          {
+            selector: `enumMember`,
+            format: [`PascalCase`],
+          },
+          {
+            selector: `typeProperty`,
+            format: [`camelCase`, `PascalCase`],
+          },
+          {
+            selector: `variable`,
+            format: [`PascalCase`],
+            filter: {
+              regex: `^(EnhanceApp|WithApollo)$`,
+              match: true,
+            },
+          },
+        ],
+        '@typescript-eslint/no-explicit-any': `error`,
+        '@typescript-eslint/no-shadow': `error`,
+        '@typescript-eslint/no-unused-vars': `error`,
+        '@typescript-eslint/no-use-before-define': `error`,
+        '@typescript-eslint/no-useless-constructor': `error`,
+        '@typescript-eslint/quotes': [`error`, `backtick`],
         'arrow-body-style': [`error`, `always`],
         'arrow-parens': [`error`, `always`],
         curly: [`error`, `all`],
@@ -23,6 +100,37 @@ module.exports = {
         'filenames/match-regex': [`error`, `^[A-Za-z0-9.]+$`],
         'filenames/match-exported': `error`,
         'func-style': [`error`, `expression`, { allowArrowFunctions: true }],
+        'import/extensions': [`error`, `never`],
+        'import/first': `error`,
+        'import/no-anonymous-default-export': `off`,
+        'import/no-cycle': [
+          `error`,
+          {
+            maxDepth: undefined,
+          },
+        ],
+        'import/no-extraneous-dependencies': `error`,
+        'import/no-mutable-exports': `error`,
+        'import/order': [
+          `error`,
+          {
+            groups: [
+              `builtin`,
+              `external`,
+              `internal`,
+              `parent`,
+              `sibling`,
+              `index`,
+              `unknown`,
+            ],
+            'newlines-between': `always`,
+            alphabetize: {
+              order: `asc`,
+              caseInsensitive: true,
+            },
+          },
+        ],
+        'import/prefer-default-export': `off`,
         'max-len': [
           `error`,
           {
@@ -84,7 +192,6 @@ module.exports = {
         'prefer-object-spread': `error`,
         'prefer-rest-params': `error`,
         'prefer-template': `error`,
-        quotes: [`error`, `backtick`],
         'spaced-comment': [`error`, `always`],
       },
     },
