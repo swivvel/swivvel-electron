@@ -1,22 +1,25 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const electron_1 = require("electron");
-const utils_1 = require("./utils");
-exports.default = (state) => {
-    return (url) => {
-        electron_1.dialog.showErrorBox(`Welcome Back`, `You arrived from: ${url}`);
+const electron_log_1 = __importDefault(require("electron-log"));
+const createLogInWindow_1 = __importDefault(require("./createLogInWindow"));
+exports.default = (state, preloadPath, siteUrl) => {
+    return async (url) => {
+        electron_log_1.default.info(`Handling deep link for URL: ${url}`);
         if (url.includes(`/api/auth/callback`)) {
-            if (state.logInWindow) {
-                state.logInWindow.close();
-            }
-            if (state.transparentWindow) {
-                state.transparentWindow.reload();
+            electron_log_1.default.info(`Running log in callback handler...`);
+            let logInWindow;
+            if (state.logInWindow && !state.logInWindow.isDestroyed()) {
+                logInWindow = state.logInWindow;
             }
             else {
-                (0, utils_1.showGenericErrorMessage)({
-                    errorCode: utils_1.ErrorCode.TransparentWindowMissingOnDeepLink,
-                });
+                electron_log_1.default.info(`Log in window missing, recreating...`);
+                logInWindow = await (0, createLogInWindow_1.default)(preloadPath, siteUrl);
             }
+            electron_log_1.default.info(`Loading OAuth callback URL into log in window...`);
+            await logInWindow.loadURL(url);
         }
     };
 };

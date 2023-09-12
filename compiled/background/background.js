@@ -30,7 +30,7 @@ const run = async () => {
     };
     (0, configureApp_1.default)();
     (0, configureAppQuitHandling_1.default)(state);
-    (0, listenForDeepLinks_1.default)((0, getDeepLinkHandler_1.default)(state));
+    (0, listenForDeepLinks_1.default)((0, getDeepLinkHandler_1.default)(state, PRELOAD_PATH, SITE_URL));
     await electron_1.app.whenReady();
     if (electron_1.systemPreferences.askForMediaAccess) {
         await electron_1.systemPreferences.askForMediaAccess(`microphone`);
