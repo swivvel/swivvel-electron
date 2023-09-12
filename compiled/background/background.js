@@ -38,7 +38,7 @@ const run = async () => {
     state.transparentWindow = transparentWindow;
     (0, configureWindowOpenHandler_1.default)(transparentWindow, SITE_URL, {
         onLogInPageOpened: async () => {
-            state.logInWindow = await (0, createLogInWindow_1.default)(PRELOAD_PATH);
+            state.logInWindow = await (0, createLogInWindow_1.default)(PRELOAD_PATH, SITE_URL);
         },
     });
     (0, configureAppQuitHandling_1.default)(state);

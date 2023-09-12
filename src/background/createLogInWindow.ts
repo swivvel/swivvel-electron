@@ -1,7 +1,10 @@
 import { BrowserWindow } from 'electron';
 import log from 'electron-log';
 
-export default async (preloadPath: string): Promise<BrowserWindow> => {
+export default async (
+  preloadPath: string,
+  siteUrl: string
+): Promise<BrowserWindow> => {
   log.info(`Creating log in window...`);
   log.info(preloadPath);
 
@@ -11,9 +14,9 @@ export default async (preloadPath: string): Promise<BrowserWindow> => {
     width: 720,
   });
 
-  log.info(`  Loading Swivvel URL...`);
-
-  await logInWindow.loadURL(`/`);
+  const url = `${siteUrl}/`;
+  log.info(`  Loading Swivvel URL: ${url}`);
+  await logInWindow.loadURL(url);
 
   logInWindow.webContents.openDevTools();
 

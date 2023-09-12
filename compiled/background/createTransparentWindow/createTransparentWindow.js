@@ -23,8 +23,9 @@ exports.default = async (state, preloadPath, siteUrl) => {
             transparentWindow.hide();
         }
     });
-    electron_log_1.default.info(`  Loading Swivvel URL...`);
-    await transparentWindow.loadURL(`${siteUrl}/notifications`);
+    const url = `${siteUrl}/notifications`;
+    electron_log_1.default.info(`  Loading Swivvel URL: ${url}`);
+    await transparentWindow.loadURL(url);
     transparentWindow.webContents.openDevTools();
     electron_log_1.default.info(`Created transparent window`);
     return transparentWindow;

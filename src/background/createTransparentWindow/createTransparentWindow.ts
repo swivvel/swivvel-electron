@@ -69,9 +69,9 @@ export default async (
   // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
   // pollForMouseEvents(transparentWindow);
 
-  log.info(`  Loading Swivvel URL...`);
-
-  await transparentWindow.loadURL(`${siteUrl}/notifications`);
+  const url = `${siteUrl}/notifications`;
+  log.info(`  Loading Swivvel URL: ${url}`);
+  await transparentWindow.loadURL(url);
 
   // todo
   transparentWindow.webContents.openDevTools();

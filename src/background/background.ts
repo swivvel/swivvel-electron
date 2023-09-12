@@ -48,7 +48,7 @@ const run = async (): Promise<void> => {
 
   configureWindowOpenHandler(transparentWindow, SITE_URL, {
     onLogInPageOpened: async () => {
-      state.logInWindow = await createLogInWindow(PRELOAD_PATH);
+      state.logInWindow = await createLogInWindow(PRELOAD_PATH, SITE_URL);
     },
   });
 
