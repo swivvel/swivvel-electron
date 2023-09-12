@@ -4,9 +4,12 @@ import { app, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import configureApp from './configureApp';
+import configureAutoUpdates from './configureAutoUpdates';
 import configureDeepLinking from './configureDeepLinking';
 import createTransparentWindow from './createTransparentWindow';
 import createTray from './createTray';
+import handleSystemShutdown from './handleSystemShutdown';
+import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
 
 const PRELOAD_PATH = path.join(__dirname, `..`, `preload.js`);
@@ -32,8 +35,13 @@ const run = async (): Promise<void> => {
   const transparentWindow = await createTransparentWindow(state, PRELOAD_PATH);
   state.transparentWindow = transparentWindow;
 
+  createTray(state, LOGO_TEMPLATE_PATH);
   configureDeepLinking(transparentWindow);
-  createTray(LOGO_TEMPLATE_PATH);
+  configureAutoUpdates(state);
+  pollForIdleTime(transparentWindow);
+  handleSystemShutdown(state);
+
+  log.info(`App started`);
 };
 
 run();

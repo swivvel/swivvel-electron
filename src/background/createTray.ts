@@ -1,10 +1,13 @@
 import { Menu, Tray } from 'electron';
 import log from 'electron-log';
 
+import { State } from './types';
+import { quitApp } from './utils';
+
 /**
  * Add the Swivvel icon to the OS system tray.
  */
-export default (logoTemplatePath: string): void => {
+export default (state: State, logoTemplatePath: string): void => {
   log.info(`Creating tray...`);
 
   const tray = new Tray(logoTemplatePath);
@@ -13,8 +16,8 @@ export default (logoTemplatePath: string): void => {
     {
       label: `Quit`,
       type: `normal`,
-      click: () => {
-        quitApp(hqWindow, notificationsWindow);
+      click: (): void => {
+        quitApp(state);
       },
     },
   ]);

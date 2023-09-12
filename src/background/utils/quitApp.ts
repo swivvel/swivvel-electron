@@ -1,6 +1,9 @@
-import { State } from '../types';
-import prepareToQuitApp from './prepareToQuitApp';
+import { app, autoUpdater } from 'electron';
 import log from 'electron-log';
+
+import { State } from '../types';
+
+import prepareToQuitApp from './prepareToQuitApp';
 
 export default (state: State, options?: { quitAndInstall: boolean }): void => {
   prepareToQuitApp(state);

@@ -1,7 +1,7 @@
+import { app } from 'electron';
 import log from 'electron-log';
 
 import { State } from '../types';
-import { app } from 'electron';
 
 /**
  * Perform the necessary steps to quit the app.

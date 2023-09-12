@@ -1,6 +1,7 @@
-import isProduction from './isProduction';
 import isLinux from './isLinux';
-import sleep from './sleep';
+import isProduction from './isProduction';
 import prepareToQuitApp from './prepareToQuitApp';
+import quitApp from './quitApp';
+import sleep from './sleep';
 
-export { isLinux, isProduction, prepareToQuitApp, sleep };
+export { isLinux, isProduction, prepareToQuitApp, quitApp, sleep };
