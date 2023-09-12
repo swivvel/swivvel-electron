@@ -62,7 +62,6 @@ exports.default = (state, preloadPath) => __awaiter(void 0, void 0, void 0, func
     }
     else {
         yield transparentWindow.loadURL(`${process.env.ELECTRON_APP_DEV_URL}/notifications`);
-        transparentWindow.webContents.openDevTools();
     }
     electron_log_1.default.info(`Created transparent window`);
     return transparentWindow;
