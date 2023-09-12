@@ -85,7 +85,10 @@ export default async (
   log.info(`  Loading Swivvel URL...`);
 
   if (isProduction()) {
-    await transparentWindow.loadURL(`https://app.swivvel.io/notifications`);
+    // await transparentWindow.loadURL(`https://app.swivvel.io/notifications`);
+    await transparentWindow.loadURL(
+      `${process.env.ELECTRON_APP_DEV_URL}/notifications`
+    );
     transparentWindow.webContents.openDevTools();
   } else {
     await transparentWindow.loadURL(

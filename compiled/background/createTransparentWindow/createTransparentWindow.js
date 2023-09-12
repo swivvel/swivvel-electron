@@ -37,7 +37,7 @@ exports.default = async (state, preloadPath) => {
     });
     electron_log_1.default.info(`  Loading Swivvel URL...`);
     if ((0, utils_1.isProduction)()) {
-        await transparentWindow.loadURL(`https://app.swivvel.io/notifications`);
+        await transparentWindow.loadURL(`${process.env.ELECTRON_APP_DEV_URL}/notifications`);
         transparentWindow.webContents.openDevTools();
     }
     else {

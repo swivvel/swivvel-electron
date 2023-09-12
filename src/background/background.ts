@@ -16,7 +16,7 @@ const PRELOAD_PATH = path.join(__dirname, `..`, `preload.js`);
 const LOGO_TEMPLATE_PATH = path.join(__dirname, `..`, `logoTemplate.png`);
 
 const run = async (): Promise<void> => {
-  log.info(`App starting 2...`);
+  log.info(`App starting 3...`);
 
   const state: State = {
     allowQuit: false,
