@@ -19,6 +19,8 @@ export default async (
     await sleep(1000);
   }
 
+  log.info(`  Creating transparent window BrowserWindow...`);
+
   const primaryDisplay = screen.getPrimaryDisplay();
 
   const transparentWindow = new BrowserWindow({
@@ -46,6 +48,8 @@ export default async (
     y: 0,
   });
 
+  log.info(`  Setting up transparent window handlers...`);
+
   transparentWindow.setIgnoreMouseEvents(true, { forward: true });
 
   transparentWindow.setVisibleOnAllWorkspaces(true, {
@@ -64,12 +68,15 @@ export default async (
   // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
   pollForMouseEvents(transparentWindow);
 
+  log.info(`  Loading Swivvel URL...`);
+
   if (isProduction()) {
     await transparentWindow.loadURL(`https://app.swivvel.io/notifications`);
   } else {
     await transparentWindow.loadURL(
       `${process.env.ELECTRON_APP_DEV_URL}/notifications`
     );
+    transparentWindow.webContents.openDevTools();
   }
 
   log.info(`Created transparent window`);

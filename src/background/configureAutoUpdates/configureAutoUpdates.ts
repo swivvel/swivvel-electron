@@ -10,6 +10,8 @@ import pollForUpdates from './pollForUpdates';
  * Configure automatic updates of the app.
  */
 export default (state: State): void => {
+  log.info(`Configuring automatic updates...`);
+
   let checkForUpdatesInterval: NodeJS.Timeout | null = null;
 
   autoUpdater.logger = log;
@@ -62,4 +64,6 @@ export default (state: State): void => {
   });
 
   checkForUpdatesInterval = pollForUpdates();
+
+  log.info(`Configured automatic updates`);
 };

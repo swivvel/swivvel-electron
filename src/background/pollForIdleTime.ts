@@ -1,9 +1,12 @@
 import { BrowserWindow, powerMonitor } from 'electron';
+import log from 'electron-log';
 
 /**
  * Tell the web app when the user is idle.
  */
 export default (transparentWindow: BrowserWindow): void => {
+  log.info(`Configuring idle time polling...`);
+
   let isIdle = false;
 
   const interval = setInterval(async () => {
@@ -19,4 +22,6 @@ export default (transparentWindow: BrowserWindow): void => {
       transparentWindow.webContents.send(`isIdle`, isIdle);
     }
   }, 1000);
+
+  log.info(`Configured idle time polling`);
 };

@@ -1,13 +1,12 @@
 import { app } from 'electron';
 import log from 'electron-log';
 
-import { State } from './types';
-import { isLinux, isProduction, prepareToQuitApp } from './utils';
+import { isLinux, isProduction } from './utils';
 
 /**
  * Configure the global app settings.
  */
-export default (state: State): void => {
+export default (): void => {
   log.info(`Configuring app...`);
 
   // Electron stores everything related to the app (cache, local storage,
@@ -27,18 +26,6 @@ export default (state: State): void => {
 
   // Configure the app to open automatically when the user logs in to their OS
   app.setLoginItemSettings({ openAtLogin: true });
-
-  app.on(`window-all-closed`, () => {
-    if (state.allowQuit) {
-      app.quit();
-    }
-  });
-
-  // Make sure the app closes if someone clicks "Quit" from the OS top bar
-  // or from the app icon in the dock
-  app.on(`before-quit`, () => {
-    prepareToQuitApp(state);
-  });
 
   log.info(`Configured app`);
 };

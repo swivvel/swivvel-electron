@@ -1,11 +1,7 @@
-'use strict';
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
-Object.defineProperty(exports, '__esModule', { value: true });
-const createTransparentWindow_1 = __importDefault(
-  require('./createTransparentWindow')
-);
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const createTransparentWindow_1 = __importDefault(require("./createTransparentWindow"));
 exports.default = createTransparentWindow_1.default;
