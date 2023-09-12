@@ -12,11 +12,8 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2016"
+    "target": "ES2019"
   },
   "include": ["src/**/*"],
-  "exclude": [".eslintrc", "build", "compiled", "dist", "node_modules"],
-  "paths": {
-    "*": ["node_modules/*"]
-  }
+  "exclude": [".eslintrc", "build", "compiled", "dist", "node_modules"]
 }

@@ -20,7 +20,7 @@ export default (transparentWindow: BrowserWindow): void => {
   });
 
   deeplink.on(`received`, (link) => {
-    // todo
+    console.log(link);
   });
 
   log.info(`Configured deep linking`);
