@@ -1,8 +1,7 @@
 import { dialog } from 'electron';
 
 export enum ErrorCode {
-  TransparentWindowMissingOnDeepLink = `1000`,
-  UrlMissingOnSecondInstanceDeepLink = `2000`,
+  UrlMissingOnSecondInstanceDeepLink = `1000`,
 }
 
 /**

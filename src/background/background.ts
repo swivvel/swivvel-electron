@@ -32,7 +32,7 @@ const run = async (): Promise<void> => {
 
   configureApp();
   configureAppQuitHandling(state);
-  listenForDeepLinks(getDeepLinkHandler(state));
+  listenForDeepLinks(getDeepLinkHandler(state, PRELOAD_PATH, SITE_URL));
 
   await app.whenReady();
 
