@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const electron_log_1 = __importDefault(require("electron-log"));
 exports.default = (transparentWindow, siteUrl, callbacks) => {
+    electron_log_1.default.info(`Configuring window open handler...`);
     transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
         electron_log_1.default.info(`!!!!`);
         electron_log_1.default.info(url);
@@ -24,4 +25,5 @@ exports.default = (transparentWindow, siteUrl, callbacks) => {
         electron_1.shell.openExternal(url);
         return { action: `deny` };
     });
+    electron_log_1.default.info(`Configured window open handler`);
 };

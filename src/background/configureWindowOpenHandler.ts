@@ -11,6 +11,8 @@ export default (
     onLogInPageOpened: () => void;
   }
 ): void => {
+  log.info(`Configuring window open handler...`);
+
   transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
     log.info(`!!!!`);
     log.info(url);
@@ -41,4 +43,6 @@ export default (
     shell.openExternal(url);
     return { action: `deny` };
   });
+
+  log.info(`Configured window open handler`);
 };
