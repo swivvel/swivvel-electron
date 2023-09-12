@@ -29,7 +29,7 @@ export default (
       // browser, so we send them to the browser to log in. Auth0 will redirect
       // the user back to the desktop app using the `swivvel://` protocol.
       if (url.includes(`/api/auth/login`)) {
-        shell.openExternal(url);
+        callbacks.onLogInPageOpened();
         return { action: `deny` };
       }
 

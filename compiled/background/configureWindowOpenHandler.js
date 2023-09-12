@@ -16,7 +16,7 @@ exports.default = (transparentWindow, siteUrl, callbacks) => {
                 return { action: `deny` };
             }
             if (url.includes(`/api/auth/login`)) {
-                electron_1.shell.openExternal(url);
+                callbacks.onLogInPageOpened();
                 return { action: `deny` };
             }
             return { action: `allow` };
