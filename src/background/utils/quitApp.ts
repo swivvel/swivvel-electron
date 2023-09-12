@@ -17,4 +17,6 @@ export default (state: State, options?: { quitAndInstall: boolean }): void => {
     log.info(`Quitting app`);
     app.quit();
   }
+
+  log.info(`App closed`);
 };
