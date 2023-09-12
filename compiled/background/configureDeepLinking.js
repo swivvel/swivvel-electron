@@ -37,7 +37,7 @@ exports.default = async (state) => {
         electron_1.app.on(`open-url`, (event, url) => {
             if (state.transparentWindow) {
                 electron_log_1.default.info(state.transparentWindow.webContents.mainFrame.framesInSubtree.map((x) => {
-                    return x.name;
+                    return [x.name, x.url, x.origin, x.visibilityState].join(`, `);
                 }));
             }
             else {

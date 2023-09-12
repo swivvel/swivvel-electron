@@ -48,7 +48,7 @@ export default async (state: State): Promise<void> => {
         log.info(
           state.transparentWindow.webContents.mainFrame.framesInSubtree.map(
             (x) => {
-              return x.name;
+              return [x.name, x.url, x.origin, x.visibilityState].join(`, `);
             }
           )
         );
