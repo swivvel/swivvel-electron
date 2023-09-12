@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 exports.default = (transparentWindow) => {
+    transparentWindow.setIgnoreMouseEvents(true);
     const interval = setInterval(async () => {
         if (transparentWindow.isDestroyed()) {
             clearInterval(interval);

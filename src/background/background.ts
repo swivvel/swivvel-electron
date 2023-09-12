@@ -7,7 +7,6 @@ import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import configureDeepLinking from './configureDeepLinking';
-import configureWindowOpenHandler from './configureWindowOpenHandler';
 import createLogInWindow from './createLogInWindow';
 import createTransparentWindow from './createTransparentWindow';
 import createTray from './createTray';
@@ -41,16 +40,15 @@ const run = async (): Promise<void> => {
   const transparentWindow = await createTransparentWindow(
     state,
     PRELOAD_PATH,
-    SITE_URL
+    SITE_URL,
+    {
+      onLogInPageOpened: async () => {
+        state.logInWindow = await createLogInWindow(PRELOAD_PATH, SITE_URL);
+      },
+    }
   );
 
   state.transparentWindow = transparentWindow;
-
-  configureWindowOpenHandler(transparentWindow, SITE_URL, {
-    onLogInPageOpened: async () => {
-      state.logInWindow = await createLogInWindow(PRELOAD_PATH, SITE_URL);
-    },
-  });
 
   configureAppQuitHandling(state);
   createTray(state, LOGO_TEMPLATE_PATH);

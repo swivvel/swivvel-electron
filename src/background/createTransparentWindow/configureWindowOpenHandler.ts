@@ -1,9 +1,6 @@
 import { BrowserWindow, shell } from 'electron';
 import log from 'electron-log';
 
-/**
- * Configure whether URLs are opened in the Electron app or in the browser.
- */
 export default (
   transparentWindow: BrowserWindow,
   siteUrl: string,
@@ -11,7 +8,7 @@ export default (
     onLogInPageOpened: () => void;
   }
 ): void => {
-  log.info(`Configuring window open handler...`);
+  log.info(`  Configuring window open handler...`);
 
   transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
     log.info(`!!!!`);
@@ -51,6 +48,4 @@ export default (
     shell.openExternal(url);
     return { action: `deny` };
   });
-
-  log.info(`Configured window open handler`);
 };

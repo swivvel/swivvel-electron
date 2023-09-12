@@ -1,15 +1,22 @@
-import { BrowserWindow, screen } from 'electron';
+import { BrowserWindow } from 'electron';
 import log from 'electron-log';
 
 import { State } from '../types';
-import { isLinux, isProduction, sleep } from '../utils';
+import { isLinux, loadInternalUrl, sleep } from '../utils';
 
+import configureCloseHandler from './configureCloseHandler';
+import configureWindowOpenHandler from './configureWindowOpenHandler';
+import makeBrowserWindow from './makeBrowserWindow';
 import pollForMouseEvents from './pollForMouseEvents';
+import showOnAllWorkspaces from './showOnAllWorkspaces';
 
 export default async (
   state: State,
   preloadPath: string,
-  siteUrl: string
+  siteUrl: string,
+  callbacks: {
+    onLogInPageOpened: () => void;
+  }
 ): Promise<BrowserWindow> => {
   log.info(`Creating transparent window...`);
 
@@ -20,68 +27,14 @@ export default async (
     await sleep(1000);
   }
 
-  log.info(`  Creating transparent window BrowserWindow...`);
+  const transparentWindow = makeBrowserWindow(preloadPath);
 
-  const primaryDisplay = screen.getPrimaryDisplay();
+  showOnAllWorkspaces(transparentWindow);
+  configureWindowOpenHandler(transparentWindow, siteUrl, callbacks);
+  configureCloseHandler(transparentWindow, state);
+  pollForMouseEvents(transparentWindow);
 
-  const transparentWindow = new BrowserWindow({
-    // alwaysOnTop: true,
-    // autoHideMenuBar: true,
-    // closable: false,
-    // On Mac, the window needs to be focusable for the mouse cursor to appear
-    // as a pointer. On Linux, the mouse cursor appears as a pointer on a
-    // non-focusable window, but if the window is focusable then it appears
-    // when using alt+tab to switch between windows.
-    // focusable: !isLinux(),
-    // frame: false,
-    // hasShadow: false,
-    // height: primaryDisplay.workAreaSize.height,
-    // hiddenInMissionControl: true,
-    // maximizable: false,
-    // minimizable: false,
-    // resizable: false,
-    // roundedCorners: false,
-    // skipTaskbar: true,
-    // transparent: true,
-    webPreferences: { preload: preloadPath },
-    // width: primaryDisplay.workAreaSize.width,
-    // x: 0,
-    // y: 0,
-  });
-
-  log.info(`  Setting up transparent window handlers...`);
-
-  // transparentWindow.setIgnoreMouseEvents(true, { forward: true });
-
-  // transparentWindow.setVisibleOnAllWorkspaces(true, {
-  //   visibleOnFullScreen: true,
-  //   // See: https://github.com/electron/electron/issues/25368
-  //   skipTransformProcessType: true,
-  // });
-
-  transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
-    log.info(`XXXXX`);
-    log.info(url);
-    log.info(`XXXXX`);
-    return { action: `allow` };
-  });
-
-  transparentWindow.on(`close`, (event) => {
-    if (!state.allowQuit) {
-      event.preventDefault();
-      transparentWindow.hide();
-    }
-  });
-
-  // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
-  // pollForMouseEvents(transparentWindow);
-
-  const url = `${siteUrl}/notifications`;
-  log.info(`  Loading Swivvel URL: ${url}`);
-  await transparentWindow.loadURL(url);
-
-  // todo
-  transparentWindow.webContents.openDevTools();
+  await loadInternalUrl(transparentWindow, siteUrl, `/notifications`);
 
   log.info(`Created transparent window`);
 

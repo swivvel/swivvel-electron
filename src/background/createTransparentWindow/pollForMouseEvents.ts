@@ -17,6 +17,8 @@ import { BrowserWindow, screen } from 'electron';
  * transparent part of the window and we should not ignore mouse events.
  */
 export default (transparentWindow: BrowserWindow): void => {
+  transparentWindow.setIgnoreMouseEvents(true);
+
   const interval = setInterval(async () => {
     if (transparentWindow.isDestroyed()) {
       clearInterval(interval);

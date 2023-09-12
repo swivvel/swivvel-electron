@@ -56,7 +56,8 @@
     "compile": "rm -rf compiled && tsc && cp src/*.png compiled",
     "dev": "npm run compile && electron compiled/background/background.js",
     "dist": "npm run compile && electron-builder",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "types": "tsc --noEmit"
   },
   "dependencies": {
     "electron-log": "^4.4.8",
