@@ -10,7 +10,7 @@
   "homepage": "https://www.swivvel.io",
   "main": "compiled/background/background.js",
   "build": {
-    "appId": "com.electron.swivvel",
+    "appId": "com.swivvel.swivvel",
     "productName": "Swivvel",
     "protocols": {
       "name": "swivvel",
