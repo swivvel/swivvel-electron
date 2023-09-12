@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
@@ -14,13 +14,7 @@
     "strict": true,
     "target": "ES2016"
   },
-  "include": [
-    ".eslintrc.js",
-    "src/**/*.d.ts",
-    "src/**/*.js",
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
+  "include": ["*.d.ts", "*.js", "*.ts", "*.tsx"],
   "paths": {
     "*": ["node_modules/*"]
   }

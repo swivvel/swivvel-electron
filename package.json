@@ -41,7 +41,7 @@
   },
   "scripts": {
     "check": "npx npm-check --skip-unused",
-    "compile": "tsc && cp src/*.png compiled",
+    "compile": "rm -r compiled && tsc && cp src/*.png compiled",
     "dev": "npm run compile && electron .",
     "dist": "electron-builder",
     "lint": "eslint ."
