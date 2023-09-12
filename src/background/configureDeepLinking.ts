@@ -3,12 +3,14 @@ import path from 'path';
 import { app, dialog } from 'electron';
 import log from 'electron-log';
 
+import { State } from './types';
+
 /**
  * Configure URL protocol used for deep linking to the desktop app.
  *
  * Note: registering the `swivvel://` protocol only works on production.
  */
-export default async (): Promise<void> => {
+export default async (state: State): Promise<void> => {
   log.info(`Configuring deep linking...`);
 
   if (process.defaultApp) {
@@ -42,6 +44,21 @@ export default async (): Promise<void> => {
 
     // Handle the protocol. In this case, we choose to show an Error Box.
     app.on(`open-url`, (event, url) => {
+      if (state.transparentWindow) {
+        log.info(
+          state.transparentWindow.webContents.mainFrame.framesInSubtree.map(
+            (x) => {
+              return x.name;
+            }
+          )
+        );
+      } else {
+        dialog.showErrorBox(
+          `Something went wrong`,
+          `Please contact support@swivvel.io`
+        );
+      }
+
       dialog.showErrorBox(`Welcome Back`, `You arrived from: ${url}`);
     });
   }

@@ -29,7 +29,7 @@ const run = async (): Promise<void> => {
   };
 
   configureApp();
-  await configureDeepLinking();
+  await configureDeepLinking(state);
   await app.whenReady();
 
   if (systemPreferences.askForMediaAccess) {

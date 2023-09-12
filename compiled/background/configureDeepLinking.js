@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
 const electron_1 = require("electron");
 const electron_log_1 = __importDefault(require("electron-log"));
-exports.default = async () => {
+exports.default = async (state) => {
     electron_log_1.default.info(`Configuring deep linking...`);
     if (process.defaultApp) {
         electron_log_1.default.info(`  process.defaultApp=true`);
@@ -35,6 +35,14 @@ exports.default = async () => {
             electron_1.dialog.showErrorBox(`Welcome Back`, `You arrived from: ${(_a = commandLine === null || commandLine === void 0 ? void 0 : commandLine.pop()) === null || _a === void 0 ? void 0 : _a.slice(0, -1)}`);
         });
         electron_1.app.on(`open-url`, (event, url) => {
+            if (state.transparentWindow) {
+                electron_log_1.default.info(state.transparentWindow.webContents.mainFrame.framesInSubtree.map((x) => {
+                    return x.name;
+                }));
+            }
+            else {
+                electron_1.dialog.showErrorBox(`Something went wrong`, `Please contact support@swivvel.io`);
+            }
             electron_1.dialog.showErrorBox(`Welcome Back`, `You arrived from: ${url}`);
         });
     }

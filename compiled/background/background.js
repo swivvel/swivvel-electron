@@ -27,7 +27,7 @@ const run = async () => {
         transparentWindow: null,
     };
     (0, configureApp_1.default)();
-    await (0, configureDeepLinking_1.default)();
+    await (0, configureDeepLinking_1.default)(state);
     await electron_1.app.whenReady();
     if (electron_1.systemPreferences.askForMediaAccess) {
         await electron_1.systemPreferences.askForMediaAccess(`microphone`);
