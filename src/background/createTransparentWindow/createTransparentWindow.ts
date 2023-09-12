@@ -76,7 +76,6 @@ export default async (
     await transparentWindow.loadURL(
       `${process.env.ELECTRON_APP_DEV_URL}/notifications`
     );
-    transparentWindow.webContents.openDevTools();
   }
 
   log.info(`Created transparent window`);
