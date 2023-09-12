@@ -24,6 +24,7 @@ const run = async () => {
         transparentWindow: null,
     };
     (0, configureApp_1.default)();
+    await (0, configureDeepLinking_1.default)();
     await electron_1.app.whenReady();
     if (electron_1.systemPreferences.askForMediaAccess) {
         await electron_1.systemPreferences.askForMediaAccess(`microphone`);
@@ -32,7 +33,6 @@ const run = async () => {
     state.transparentWindow = transparentWindow;
     (0, configureAppQuitHandling_1.default)(state);
     (0, createTray_1.default)(state, LOGO_TEMPLATE_PATH);
-    await (0, configureDeepLinking_1.default)();
     (0, configureAutoUpdates_1.default)(state);
     (0, pollForIdleTime_1.default)(transparentWindow);
     electron_log_1.default.info(`App started`);

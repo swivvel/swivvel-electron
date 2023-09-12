@@ -12,6 +12,12 @@
   "build": {
     "appId": "com.electron.swivvel",
     "productName": "Swivvel",
+    "protocols": {
+      "name": "swivvel",
+      "schemes": [
+        "swivvel"
+      ]
+    },
     "copyright": "Copyright © 2023 Swivvel",
     "executableName": "swivvel",
     "artifactName": "${productName}.${ext}",
@@ -37,6 +43,9 @@
     "linux": {
       "icon": "build/icon.icns",
       "category": "Utility",
+      "desktop": {
+        "MimeType": "x-scheme-handler/swivvel"
+      },
       "mimeTypes": [
         "x-scheme-handler/swivvel"
       ]
@@ -46,7 +55,7 @@
     "check": "npx npm-check --skip-unused",
     "compile": "rm -rf compiled && tsc && cp src/*.png compiled",
     "dev": "npm run compile && electron compiled/background/background.js",
-    "dist": "electron-builder",
+    "dist": "npm run compile && electron-builder",
     "lint": "eslint ."
   },
   "dependencies": {

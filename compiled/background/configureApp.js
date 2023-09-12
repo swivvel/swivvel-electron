@@ -11,11 +11,13 @@ exports.default = () => {
     if (!(0, utils_1.isProduction)()) {
         electron_1.app.setPath(`userData`, `${electron_1.app.getPath(`userData`)}-development`);
     }
+    electron_log_1.default.info(`  User Data: ${electron_1.app.getPath(`userData`)}`);
     if ((0, utils_1.isLinux)()) {
         electron_1.app.commandLine.appendSwitch(`enable-transparent-visuals`);
         electron_1.app.commandLine.appendSwitch(`disable-gpu`);
         electron_1.app.disableHardwareAcceleration();
     }
+    electron_log_1.default.info(`  Configuring app to open at login...`);
     electron_1.app.setLoginItemSettings({ openAtLogin: true });
     electron_log_1.default.info(`Configured app`);
 };

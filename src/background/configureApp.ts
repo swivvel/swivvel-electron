@@ -16,6 +16,8 @@ export default (): void => {
     app.setPath(`userData`, `${app.getPath(`userData`)}-development`);
   }
 
+  log.info(`  User Data: ${app.getPath(`userData`)}`);
+
   // Transparent windows don't work in Linux without these settings
   // See: https://github.com/electron/electron/issues/15947
   if (isLinux()) {
@@ -25,6 +27,7 @@ export default (): void => {
   }
 
   // Configure the app to open automatically when the user logs in to their OS
+  log.info(`  Configuring app to open at login...`);
   app.setLoginItemSettings({ openAtLogin: true });
 
   log.info(`Configured app`);
