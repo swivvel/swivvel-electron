@@ -2,7 +2,7 @@ module.exports = {
   ignorePatterns: [`.eslintrc.js`, `compiled/`],
   overrides: [
     {
-      files: `*.{js,ts,tsx}`,
+      files: `*.{js,ts}`,
       extends: [
         `eslint:recommended`,
         `plugin:@typescript-eslint/recommended`,
@@ -18,7 +18,7 @@ module.exports = {
       settings: {
         'import/external-module-folders': [`node_modules`, `@types`],
         'import/parsers': {
-          '@typescript-eslint/parser': [`.ts`, `.tsx`],
+          '@typescript-eslint/parser': [`.ts`],
         },
         'import/resolver': {
           typescript: {
