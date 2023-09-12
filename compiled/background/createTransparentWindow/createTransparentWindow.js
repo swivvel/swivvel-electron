@@ -45,9 +45,6 @@ const pollForMouseEvents_1 = __importDefault(require('./pollForMouseEvents'));
 exports.default = (state, preloadPath) =>
   __awaiter(void 0, void 0, void 0, function* () {
     electron_log_1.default.info(`Creating transparent window...`);
-    // Transparent windows don't work on Linux without some hacks
-    // like this short delay
-    // See: https://github.com/electron/electron/issues/15947
     if ((0, utils_1.isLinux)()) {
       yield (0, utils_1.sleep)(1000);
     }
@@ -56,10 +53,6 @@ exports.default = (state, preloadPath) =>
       alwaysOnTop: true,
       autoHideMenuBar: true,
       closable: false,
-      // On Mac, the window needs to be focusable for the mouse cursor to appear
-      // as a pointer. On Linux, the mouse cursor appears as a pointer on a
-      // non-focusable window, but if the window is focusable then it appears
-      // when using alt+tab to switch between windows.
       focusable: !(0, utils_1.isLinux)(),
       frame: false,
       hasShadow: false,
@@ -79,7 +72,6 @@ exports.default = (state, preloadPath) =>
     transparentWindow.setIgnoreMouseEvents(true, { forward: true });
     transparentWindow.setVisibleOnAllWorkspaces(true, {
       visibleOnFullScreen: true,
-      // See: https://github.com/electron/electron/issues/25368
       skipTransformProcessType: true,
     });
     transparentWindow.on(`close`, (event) => {
@@ -88,7 +80,6 @@ exports.default = (state, preloadPath) =>
         transparentWindow.hide();
       }
     });
-    // See: https://github.com/electron/electron/issues/1335#issuecomment-1585787243
     (0, pollForMouseEvents_1.default)(transparentWindow);
     if ((0, utils_1.isProduction)()) {
       yield transparentWindow.loadURL(`https://app.swivvel.io/notifications`);

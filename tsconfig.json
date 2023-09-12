@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "baseUrl": "./src",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
@@ -9,12 +8,14 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "compiled",
+    "removeComments": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2016"
   },
-  "include": [".eslintrc.js", "**/*.d.ts", "**/*.js", "**/*.ts", "**/*.tsx"],
+  "include": ["src/**/*"],
+  "exclude": [".eslintrc", "build", "compiled", "dist", "node_modules"],
   "paths": {
     "*": ["node_modules/*"]
   }

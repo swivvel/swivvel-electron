@@ -34,9 +34,6 @@ var __awaiter =
   };
 Object.defineProperty(exports, '__esModule', { value: true });
 const electron_1 = require('electron');
-/**
- * Tell the web app when the user is idle.
- */
 exports.default = (transparentWindow) => {
   let isIdle = false;
   const interval = setInterval(

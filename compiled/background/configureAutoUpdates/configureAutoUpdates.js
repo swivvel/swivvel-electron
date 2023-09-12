@@ -9,9 +9,6 @@ const electron_log_1 = __importDefault(require('electron-log'));
 const electron_updater_1 = require('electron-updater');
 const utils_1 = require('../utils');
 const pollForUpdates_1 = __importDefault(require('./pollForUpdates'));
-/**
- * Configure automatic updates of the app.
- */
 exports.default = (state) => {
   let checkForUpdatesInterval = null;
   electron_updater_1.autoUpdater.logger = electron_log_1.default;
@@ -49,7 +46,6 @@ exports.default = (state) => {
       electron_log_1.default.info(
         `Installing new version and relaunching app...`
       );
-      // See: https://github.com/electron-userland/electron-builder/issues/1604
       setImmediate(() => {
         (0, utils_1.quitApp)(state, { quitAndInstall: true });
       });

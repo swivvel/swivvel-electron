@@ -8,9 +8,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 const electron_1 = require('electron');
 const electron_log_1 = __importDefault(require('electron-log'));
 const utils_1 = require('./utils');
-/**
- * Add the Swivvel icon to the OS system tray.
- */
 exports.default = (state, logoTemplatePath) => {
   electron_log_1.default.info(`Creating tray...`);
   const tray = new electron_1.Tray(logoTemplatePath);
