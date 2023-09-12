@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron';
 import log from 'electron-log';
 
 export default (transparentWindow: BrowserWindow): void => {
-  log.info(`  Configuring transparent window to show on all workspaces...`);
+  log.info(`Configuring transparent window to show on all workspaces...`);
 
   transparentWindow.setVisibleOnAllWorkspaces(true, {
     visibleOnFullScreen: true,

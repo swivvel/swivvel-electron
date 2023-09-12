@@ -8,7 +8,7 @@ export default async (
 ): Promise<void> => {
   const url = `${siteUrl}${relativePath}`;
 
-  log.info(`  Loading Swivvel URL: ${url}`);
+  log.info(`Loading Swivvel URL: ${url}`);
 
   await browserWindow.loadURL(url);
 };

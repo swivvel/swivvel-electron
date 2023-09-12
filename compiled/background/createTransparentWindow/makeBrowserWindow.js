@@ -7,7 +7,7 @@ const electron_1 = require("electron");
 const electron_log_1 = __importDefault(require("electron-log"));
 const utils_1 = require("../utils");
 exports.default = (preloadPath) => {
-    electron_log_1.default.info(`  Creating transparent window BrowserWindow...`);
+    electron_log_1.default.info(`Creating transparent window BrowserWindow...`);
     const primaryDisplay = electron_1.screen.getPrimaryDisplay();
     const transparentWindow = new electron_1.BrowserWindow({
         alwaysOnTop: true,

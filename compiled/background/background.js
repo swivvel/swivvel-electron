@@ -9,11 +9,12 @@ const electron_log_1 = __importDefault(require("electron-log"));
 const configureApp_1 = __importDefault(require("./configureApp"));
 const configureAppQuitHandling_1 = __importDefault(require("./configureAppQuitHandling"));
 const configureAutoUpdates_1 = __importDefault(require("./configureAutoUpdates"));
-const configureDeepLinking_1 = __importDefault(require("./configureDeepLinking"));
 const createLogInWindow_1 = __importDefault(require("./createLogInWindow"));
 const createTransparentWindow_1 = __importDefault(require("./createTransparentWindow"));
 const createTray_1 = __importDefault(require("./createTray"));
+const getDeepLinkHandler_1 = __importDefault(require("./getDeepLinkHandler"));
 const getSiteUrl_1 = __importDefault(require("./getSiteUrl"));
+const listenForDeepLinks_1 = __importDefault(require("./listenForDeepLinks"));
 const pollForIdleTime_1 = __importDefault(require("./pollForIdleTime"));
 const PRELOAD_PATH = path_1.default.join(__dirname, `..`, `preload.js`);
 const LOGO_TEMPLATE_PATH = path_1.default.join(__dirname, `..`, `logoTemplate.png`);
@@ -29,7 +30,7 @@ const run = async () => {
     };
     (0, configureApp_1.default)();
     (0, configureAppQuitHandling_1.default)(state);
-    (0, configureDeepLinking_1.default)(state);
+    (0, listenForDeepLinks_1.default)((0, getDeepLinkHandler_1.default)(state));
     await electron_1.app.whenReady();
     if (electron_1.systemPreferences.askForMediaAccess) {
         await electron_1.systemPreferences.askForMediaAccess(`microphone`);

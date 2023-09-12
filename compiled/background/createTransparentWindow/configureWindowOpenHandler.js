@@ -6,12 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_log_1 = __importDefault(require("electron-log"));
 const utils_1 = require("../utils");
 exports.default = (transparentWindow, siteUrl, callbacks) => {
-    electron_log_1.default.info(`  Configuring window open handler...`);
+    electron_log_1.default.info(`Configuring window open handler...`);
     transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
-        electron_log_1.default.info(`!!!! configureWindowOpenHandler`);
-        electron_log_1.default.info(url);
-        electron_log_1.default.info(`!!!!`);
+        electron_log_1.default.info(`Caught URL opened by transparent window: ${url}`);
         if (url === `${siteUrl}/electron/login`) {
+            electron_log_1.default.info(`Log in page requested`);
             callbacks.onLogInPageOpened();
             return { action: `deny` };
         }

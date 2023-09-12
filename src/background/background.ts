@@ -6,11 +6,12 @@ import log from 'electron-log';
 import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
-import configureDeepLinking from './configureDeepLinking';
 import createLogInWindow from './createLogInWindow';
 import createTransparentWindow from './createTransparentWindow';
 import createTray from './createTray';
+import getDeepLinkHandler from './getDeepLinkHandler';
 import getSiteUrl from './getSiteUrl';
+import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
 
@@ -31,7 +32,7 @@ const run = async (): Promise<void> => {
 
   configureApp();
   configureAppQuitHandling(state);
-  configureDeepLinking(state);
+  listenForDeepLinks(getDeepLinkHandler(state));
 
   await app.whenReady();
 

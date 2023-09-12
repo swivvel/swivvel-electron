@@ -4,7 +4,7 @@ import log from 'electron-log';
 import { isLinux } from '../utils';
 
 export default (preloadPath: string): BrowserWindow => {
-  log.info(`  Creating transparent window BrowserWindow...`);
+  log.info(`Creating transparent window BrowserWindow...`);
 
   const primaryDisplay = screen.getPrimaryDisplay();
 
