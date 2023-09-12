@@ -86,6 +86,7 @@ export default async (
 
   if (isProduction()) {
     await transparentWindow.loadURL(`https://app.swivvel.io/notifications`);
+    transparentWindow.webContents.openDevTools();
   } else {
     await transparentWindow.loadURL(
       `${process.env.ELECTRON_APP_DEV_URL}/notifications`

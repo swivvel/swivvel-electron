@@ -16,7 +16,7 @@ const pollForIdleTime_1 = __importDefault(require("./pollForIdleTime"));
 const PRELOAD_PATH = path_1.default.join(__dirname, `..`, `preload.js`);
 const LOGO_TEMPLATE_PATH = path_1.default.join(__dirname, `..`, `logoTemplate.png`);
 const run = async () => {
-    electron_log_1.default.info(`App starting 1...`);
+    electron_log_1.default.info(`App starting 2...`);
     const state = {
         allowQuit: false,
         hqWindow: null,
