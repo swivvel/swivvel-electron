@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { BrowserWindow, app } from 'electron';
 import log from 'electron-log';
 
 import { State } from '../types';
@@ -12,14 +12,20 @@ export default (state: State): void => {
   state.allowQuit = true;
 
   app.removeAllListeners(`window-all-closed`);
-  state.hqWindow?.removeAllListeners(`close`);
-  state.setupWindow?.removeAllListeners(`close`);
-  state.transparentWindow?.removeAllListeners(`close`);
+
+  Object.values(state).forEach((stateValue) => {
+    if (stateValue && stateValue instanceof BrowserWindow) {
+      stateValue.removeAllListeners(`close`);
+    }
+  });
 
   // `close()` wasn't successfully closing the app on Mac so we're
   // using `destroy()` instead
   log.info(`Closing windows...`);
-  state.hqWindow?.destroy();
-  state.setupWindow?.destroy();
-  state.transparentWindow?.destroy();
+
+  Object.values(state).forEach((stateValue) => {
+    if (stateValue && stateValue instanceof BrowserWindow) {
+      stateValue.destroy();
+    }
+  });
 };

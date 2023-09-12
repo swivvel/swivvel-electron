@@ -4,7 +4,13 @@ import log from 'electron-log';
 /**
  * Configure whether URLs are opened in the Electron app or in the browser.
  */
-export default (transparentWindow: BrowserWindow, siteUrl: string): void => {
+export default (
+  transparentWindow: BrowserWindow,
+  siteUrl: string,
+  callbacks: {
+    onLogInPageOpened: () => void;
+  }
+): void => {
   transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
     log.info(`!!!!`);
     log.info(url);

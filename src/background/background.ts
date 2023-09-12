@@ -8,6 +8,7 @@ import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import configureDeepLinking from './configureDeepLinking';
 import configureWindowOpenHandler from './configureWindowOpenHandler';
+import createLogInWindow from './createLogInWindow';
 import createTransparentWindow from './createTransparentWindow';
 import createTray from './createTray';
 import getSiteUrl from './getSiteUrl';
@@ -24,6 +25,7 @@ const run = async (): Promise<void> => {
   const state: State = {
     allowQuit: false,
     hqWindow: null,
+    logInWindow: null,
     setupWindow: null,
     transparentWindow: null,
   };
@@ -44,8 +46,13 @@ const run = async (): Promise<void> => {
 
   state.transparentWindow = transparentWindow;
 
+  configureWindowOpenHandler(transparentWindow, SITE_URL, {
+    onLogInPageOpened: async () => {
+      state.logInWindow = await createLogInWindow(PRELOAD_PATH);
+    },
+  });
+
   configureAppQuitHandling(state);
-  configureWindowOpenHandler(transparentWindow, SITE_URL);
   createTray(state, LOGO_TEMPLATE_PATH);
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);

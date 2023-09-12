@@ -11,6 +11,7 @@ const configureAppQuitHandling_1 = __importDefault(require("./configureAppQuitHa
 const configureAutoUpdates_1 = __importDefault(require("./configureAutoUpdates"));
 const configureDeepLinking_1 = __importDefault(require("./configureDeepLinking"));
 const configureWindowOpenHandler_1 = __importDefault(require("./configureWindowOpenHandler"));
+const createLogInWindow_1 = __importDefault(require("./createLogInWindow"));
 const createTransparentWindow_1 = __importDefault(require("./createTransparentWindow"));
 const createTray_1 = __importDefault(require("./createTray"));
 const getSiteUrl_1 = __importDefault(require("./getSiteUrl"));
@@ -23,6 +24,7 @@ const run = async () => {
     const state = {
         allowQuit: false,
         hqWindow: null,
+        logInWindow: null,
         setupWindow: null,
         transparentWindow: null,
     };
@@ -34,8 +36,12 @@ const run = async () => {
     }
     const transparentWindow = await (0, createTransparentWindow_1.default)(state, PRELOAD_PATH, SITE_URL);
     state.transparentWindow = transparentWindow;
+    (0, configureWindowOpenHandler_1.default)(transparentWindow, SITE_URL, {
+        onLogInPageOpened: async () => {
+            state.logInWindow = await (0, createLogInWindow_1.default)(PRELOAD_PATH);
+        },
+    });
     (0, configureAppQuitHandling_1.default)(state);
-    (0, configureWindowOpenHandler_1.default)(transparentWindow, SITE_URL);
     (0, createTray_1.default)(state, LOGO_TEMPLATE_PATH);
     (0, configureAutoUpdates_1.default)(state);
     (0, pollForIdleTime_1.default)(transparentWindow);
