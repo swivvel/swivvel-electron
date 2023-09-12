@@ -27,11 +27,16 @@ export default (
         return { action: `deny` };
       }
 
+      if (url.endsWith(`/?desktopLogin=true`)) {
+        callbacks.onLogInPageOpened();
+        return { action: `deny` };
+      }
+
       // We want to be able to reuse Google session cookies from the user's
       // browser, so we send them to the browser to log in. Auth0 will redirect
       // the user back to the desktop app using the `swivvel://` protocol.
       if (url.includes(`/api/auth/login`)) {
-        callbacks.onLogInPageOpened();
+        shell.openExternal(url);
         return { action: `deny` };
       }
 

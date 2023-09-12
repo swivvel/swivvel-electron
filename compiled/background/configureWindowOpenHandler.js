@@ -16,8 +16,12 @@ exports.default = (transparentWindow, siteUrl, callbacks) => {
                 electron_1.shell.openExternal(url);
                 return { action: `deny` };
             }
-            if (url.includes(`/api/auth/login`)) {
+            if (url.endsWith(`/?desktopLogin=true`)) {
                 callbacks.onLogInPageOpened();
+                return { action: `deny` };
+            }
+            if (url.includes(`/api/auth/login`)) {
+                electron_1.shell.openExternal(url);
                 return { action: `deny` };
             }
             return { action: `allow` };
