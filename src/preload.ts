@@ -1,14 +1,13 @@
-// /* eslint-env browser */
-// const { contextBridge, ipcRenderer } = require(`electron`);
+import { contextBridge, ipcRenderer } from 'electron';
 
-// const isLinux = process.platform === `linux`;
+type IdleChangeCallback = (event: unknown, isIdle: boolean) => void;
 
-// contextBridge.exposeInMainWorld(`electron`, {
-//   isLinux,
-//   offIdleChange: (callback) => {
-//     ipcRenderer.off(`isIdle`, callback);
-//   },
-//   onIdleChange: (callback) => {
-//     ipcRenderer.on(`isIdle`, callback);
-//   },
-// });
+contextBridge.exposeInMainWorld(`electron`, {
+  isLinux: process.platform === `linux`,
+  offIdleChange: (callback: IdleChangeCallback) => {
+    ipcRenderer.off(`isIdle`, callback);
+  },
+  onIdleChange: (callback: IdleChangeCallback) => {
+    ipcRenderer.on(`isIdle`, callback);
+  },
+});
