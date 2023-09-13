@@ -54,7 +54,7 @@
   },
   "scripts": {
     "check": "npx npm-check --skip-unused",
-    "compile": "mkdir -p compiled && cp src/*.png compiled && tsc",
+    "compile": "rm -rf compiled && mkdir compiled && cp src/*.png compiled && tsc",
     "dev": "electron compiled/background/background.js",
     "dist": "npm run compile && electron-builder",
     "lint": "eslint .",
