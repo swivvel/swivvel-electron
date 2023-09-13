@@ -28,7 +28,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Compile
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile code
         run: npm run build
 
       - name: Install Snapcraft
