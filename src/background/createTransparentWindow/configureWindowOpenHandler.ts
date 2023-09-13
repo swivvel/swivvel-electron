@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 import log from 'electron-log';
 
-import { getBaseWindowOpenHandler } from '../utils';
+import { getBaseWindowOpenHandler, removeQueryParams } from '../utils';
 
 export default (
   transparentWindow: BrowserWindow,
@@ -18,7 +18,7 @@ export default (
     // When the transparent window opens, it detects if the user is not logged
     // in and opens this special URL. We catch the URL and open a new Electron
     // window with the log in page.
-    if (url === `${siteUrl}/electron/login`) {
+    if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
       log.info(`Log in page requested`);
       callbacks.onLogInPageOpened();
       return { action: `deny` };

@@ -3,11 +3,7 @@ import path from 'path';
 import { app } from 'electron';
 import log from 'electron-log';
 
-import { ErrorCode, showGenericErrorMessage } from './utils';
-
-const removeQueryParams = (url: string): string => {
-  return url.split(`?`)[0];
-};
+import { ErrorCode, removeQueryParams, showGenericErrorMessage } from './utils';
 
 /**
  * Configure URL protocol used for deep linking to the desktop app.

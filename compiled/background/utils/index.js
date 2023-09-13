@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sleep = exports.showGenericErrorMessage = exports.quitApp = exports.prepareToQuitApp = exports.loadInternalUrl = exports.isProduction = exports.isLinux = exports.getBaseWindowOpenHandler = exports.ErrorCode = void 0;
+exports.sleep = exports.showGenericErrorMessage = exports.removeQueryParams = exports.quitApp = exports.prepareToQuitApp = exports.loadInternalUrl = exports.isProduction = exports.isLinux = exports.getBaseWindowOpenHandler = exports.ErrorCode = void 0;
 const getBaseWindowOpenHandler_1 = __importDefault(require("./getBaseWindowOpenHandler"));
 exports.getBaseWindowOpenHandler = getBaseWindowOpenHandler_1.default;
 const isLinux_1 = __importDefault(require("./isLinux"));
@@ -39,6 +39,8 @@ const prepareToQuitApp_1 = __importDefault(require("./prepareToQuitApp"));
 exports.prepareToQuitApp = prepareToQuitApp_1.default;
 const quitApp_1 = __importDefault(require("./quitApp"));
 exports.quitApp = quitApp_1.default;
+const removeQueryParams_1 = __importDefault(require("./removeQueryParams"));
+exports.removeQueryParams = removeQueryParams_1.default;
 const showGenericErrorMessage_1 = __importStar(require("./showGenericErrorMessage"));
 exports.showGenericErrorMessage = showGenericErrorMessage_1.default;
 Object.defineProperty(exports, "ErrorCode", { enumerable: true, get: function () { return showGenericErrorMessage_1.ErrorCode; } });

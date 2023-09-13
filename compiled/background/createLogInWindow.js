@@ -15,7 +15,7 @@ exports.default = async (preloadPath, siteUrl) => {
     });
     logInWindow.webContents.setWindowOpenHandler(({ url }) => {
         electron_log_1.default.info(`Caught URL opened by log in window: ${url}`);
-        if (url === `${siteUrl}/api/auth/login`) {
+        if ((0, utils_1.removeQueryParams)(url) === `${siteUrl}/api/auth/login`) {
             electron_log_1.default.info(`User is logging in, sending to browser for Google SSO`);
             electron_1.shell.openExternal(url);
             return { action: `deny` };

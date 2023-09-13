@@ -4,6 +4,7 @@ import isProduction from './isProduction';
 import loadInternalUrl from './loadInternalUrl';
 import prepareToQuitApp from './prepareToQuitApp';
 import quitApp from './quitApp';
+import removeQueryParams from './removeQueryParams';
 import showGenericErrorMessage, { ErrorCode } from './showGenericErrorMessage';
 import sleep from './sleep';
 
@@ -15,6 +16,7 @@ export {
   loadInternalUrl,
   prepareToQuitApp,
   quitApp,
+  removeQueryParams,
   showGenericErrorMessage,
   sleep,
 };

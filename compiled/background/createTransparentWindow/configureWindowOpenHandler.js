@@ -9,7 +9,7 @@ exports.default = (transparentWindow, siteUrl, callbacks) => {
     electron_log_1.default.info(`Configuring window open handler...`);
     transparentWindow.webContents.setWindowOpenHandler(({ url }) => {
         electron_log_1.default.info(`Caught URL opened by transparent window: ${url}`);
-        if (url === `${siteUrl}/electron/login`) {
+        if ((0, utils_1.removeQueryParams)(url) === `${siteUrl}/electron/login`) {
             electron_log_1.default.info(`Log in page requested`);
             callbacks.onLogInPageOpened();
             return { action: `deny` };
