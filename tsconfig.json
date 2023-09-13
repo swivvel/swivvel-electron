@@ -7,7 +7,7 @@
     "isolatedModules": true,
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "compiled",
+    "outDir": "dist",
     "removeComments": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -15,5 +15,5 @@
     "target": "ES2019"
   },
   "include": ["src/**/*"],
-  "exclude": [".eslintrc", "build", "compiled", "dist", "node_modules"]
+  "exclude": [".eslintrc", "build", "dist", "node_modules"]
 }

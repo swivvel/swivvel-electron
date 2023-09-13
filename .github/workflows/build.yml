@@ -7,9 +7,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      API_KEY_ID: ${{ secrets.API_KEY_ID }}
-      API_KEY_ISSUER_ID: ${{ secrets.API_KEY_ISSUER_ID }}
-      API_KEY: ${{ secrets.API_KEY }}
+      APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+      APPLE_API_KEY_ISSUER: ${{ secrets.APPLE_API_KEY_ISSUER }}
+      APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       MAC_CERTS_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
       MAC_CERTS: ${{ secrets.MAC_CERTS }}
@@ -38,7 +38,7 @@ jobs:
         # Import Apple API key for app notarization on macOS
         run: |
           mkdir -p ~/private_keys/
-          echo '${{ env.API_KEY }}' > ~/private_keys/AuthKey_${{ env.API_KEY_ID }}.p8
+          echo '${{ env.APPLE_API_KEY }}' > ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
@@ -54,5 +54,5 @@ jobs:
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
           # MacOS notarization API key
-          API_KEY_ID: ${{ env.API_KEY_ID }}
-          API_KEY_ISSUER_ID: ${{ env.API_KEY_ISSUER_ID }}
+          APPLE_API_KEY_ID: ${{ env.APPLE_API_KEY_ID }}
+          APPLE_API_KEY_ISSUER: ${{ env.APPLE_API_KEY_ISSUER }}
