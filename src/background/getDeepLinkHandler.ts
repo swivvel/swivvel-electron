@@ -3,6 +3,7 @@ import log from 'electron-log';
 
 import createLogInWindow from './createLogInWindow';
 import { State } from './types';
+import { loadUrl } from './utils';
 
 const convertDeeplinkUrlToHttps = (url: string): string => {
   return url.replace(/^swivvel:\/\//, `https://`);
@@ -24,12 +25,12 @@ export default (
         logInWindow = state.logInWindow;
       } else {
         log.info(`Log in window missing, recreating...`);
-        logInWindow = await createLogInWindow(preloadPath, siteUrl);
+        logInWindow = await createLogInWindow(state, preloadPath, siteUrl);
         log.info(`Recreated log in window`);
       }
 
       log.info(`Loading OAuth callback URL into log in window...`);
-      await logInWindow.loadURL(convertDeeplinkUrlToHttps(url));
+      await loadUrl(convertDeeplinkUrlToHttps(url), logInWindow, state);
       log.info(`Loaded OAuth callback URL into log in window`);
     }
   };

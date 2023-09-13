@@ -1,14 +1,16 @@
 import { BrowserWindow, shell } from 'electron';
 import log from 'electron-log';
 
+import { State } from './types';
 import {
   isProduction,
-  loadInternalUrl,
+  loadUrl,
   makeBrowserWindow,
   removeQueryParams,
 } from './utils';
 
 export default async (
+  state: State,
   preloadPath: string,
   siteUrl: string
 ): Promise<BrowserWindow> => {
@@ -44,7 +46,7 @@ export default async (
     log.info(`Proceeding with redirect in log in window`);
   });
 
-  await loadInternalUrl(logInWindow, siteUrl, `/`);
+  await loadUrl(`${siteUrl}/`, logInWindow, state);
 
   log.info(`Created log in window`);
 

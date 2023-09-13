@@ -47,7 +47,11 @@ const run = async (): Promise<void> => {
     SITE_URL,
     {
       onLogInPageOpened: async () => {
-        state.logInWindow = await createLogInWindow(PRELOAD_PATH, SITE_URL);
+        state.logInWindow = await createLogInWindow(
+          state,
+          PRELOAD_PATH,
+          SITE_URL
+        );
       },
     }
   );

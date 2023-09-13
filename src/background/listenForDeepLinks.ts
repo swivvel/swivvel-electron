@@ -4,12 +4,7 @@ import { app } from 'electron';
 import log from 'electron-log';
 
 import { State } from './types';
-import {
-  ErrorCode,
-  quitApp,
-  removeQueryParams,
-  showGenericErrorMessage,
-} from './utils';
+import { quitApp, removeQueryParams, showErrorMessage } from './utils';
 
 /**
  * Configure URL protocol used for deep linking to the desktop app.
@@ -50,9 +45,7 @@ export default (state: State, deepLinkHandler: (url: string) => void): void => {
       log.info(`url=${url}`);
 
       if (!url) {
-        showGenericErrorMessage({
-          errorCode: ErrorCode.UrlMissingOnSecondInstanceDeepLink,
-        });
+        showErrorMessage({ description: `Failed to open URL: ${url}` });
       } else {
         deepLinkHandler(url);
       }

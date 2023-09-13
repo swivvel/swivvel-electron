@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron';
 import log from 'electron-log';
 
 import { State } from '../types';
-import { isLinux, loadInternalUrl, makeBrowserWindow, sleep } from '../utils';
+import { isLinux, loadUrl, makeBrowserWindow, sleep } from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';
 import getTransparentBrowserWindowOptions from './getTransparentBrowserWindowOptions';
@@ -36,7 +36,7 @@ export default async (
   configureCloseHandler(transparentWindow, state);
   pollForMouseEvents(transparentWindow);
 
-  await loadInternalUrl(transparentWindow, siteUrl, `/notifications`);
+  await loadUrl(`${siteUrl}/notifications`, transparentWindow, state);
 
   log.info(`Created transparent window`);
 
