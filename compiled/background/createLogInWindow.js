@@ -22,7 +22,7 @@ exports.default = async (preloadPath, siteUrl) => {
         }
         return (0, utils_1.getBaseWindowOpenHandler)(url, siteUrl);
     });
-    await (0, utils_1.loadInternalUrl)(logInWindow, `swivvel://app.localhost.architect.sh`, `/`);
+    await (0, utils_1.loadInternalUrl)(logInWindow, siteUrl, `/`);
     logInWindow.webContents.openDevTools();
     electron_log_1.default.info(`Created log in window`);
     return logInWindow;

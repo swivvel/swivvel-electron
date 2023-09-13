@@ -31,12 +31,7 @@ export default async (
     return getBaseWindowOpenHandler(url, siteUrl);
   });
 
-  // await loadInternalUrl(logInWindow, siteUrl, `/`);
-  await loadInternalUrl(
-    logInWindow,
-    `swivvel://app.localhost.architect.sh`,
-    `/`
-  );
+  await loadInternalUrl(logInWindow, siteUrl, `/`);
 
   logInWindow.webContents.openDevTools();
 
