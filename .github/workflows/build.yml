@@ -28,6 +28,9 @@ jobs:
         with:
           node-version: 18
 
+      - name: Compile
+        run: npm run build
+
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
         # Only install Snapcraft on Ubuntu
