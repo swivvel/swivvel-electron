@@ -16,6 +16,7 @@ export default async (
   siteUrl: string,
   callbacks: {
     onLogInPageOpened: () => void;
+    onHqPageOpened: () => void;
   }
 ): Promise<BrowserWindow> => {
   log.info(`Creating transparent window...`);

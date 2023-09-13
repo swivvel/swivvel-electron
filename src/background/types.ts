@@ -18,11 +18,6 @@ export interface State {
   logInWindow: BrowserWindow | null;
 
   /**
-   * The window that displays the desktop app setup page
-   */
-  setupWindow: BrowserWindow | null;
-
-  /**
    * The transparent, always-on-top window
    */
   transparentWindow: BrowserWindow | null;

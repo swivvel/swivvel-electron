@@ -14,6 +14,15 @@ export default (state: State, logoTemplatePath: string): void => {
 
   const contextMenu = Menu.buildFromTemplate([
     {
+      label: `Open Swivvel`,
+      type: `normal`,
+      click: (): void => {
+        if (state.hqWindow && !state.hqWindow.isDestroyed()) {
+          state.hqWindow.show();
+        }
+      },
+    },
+    {
       label: `Quit`,
       type: `normal`,
       click: (): void => {

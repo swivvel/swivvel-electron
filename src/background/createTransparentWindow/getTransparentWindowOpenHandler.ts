@@ -6,6 +6,7 @@ export default (
   siteUrl: string,
   callbacks: {
     onLogInPageOpened: () => void;
+    onHqPageOpened: () => void;
   }
 ): WindowOpenHandler => {
   return (url) => {
@@ -13,6 +14,12 @@ export default (
     if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
       log.info(`Log in page requested`);
       callbacks.onLogInPageOpened();
+      return { action: `deny` };
+    }
+
+    if (removeQueryParams(url) === `${siteUrl}/electron/hq`) {
+      log.info(`HQ page requested`);
+      callbacks.onHqPageOpened();
       return { action: `deny` };
     }
 

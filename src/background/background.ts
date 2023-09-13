@@ -6,6 +6,7 @@ import log from 'electron-log';
 import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
+import createHqWindow from './createHqWindow';
 import createLogInWindow from './createLogInWindow';
 import createTransparentWindow from './createTransparentWindow';
 import createTray from './createTray';
@@ -27,7 +28,6 @@ const run = async (): Promise<void> => {
     allowQuit: false,
     hqWindow: null,
     logInWindow: null,
-    setupWindow: null,
     transparentWindow: null,
   };
 
@@ -52,6 +52,9 @@ const run = async (): Promise<void> => {
           PRELOAD_PATH,
           SITE_URL
         );
+      },
+      onHqPageOpened: async () => {
+        state.hqWindow = await createHqWindow(state, PRELOAD_PATH, SITE_URL);
       },
     }
   );
