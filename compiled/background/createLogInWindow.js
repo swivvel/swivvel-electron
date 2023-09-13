@@ -15,12 +15,12 @@ exports.default = async (preloadPath, siteUrl) => {
     });
     logInWindow.webContents.setWindowOpenHandler(({ url }) => {
         electron_log_1.default.info(`Caught URL opened by log in window: ${url}`);
-        if ((0, utils_1.removeQueryParams)(url) === `${siteUrl}/api/auth/login`) {
-            electron_log_1.default.info(`User is logging in, sending to browser for Google SSO`);
-            electron_1.shell.openExternal(url);
-            return { action: `deny` };
-        }
         return (0, utils_1.getBaseWindowOpenHandler)(url, siteUrl);
+    });
+    logInWindow.webContents.on(`will-redirect`, (event) => {
+        console.log(`----------------------- will-redirect ----------------------`);
+        console.log(event);
+        event.preventDefault();
     });
     await (0, utils_1.loadInternalUrl)(logInWindow, siteUrl, `/`);
     logInWindow.webContents.openDevTools();
