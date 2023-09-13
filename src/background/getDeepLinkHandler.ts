@@ -29,9 +29,17 @@ export default (
         log.info(`Recreated log in window`);
       }
 
+      logInWindow.hide();
+
       log.info(`Loading OAuth callback URL into log in window...`);
       await loadUrl(convertDeeplinkUrlToHttps(url), logInWindow, state);
       log.info(`Loaded OAuth callback URL into log in window`);
+
+      logInWindow.close();
+
+      if (state.transparentWindow && !state.transparentWindow.isDestroyed()) {
+        state.transparentWindow.reload();
+      }
     }
   };
 };
