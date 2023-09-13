@@ -3,14 +3,20 @@ import path from 'path';
 import { app } from 'electron';
 import log from 'electron-log';
 
-import { ErrorCode, removeQueryParams, showGenericErrorMessage } from './utils';
+import { State } from './types';
+import {
+  ErrorCode,
+  quitApp,
+  removeQueryParams,
+  showGenericErrorMessage,
+} from './utils';
 
 /**
  * Configure URL protocol used for deep linking to the desktop app.
  *
  * Note: registering the `swivvel://` protocol only works on production.
  */
-export default (deepLinkHandler: (url: string) => void): void => {
+export default (state: State, deepLinkHandler: (url: string) => void): void => {
   log.info(`Configuring deep linking...`);
 
   if (process.defaultApp) {
@@ -29,8 +35,11 @@ export default (deepLinkHandler: (url: string) => void): void => {
   const gotTheLock = app.requestSingleInstanceLock();
 
   if (!gotTheLock) {
-    app.quit();
+    log.info(`Failed to acquire the single instance lock - quitting`);
+    quitApp(state);
   } else {
+    log.info(`Acquired the single instance lock`);
+
     app.on(`second-instance`, (event, commandLine, workingDirectory) => {
       const url = commandLine?.pop()?.slice(0, -1);
       const urlForLog = url ? removeQueryParams(url) : null;

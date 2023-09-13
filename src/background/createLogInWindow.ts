@@ -34,8 +34,6 @@ export default async (
 
   await loadInternalUrl(logInWindow, siteUrl, `/`);
 
-  logInWindow.webContents.openDevTools();
-
   log.info(`Created log in window`);
 
   return logInWindow;

@@ -11,6 +11,7 @@ import createTransparentWindow from './createTransparentWindow';
 import createTray from './createTray';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import getSiteUrl from './getSiteUrl';
+import handleSystemShutdown from './handleSystemShutdown';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
@@ -32,7 +33,7 @@ const run = async (): Promise<void> => {
 
   configureApp();
   configureAppQuitHandling(state);
-  listenForDeepLinks(getDeepLinkHandler(state, PRELOAD_PATH, SITE_URL));
+  listenForDeepLinks(state, getDeepLinkHandler(state, PRELOAD_PATH, SITE_URL));
 
   await app.whenReady();
 
@@ -56,6 +57,7 @@ const run = async (): Promise<void> => {
   createTray(state, LOGO_TEMPLATE_PATH);
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
+  handleSystemShutdown(state);
 
   log.info(`App started`);
 };
