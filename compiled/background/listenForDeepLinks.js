@@ -45,8 +45,7 @@ exports.default = (deepLinkHandler) => {
             }
         });
         electron_1.app.on(`open-url`, (event, url) => {
-            const urlForLog = url ? (0, utils_1.removeQueryParams)(url) : null;
-            electron_log_1.default.info(`Deep link detected from open-url: ${urlForLog}`);
+            electron_log_1.default.info(`Deep link detected from open-url: ${(0, utils_1.removeQueryParams)(url)}`);
             deepLinkHandler(url);
         });
     }

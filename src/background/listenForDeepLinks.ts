@@ -33,8 +33,6 @@ export default (deepLinkHandler: (url: string) => void): void => {
   } else {
     app.on(`second-instance`, (event, commandLine, workingDirectory) => {
       const url = commandLine?.pop()?.slice(0, -1);
-
-      // Query params can be sensitive (e.g. OAuth codes)
       const urlForLog = url ? removeQueryParams(url) : null;
 
       log.info(`Deep link detected from second-instance: ${urlForLog}`);
@@ -52,11 +50,7 @@ export default (deepLinkHandler: (url: string) => void): void => {
     });
 
     app.on(`open-url`, (event, url) => {
-      // Query params can be sensitive (e.g. OAuth codes)
-      const urlForLog = url ? removeQueryParams(url) : null;
-
-      log.info(`Deep link detected from open-url: ${urlForLog}`);
-
+      log.info(`Deep link detected from open-url: ${removeQueryParams(url)}`);
       deepLinkHandler(url);
     });
   }

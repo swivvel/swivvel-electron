@@ -18,9 +18,16 @@ exports.default = async (preloadPath, siteUrl) => {
         return (0, utils_1.getBaseWindowOpenHandler)(url, siteUrl);
     });
     logInWindow.webContents.on(`will-redirect`, (event) => {
-        electron_log_1.default.info(`----------------------- will-redirect ----------------------`);
-        electron_log_1.default.info(event);
-        event.preventDefault();
+        const { url } = event;
+        electron_log_1.default.info(`Caught redirect in log in window: ${(0, utils_1.removeQueryParams)(url)}`);
+        if (url.includes(`auth0.com/authorize`)) {
+            electron_log_1.default.info(`User is logging in, sending to browser for Google SSO`);
+            event.preventDefault();
+            electron_1.shell.openExternal(url);
+        }
+        else {
+            electron_log_1.default.info(`Proceeding with redirect in log in window`);
+        }
     });
     await (0, utils_1.loadInternalUrl)(logInWindow, siteUrl, `/`);
     logInWindow.webContents.openDevTools();

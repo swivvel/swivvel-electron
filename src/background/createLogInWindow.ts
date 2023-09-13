@@ -36,9 +36,16 @@ export default async (
   });
 
   logInWindow.webContents.on(`will-redirect`, (event) => {
-    log.info(`----------------------- will-redirect ----------------------`);
-    log.info(event);
-    event.preventDefault();
+    const { url } = event;
+    log.info(`Caught redirect in log in window: ${removeQueryParams(url)}`);
+
+    if (url.includes(`auth0.com/authorize`)) {
+      log.info(`User is logging in, sending to browser for Google SSO`);
+      event.preventDefault();
+      shell.openExternal(url);
+    } else {
+      log.info(`Proceeding with redirect in log in window`);
+    }
   });
 
   await loadInternalUrl(logInWindow, siteUrl, `/`);
