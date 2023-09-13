@@ -8,7 +8,7 @@
   },
   "description": "Swivvel gets your whole team on the same page, literally. Swivvel brings your team’s meetings to life in a whole new way.",
   "homepage": "https://www.swivvel.io",
-  "main": "dist/background/background.js",
+  "main": "compiled/background/background.js",
   "build": {
     "appId": "com.swivvel.swivvel",
     "productName": "Swivvel",
@@ -53,12 +53,12 @@
   },
   "scripts": {
     "check": "npx npm-check --skip-unused",
-    "build": "mkdir -p dist && cp src/*.png dist && tsc",
-    "dev": "electron dist/background/background.js",
+    "compile": "mkdir -p compiled && cp src/*.png compiled && tsc",
+    "dev": "electron compiled/background/background.js",
     "dist": "npm run compile && electron-builder",
     "lint": "eslint .",
     "types": "tsc --noEmit",
-    "watch": "mkdir -p dist && cp src/*.png dist && tsc --watch"
+    "watch": "mkdir -p compiled && cp src/*.png compiled && tsc --watch"
   },
   "dependencies": {
     "electron-log": "^4.4.8",
