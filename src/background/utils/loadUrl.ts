@@ -17,10 +17,13 @@ export default async (
   try {
     await browserWindow.loadURL(url);
   } catch (err) {
-    log.error(`Failed to load URL: ${removeQueryParams(url)}`);
+    const urlNoParams = removeQueryParams(url);
+
+    log.error(`Failed to load URL: ${urlNoParams}`);
+
     quitApp(state);
     showErrorMessage({
-      description: `Error while loading ${removeQueryParams(url)}`,
+      description: `Unable to load page:\n${urlNoParams}\n\nCheck your internet connection and try again.`,
     });
   }
 };
