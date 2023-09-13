@@ -63,6 +63,7 @@ jobs:
           # MacOS notarization API key
           APPLE_API_KEY_ID: ${{ env.APPLE_API_KEY_ID }}
           APPLE_API_KEY_ISSUER: ${{ env.APPLE_API_KEY_ISSUER }}
+          APPLE_API_KEY: ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
 
       - name: Check for notarization error
         if: startsWith(matrix.os, 'macos')
