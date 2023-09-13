@@ -8,14 +8,12 @@ const electron_log_1 = __importDefault(require("electron-log"));
 const utils_1 = require("./utils");
 exports.default = async (preloadPath, siteUrl) => {
     electron_log_1.default.info(`Creating log in window...`);
-    const logInWindow = new electron_1.BrowserWindow({
-        height: 700,
-        webPreferences: { preload: preloadPath },
-        width: 1400,
-    });
-    logInWindow.webContents.setWindowOpenHandler(({ url }) => {
-        electron_log_1.default.info(`Caught URL opened by log in window: ${url}`);
-        return (0, utils_1.getBaseWindowOpenHandler)(url, siteUrl);
+    const logInWindow = (0, utils_1.makeBrowserWindow)(siteUrl, {
+        browserWindowOptions: {
+            height: 700,
+            webPreferences: { preload: preloadPath },
+            width: 720,
+        },
     });
     logInWindow.webContents.on(`will-redirect`, (event) => {
         const { url } = event;
@@ -24,10 +22,9 @@ exports.default = async (preloadPath, siteUrl) => {
             electron_log_1.default.info(`User is logging in, sending to browser for Google SSO`);
             event.preventDefault();
             electron_1.shell.openExternal(url);
+            return;
         }
-        else {
-            electron_log_1.default.info(`Proceeding with redirect in log in window`);
-        }
+        electron_log_1.default.info(`Proceeding with redirect in log in window`);
     });
     await (0, utils_1.loadInternalUrl)(logInWindow, siteUrl, `/`);
     logInWindow.webContents.openDevTools();

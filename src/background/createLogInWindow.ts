@@ -1,11 +1,7 @@
 import { BrowserWindow, shell } from 'electron';
 import log from 'electron-log';
 
-import {
-  getBaseWindowOpenHandler,
-  loadInternalUrl,
-  removeQueryParams,
-} from './utils';
+import { loadInternalUrl, makeBrowserWindow, removeQueryParams } from './utils';
 
 export default async (
   preloadPath: string,
@@ -13,39 +9,27 @@ export default async (
 ): Promise<BrowserWindow> => {
   log.info(`Creating log in window...`);
 
-  const logInWindow = new BrowserWindow({
-    height: 700,
-    webPreferences: { preload: preloadPath },
-    // width: 720,
-    width: 1400,
-  });
-
-  logInWindow.webContents.setWindowOpenHandler(({ url }) => {
-    log.info(`Caught URL opened by log in window: ${url}`);
-
-    // We want to be able to reuse Google session cookies from the user's
-    // browser, so we send them to the browser to log in. Auth0 will redirect
-    // the user back to the desktop app using the `swivvel://` protocol.
-    // if (removeQueryParams(url) === `${siteUrl}/api/auth/login`) {
-    //   log.info(`User is logging in, sending to browser for Google SSO`);
-    //   shell.openExternal(url);
-    //   return { action: `deny` };
-    // }
-
-    return getBaseWindowOpenHandler(url, siteUrl);
+  const logInWindow = makeBrowserWindow(siteUrl, {
+    browserWindowOptions: {
+      height: 700,
+      webPreferences: { preload: preloadPath },
+      width: 720,
+    },
   });
 
   logInWindow.webContents.on(`will-redirect`, (event) => {
     const { url } = event;
     log.info(`Caught redirect in log in window: ${removeQueryParams(url)}`);
 
+    // See main repo README for description of desktop log in flow
     if (url.includes(`auth0.com/authorize`)) {
       log.info(`User is logging in, sending to browser for Google SSO`);
       event.preventDefault();
       shell.openExternal(url);
-    } else {
-      log.info(`Proceeding with redirect in log in window`);
+      return;
     }
+
+    log.info(`Proceeding with redirect in log in window`);
   });
 
   await loadInternalUrl(logInWindow, siteUrl, `/`);

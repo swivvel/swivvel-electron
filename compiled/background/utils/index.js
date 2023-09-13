@@ -26,15 +26,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sleep = exports.showGenericErrorMessage = exports.removeQueryParams = exports.quitApp = exports.prepareToQuitApp = exports.loadInternalUrl = exports.isProduction = exports.isLinux = exports.getBaseWindowOpenHandler = exports.ErrorCode = void 0;
-const getBaseWindowOpenHandler_1 = __importDefault(require("./getBaseWindowOpenHandler"));
-exports.getBaseWindowOpenHandler = getBaseWindowOpenHandler_1.default;
+exports.sleep = exports.showGenericErrorMessage = exports.removeQueryParams = exports.quitApp = exports.prepareToQuitApp = exports.makeBrowserWindow = exports.loadInternalUrl = exports.isProduction = exports.isLinux = exports.ErrorCode = void 0;
 const isLinux_1 = __importDefault(require("./isLinux"));
 exports.isLinux = isLinux_1.default;
 const isProduction_1 = __importDefault(require("./isProduction"));
 exports.isProduction = isProduction_1.default;
 const loadInternalUrl_1 = __importDefault(require("./loadInternalUrl"));
 exports.loadInternalUrl = loadInternalUrl_1.default;
+const makeBrowserWindow_1 = __importDefault(require("./makeBrowserWindow"));
+exports.makeBrowserWindow = makeBrowserWindow_1.default;
 const prepareToQuitApp_1 = __importDefault(require("./prepareToQuitApp"));
 exports.prepareToQuitApp = prepareToQuitApp_1.default;
 const quitApp_1 = __importDefault(require("./quitApp"));

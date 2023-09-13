@@ -14,6 +14,7 @@ export default (
   siteUrl: string
 ): ((url: string) => Promise<void>) => {
   return async (url) => {
+    // See main repo README for description of desktop log in flow
     if (url.includes(`/api/auth/callback`)) {
       log.info(`Running log in callback handler...`);
 

@@ -1,14 +1,11 @@
-import { BrowserWindow, screen } from 'electron';
-import log from 'electron-log';
+import { BrowserWindowConstructorOptions, screen } from 'electron';
 
 import { isLinux } from '../utils';
 
-export default (preloadPath: string): BrowserWindow => {
-  log.info(`Creating transparent window BrowserWindow...`);
-
+export default (preloadPath: string): BrowserWindowConstructorOptions => {
   const primaryDisplay = screen.getPrimaryDisplay();
 
-  const transparentWindow = new BrowserWindow({
+  return {
     alwaysOnTop: true,
     autoHideMenuBar: true,
     closable: false,
@@ -31,7 +28,5 @@ export default (preloadPath: string): BrowserWindow => {
     width: primaryDisplay.workAreaSize.width,
     x: 0,
     y: 0,
-  });
-
-  return transparentWindow;
+  };
 };
