@@ -48,6 +48,7 @@ jobs:
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
+        continue-on-error: true
         with:
           github_token: ${{ env.GITHUB_TOKEN }}
 
@@ -62,3 +63,10 @@ jobs:
           # MacOS notarization API key
           APPLE_API_KEY_ID: ${{ env.APPLE_API_KEY_ID }}
           APPLE_API_KEY_ISSUER: ${{ env.APPLE_API_KEY_ISSUER }}
+
+      - name: Check for notarization error
+        run: |
+          if [ -f "notarization-error.log" ]; then
+            cat notarization-error.log
+            exit 1
+          fi

@@ -32,6 +32,7 @@
       "icon": "build/icon.icns",
       "category": "public.app-category.productivity",
       "hardenedRuntime": true,
+      "entitlements": "./build/entitlements.mac.plist",
       "extendInfo": {
         "NSMicrophoneUsageDescription": "Swivvel uses your microphone for your team's audio room",
         "com.apple.security.device.audio-input": true
