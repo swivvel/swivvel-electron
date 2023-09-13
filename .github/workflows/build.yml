@@ -65,6 +65,7 @@ jobs:
           APPLE_API_KEY_ISSUER: ${{ env.APPLE_API_KEY_ISSUER }}
 
       - name: Check for notarization error
+        if: startsWith(matrix.os, 'macos')
         run: |
           if [ -f "notarization-error.log" ]; then
             cat notarization-error.log
