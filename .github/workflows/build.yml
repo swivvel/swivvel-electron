@@ -47,6 +47,7 @@ jobs:
           echo '${{ env.APPLE_API_KEY }}' > ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
 
       - name: Build/release Electron app
+        id: build
         uses: samuelmeuli/action-electron-builder@v1
         continue-on-error: true
         with:
@@ -65,10 +66,10 @@ jobs:
           APPLE_API_KEY_ISSUER: ${{ env.APPLE_API_KEY_ISSUER }}
           APPLE_API_KEY: ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
 
-      - name: Check for notarization error
-        if: startsWith(matrix.os, 'macos')
+      - name: Print notarization error log
+        if: startsWith(matrix.os, 'macos') && steps.build.outcome == 'failure'
         run: |
           if [ -f "notarization-error.log" ]; then
             cat notarization-error.log
-            exit 1
           fi
+          exit 1
