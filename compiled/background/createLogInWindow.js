@@ -18,8 +18,8 @@ exports.default = async (preloadPath, siteUrl) => {
         return (0, utils_1.getBaseWindowOpenHandler)(url, siteUrl);
     });
     logInWindow.webContents.on(`will-redirect`, (event) => {
-        console.log(`----------------------- will-redirect ----------------------`);
-        console.log(event);
+        electron_log_1.default.info(`----------------------- will-redirect ----------------------`);
+        electron_log_1.default.info(event);
         event.preventDefault();
     });
     await (0, utils_1.loadInternalUrl)(logInWindow, siteUrl, `/`);

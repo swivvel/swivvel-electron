@@ -36,8 +36,8 @@ export default async (
   });
 
   logInWindow.webContents.on(`will-redirect`, (event) => {
-    console.log(`----------------------- will-redirect ----------------------`);
-    console.log(event);
+    log.info(`----------------------- will-redirect ----------------------`);
+    log.info(event);
     event.preventDefault();
   });
 
