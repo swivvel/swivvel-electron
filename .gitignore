@@ -30,4 +30,5 @@ next-env.d.ts
 .build
 
 # Electron build
+compiled
 dist
