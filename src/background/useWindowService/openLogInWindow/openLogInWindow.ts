@@ -19,8 +19,7 @@ const openLogInWindow: OpenLogInWindow = async (args) => {
     const logInWindow = new BrowserWindow({
       height: 700,
       webPreferences: { preload: preloadPath },
-      // width: 720,
-      width: 1200,
+      width: 720,
     });
 
     logInWindow.webContents.setWindowOpenHandler(windowOpenRequestHandler);
@@ -35,8 +34,6 @@ const openLogInWindow: OpenLogInWindow = async (args) => {
     // so navigating to the home page here should always result in the log in
     // page being displayed.
     await loadUrl(`${siteUrl}/`, logInWindow, state);
-
-    logInWindow.webContents.openDevTools();
 
     return logInWindow;
   });
