@@ -35,14 +35,11 @@ export default (state: State, deepLinkHandler: (url: string) => void): void => {
   } else {
     log.info(`Acquired the single instance lock`);
 
-    app.on(`second-instance`, (event, commandLine, workingDirectory) => {
+    app.on(`second-instance`, (event, commandLine) => {
       const url = commandLine?.pop()?.slice(0, -1);
       const urlForLog = url ? removeQueryParams(url) : null;
 
       log.info(`Deep link detected from second-instance: ${urlForLog}`);
-      log.info(`commandLine=${commandLine}`);
-      log.info(`workingDirectory=${workingDirectory}`);
-      log.info(`url=${url}`);
 
       if (!url) {
         showErrorMessage({ description: `Failed to open URL: ${url}` });
