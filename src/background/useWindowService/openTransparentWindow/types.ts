@@ -8,8 +8,6 @@ export type OpenTransparentWindow = (
 ) => Promise<BrowserWindow>;
 
 export interface OpenTransparentWindowArgs {
-  preloadPath: string;
-  siteUrl: string;
   state: State;
   windowOpenRequestHandler: WindowOpenRequestHandler;
 }

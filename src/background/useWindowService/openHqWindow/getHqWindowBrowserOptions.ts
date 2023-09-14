@@ -1,8 +1,8 @@
 import { BrowserWindowConstructorOptions, screen } from 'electron';
 
-import { isLinux } from '../../utils';
+import { getPreloadPath, isLinux } from '../../utils';
 
-export default (preloadPath: string): BrowserWindowConstructorOptions => {
+export default (): BrowserWindowConstructorOptions => {
   const primaryDisplay = screen.getPrimaryDisplay();
 
   return {
@@ -13,7 +13,7 @@ export default (preloadPath: string): BrowserWindowConstructorOptions => {
     height: primaryDisplay.workArea.height,
     hiddenInMissionControl: false,
     skipTaskbar: false,
-    webPreferences: { preload: preloadPath },
+    webPreferences: { preload: getPreloadPath() },
     width: primaryDisplay.workArea.width,
     x: primaryDisplay.workArea.x,
     y: primaryDisplay.workArea.y,

@@ -8,16 +8,16 @@ import updateTray from './updateTray';
 /**
  * Service for managing the OS system tray.
  */
-export default (state: State, logoTemplatePath: string): TrayService => {
+export default (state: State): TrayService => {
   return {
     createTray: (): void => {
-      createTray(state, logoTemplatePath);
+      createTray(state);
     },
     resetTray: (): void => {
-      resetTray(state, logoTemplatePath);
+      resetTray(state);
     },
     updateTray: (menuItems): void => {
-      updateTray(state, logoTemplatePath, menuItems);
+      updateTray(state, menuItems);
     },
   };
 };

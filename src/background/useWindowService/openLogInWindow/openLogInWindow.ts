@@ -1,4 +1,4 @@
-import { loadUrl } from '../../utils';
+import { getSiteUrl, loadUrl } from '../../utils';
 import { openBrowserWindow } from '../utils';
 
 import configureAppActivateHandler from './configureAppActivateHandler';
@@ -11,10 +11,9 @@ import updateTray from './updateTray';
 // See main repo README for description of desktop log in flow
 
 const openLogInWindow: OpenLogInWindow = async (args) => {
-  const { preloadPath, siteUrl, state, trayService, windowOpenRequestHandler } =
-    args;
+  const { state, trayService, windowOpenRequestHandler } = args;
 
-  const options = getLogInWindowBrowserOptions(preloadPath);
+  const options = getLogInWindowBrowserOptions();
 
   return openBrowserWindow(state, `logIn`, options, async (window) => {
     window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
@@ -28,7 +27,7 @@ const openLogInWindow: OpenLogInWindow = async (args) => {
     // page. We only open the log in window if the user is unauthenticated,
     // so navigating to the home page here should always result in the log in
     // page being displayed.
-    await loadUrl(`${siteUrl}/`, window, state);
+    await loadUrl(`${getSiteUrl()}/`, window, state);
 
     return window;
   });

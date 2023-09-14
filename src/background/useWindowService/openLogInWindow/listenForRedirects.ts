@@ -1,7 +1,7 @@
 import { BrowserWindow, shell } from 'electron';
 import log from 'electron-log';
 
-import { isProduction, removeQueryParams } from '../../utils';
+import { getSiteUrl, isProduction, removeQueryParams } from '../../utils';
 import openTransparentWindow from '../openTransparentWindow';
 
 import { OpenLogInWindowArgs } from './types';
@@ -35,7 +35,7 @@ export default (
     // the HQ page.
     //
     // See main repo README for description of desktop log in flow.
-    if (url.startsWith(`${args.siteUrl}/office/`)) {
+    if (url.startsWith(`${getSiteUrl()}/office/`)) {
       log.info(`Preventing redirect to HQ page from log in page`);
       event.preventDefault();
 

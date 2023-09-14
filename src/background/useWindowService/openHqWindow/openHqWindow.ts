@@ -1,4 +1,4 @@
-import { loadUrl } from '../../utils';
+import { getSiteUrl, loadUrl } from '../../utils';
 import { openBrowserWindow } from '../utils';
 
 import configureAppActivateHandler from './configureAppActivateHandler';
@@ -8,10 +8,9 @@ import { OpenHqWindow } from './types';
 import updateTray from './updateTray';
 
 const openHqWindow: OpenHqWindow = async (args) => {
-  const { preloadPath, siteUrl, state, trayService, windowOpenRequestHandler } =
-    args;
+  const { state, trayService, windowOpenRequestHandler } = args;
 
-  const options = getHqWindowBrowserOptions(preloadPath);
+  const options = getHqWindowBrowserOptions();
 
   return openBrowserWindow(state, `hq`, options, async (window) => {
     window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
@@ -22,7 +21,7 @@ const openHqWindow: OpenHqWindow = async (args) => {
 
     // By the time we open the HQ window the user should be logged in, so
     // the home page will redirect the user to their company's HQ page
-    await loadUrl(`${siteUrl}/`, window, state);
+    await loadUrl(`${getSiteUrl()}/`, window, state);
 
     return window;
   });

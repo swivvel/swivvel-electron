@@ -7,8 +7,6 @@ import { WindowOpenRequestHandler } from '../getWindowOpenRequestHandler';
 export type OpenHqWindow = (args: OpenHqWindowArgs) => Promise<BrowserWindow>;
 
 export interface OpenHqWindowArgs {
-  preloadPath: string;
-  siteUrl: string;
   state: State;
   trayService: TrayService;
   windowOpenRequestHandler: WindowOpenRequestHandler;

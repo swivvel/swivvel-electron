@@ -1,7 +1,12 @@
-import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
+import {
+  BrowserWindow,
+  BrowserWindowConstructorOptions,
+  shell,
+} from 'electron';
 import log from 'electron-log';
 
 import { State } from '../../types';
+import { shouldOpenUrlInBrowser } from '../../utils';
 
 export default async (
   state: State,
@@ -35,6 +40,19 @@ export default async (
   state.windows[browserWindowName] = browserWindow;
 
   if (!browserWindow.isDestroyed()) {
+    browserWindow.webContents.on(`will-navigate`, (event) => {
+      log.info(`Detected page navigation to: ${event.url}`);
+
+      if (shouldOpenUrlInBrowser(event.url)) {
+        log.info(`Opening URL in browser`);
+        event.preventDefault();
+        shell.openExternal(event.url);
+        return;
+      }
+
+      log.info(`Opening URL in Electron`);
+    });
+
     await instantiateBrowserWindow(browserWindow);
   }
 

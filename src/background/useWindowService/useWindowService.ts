@@ -12,59 +12,25 @@ import { WindowService } from './types';
 /**
  * Service for interacting with windows managed by the Swivvel app.
  */
-export default (
-  state: State,
-  preloadPath: string,
-  siteUrl: string,
-  trayService: TrayService
-): WindowService => {
-  const windowOpenRequestHandler = getWindowOpenRequestHandler(siteUrl, {
+export default (state: State, trayService: TrayService): WindowService => {
+  const windowOpenRequestHandler = getWindowOpenRequestHandler({
     onHqPageRequested: () => {
-      openHqWindow({
-        preloadPath,
-        siteUrl,
-        state,
-        trayService,
-        windowOpenRequestHandler,
-      });
+      openHqWindow({ state, trayService, windowOpenRequestHandler });
     },
     onLogInPageRequested: () => {
-      openLogInWindow({
-        preloadPath,
-        siteUrl,
-        state,
-        trayService,
-        windowOpenRequestHandler,
-      });
+      openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
   });
 
   return {
     openHqWindow: async (): Promise<BrowserWindow> => {
-      return openHqWindow({
-        preloadPath,
-        siteUrl,
-        state,
-        trayService,
-        windowOpenRequestHandler,
-      });
+      return openHqWindow({ state, trayService, windowOpenRequestHandler });
     },
     openLogInWindow: async (): Promise<BrowserWindow> => {
-      return openLogInWindow({
-        preloadPath,
-        siteUrl,
-        state,
-        trayService,
-        windowOpenRequestHandler,
-      });
+      return openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
     openTransparentWindow: async (): Promise<BrowserWindow> => {
-      return openTransparentWindow({
-        preloadPath,
-        siteUrl,
-        state,
-        windowOpenRequestHandler,
-      });
+      return openTransparentWindow({ state, windowOpenRequestHandler });
     },
   };
 };

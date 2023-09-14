@@ -6,13 +6,13 @@ import { State } from '../types';
 import createTray from './createTray';
 import { getTrayQuitMenuItem } from './utils';
 
-export default (state: State, logoTemplatePath: string): void => {
+export default (state: State): void => {
   log.info(`Resetting tray...`);
 
   let tray = state.tray;
 
   if (!tray) {
-    tray = createTray(state, logoTemplatePath);
+    tray = createTray(state);
     state.tray = tray;
   }
 

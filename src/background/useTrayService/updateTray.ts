@@ -8,7 +8,6 @@ import { getTrayQuitMenuItem } from './utils';
 
 export default (
   state: State,
-  logoTemplatePath: string,
   menuItems: Array<MenuItemConstructorOptions>
 ): void => {
   log.info(`Updating tray...`);
@@ -22,7 +21,7 @@ export default (
   let tray = state.tray;
 
   if (!tray) {
-    tray = createTray(state, logoTemplatePath);
+    tray = createTray(state);
     state.tray = tray;
   }
 

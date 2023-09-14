@@ -1,4 +1,4 @@
-import { isLinux, loadUrl, sleep } from '../../utils';
+import { getSiteUrl, isLinux, loadUrl, sleep } from '../../utils';
 import { openBrowserWindow } from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';
@@ -8,9 +8,9 @@ import showOnAllWorkspaces from './showOnAllWorkspaces';
 import { OpenTransparentWindow } from './types';
 
 const openTransparentWindow: OpenTransparentWindow = async (args) => {
-  const { preloadPath, siteUrl, state, windowOpenRequestHandler } = args;
+  const { state, windowOpenRequestHandler } = args;
 
-  const options = getTransparentBrowserWindowOptions(preloadPath);
+  const options = getTransparentBrowserWindowOptions();
 
   return openBrowserWindow(state, `transparent`, options, async (window) => {
     // Transparent windows don't work on Linux without some hacks
@@ -26,7 +26,7 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     configureCloseHandler(window, state);
     pollForMouseEvents(window);
 
-    await loadUrl(`${siteUrl}/notifications`, window, state);
+    await loadUrl(`${getSiteUrl()}/notifications`, window, state);
 
     return window;
   });

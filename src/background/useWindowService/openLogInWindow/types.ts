@@ -9,8 +9,6 @@ export type OpenLogInWindow = (
 ) => Promise<BrowserWindow>;
 
 export interface OpenLogInWindowArgs {
-  preloadPath: string;
-  siteUrl: string;
   state: State;
   trayService: TrayService;
   windowOpenRequestHandler: WindowOpenRequestHandler;

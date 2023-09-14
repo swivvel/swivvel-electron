@@ -1,9 +1,11 @@
 import { BrowserWindowConstructorOptions } from 'electron';
 
-export default (preloadPath: string): BrowserWindowConstructorOptions => {
+import { getPreloadPath } from '../../utils';
+
+export default (): BrowserWindowConstructorOptions => {
   return {
     height: 700,
-    webPreferences: { preload: preloadPath },
+    webPreferences: { preload: getPreloadPath() },
     width: 720,
   };
 };
