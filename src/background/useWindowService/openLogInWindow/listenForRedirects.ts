@@ -39,6 +39,10 @@ export default (
       log.info(`Preventing redirect to HQ page from log in page`);
       event.preventDefault();
 
+      // Remove the log in window's custom menu items because we are about to
+      // open the HQ window and that will add its own custom menu items
+      args.trayService.resetTray();
+
       // When the transparent window reloads the user will now be authenticated,
       // so the page will open the HQ window
       const transparentWindow = await openTransparentWindow(args);

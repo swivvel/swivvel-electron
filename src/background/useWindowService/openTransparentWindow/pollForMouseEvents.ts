@@ -29,15 +29,31 @@ export default (transparentWindow: BrowserWindow): void => {
     const [x, y] = transparentWindow.getPosition();
     const [w, h] = transparentWindow.getSize();
 
+    if (transparentWindow.isDestroyed()) {
+      clearInterval(interval);
+      return;
+    }
+
     if (point.x > x && point.x < x + w && point.y > y && point.y < y + h) {
       const mouseX = point.x - x;
       const mouseY = point.y - y;
+
+      if (transparentWindow.isDestroyed()) {
+        clearInterval(interval);
+        return;
+      }
 
       // Capture 1x1 image of mouse position
       const capture = { x: mouseX, y: mouseY, width: 1, height: 1 };
       const image = await transparentWindow.webContents.capturePage(capture);
       const buffer = image.getBitmap();
       const mouseIsOverTransparent = buffer[3] === 0;
+
+      if (transparentWindow.isDestroyed()) {
+        clearInterval(interval);
+        return;
+      }
+
       transparentWindow.setIgnoreMouseEvents(mouseIsOverTransparent);
     }
   }, 50);

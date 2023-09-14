@@ -19,7 +19,11 @@ export default async (
     return existingWindow;
   }
 
-  if (existingWindow && existingWindow.webContents.isCrashed()) {
+  if (
+    existingWindow &&
+    !existingWindow.isDestroyed() &&
+    existingWindow.webContents.isCrashed()
+  ) {
     log.info(`Window crashed, destroying and recreating: ${browserWindowName}`);
     existingWindow.destroy();
   }
@@ -30,11 +34,15 @@ export default async (
 
   state.windows[browserWindowName] = browserWindow;
 
-  await instantiateBrowserWindow(browserWindow);
+  if (!browserWindow.isDestroyed()) {
+    await instantiateBrowserWindow(browserWindow);
+  }
 
   log.info(`Created window: ${browserWindowName}`);
 
-  browserWindow.show();
+  if (!browserWindow.isDestroyed()) {
+    browserWindow.show();
+  }
 
   return browserWindow;
 };
