@@ -1,21 +1,24 @@
 import { shell } from 'electron';
 import log from 'electron-log';
 
-import { removeQueryParams } from './utils';
+import { removeQueryParams } from '../utils';
 
-export type WindowOpenHandler = ({
+export type WindowOpenRequestHandler = ({
   url,
 }: {
   url: string;
 }) => { action: `allow` } | { action: `deny` };
 
+/**
+ * Handle requests from the renderer process to open a specific Electron window.
+ */
 export default (
   siteUrl: string,
   callbacks: {
-    onLogInPageRequested: () => void;
     onHqPageRequested: () => void;
+    onLogInPageRequested: () => void;
   }
-): WindowOpenHandler => {
+): WindowOpenRequestHandler => {
   return ({ url }) => {
     log.info(`Caught URL opened by log in window: ${url}`);
 

@@ -1,21 +1,18 @@
 import { BrowserWindow } from 'electron';
 
-import { WindowOpenHandler } from '../../getWindowOpenHandler';
-import { State } from '../../types';
-import { getOrCreateBrowserWindow, isLinux, loadUrl, sleep } from '../../utils';
+import { isLinux, loadUrl, sleep } from '../../utils';
+import { openBrowserWindow } from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';
 import getTransparentBrowserWindowOptions from './getTransparentBrowserWindowOptions';
 import pollForMouseEvents from './pollForMouseEvents';
 import showOnAllWorkspaces from './showOnAllWorkspaces';
+import { OpenTransparentWindow } from './types';
 
-export default async (
-  state: State,
-  preloadPath: string,
-  siteUrl: string,
-  windowOpenHandler: WindowOpenHandler
-): Promise<BrowserWindow> => {
-  return getOrCreateBrowserWindow(state, `transparent`, async () => {
+const openTransparentWindow: OpenTransparentWindow = async (args) => {
+  const { preloadPath, siteUrl, state, windowOpenRequestHandler } = args;
+
+  return openBrowserWindow(state, `transparent`, async () => {
     // Transparent windows don't work on Linux without some hacks
     // like this short delay
     // See: https://github.com/electron/electron/issues/15947
@@ -27,7 +24,9 @@ export default async (
       getTransparentBrowserWindowOptions(preloadPath)
     );
 
-    transparentWindow.webContents.setWindowOpenHandler(windowOpenHandler);
+    transparentWindow.webContents.setWindowOpenHandler(
+      windowOpenRequestHandler
+    );
 
     showOnAllWorkspaces(transparentWindow);
     configureCloseHandler(transparentWindow, state);
@@ -38,3 +37,5 @@ export default async (
     return transparentWindow;
   });
 };
+
+export default openTransparentWindow;

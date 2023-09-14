@@ -8,17 +8,12 @@ import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import getSiteUrl from './getSiteUrl';
-import getWindowOpenHandler from './getWindowOpenHandler';
 import handleSystemShutdown from './handleSystemShutdown';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
-import { createTray } from './tray';
 import { State } from './types';
-import {
-  getOrCreateHqWindow,
-  getOrCreateLogInWindow,
-  getOrCreateTransparentWindow,
-} from './windows';
+import useTrayService from './useTrayService';
+import useWindowService from './useWindowService';
 
 const PRELOAD_PATH = path.join(__dirname, `..`, `preload.js`);
 const LOGO_TEMPLATE_PATH = path.join(__dirname, `..`, `logoTemplate.png`);
@@ -37,35 +32,18 @@ const run = async (): Promise<void> => {
     },
   };
 
-  const windowOpenHandler = getWindowOpenHandler(SITE_URL, {
-    onLogInPageRequested: async () => {
-      await getOrCreateLogInWindow(
-        state,
-        PRELOAD_PATH,
-        SITE_URL,
-        windowOpenHandler
-      );
-    },
-    onHqPageRequested: async () => {
-      await getOrCreateHqWindow(
-        state,
-        PRELOAD_PATH,
-        SITE_URL,
-        windowOpenHandler
-      );
-    },
-  });
+  const trayService = useTrayService(state, LOGO_TEMPLATE_PATH);
 
-  const deepLinkHandler = getDeepLinkHandler(
+  const windowService = useWindowService(
     state,
     PRELOAD_PATH,
     SITE_URL,
-    windowOpenHandler
+    trayService
   );
 
   configureApp();
   configureAppQuitHandling(state);
-  listenForDeepLinks(state, deepLinkHandler);
+  listenForDeepLinks(state, getDeepLinkHandler(state, windowService));
 
   await app.whenReady();
 
@@ -73,14 +51,9 @@ const run = async (): Promise<void> => {
     await systemPreferences.askForMediaAccess(`microphone`);
   }
 
-  const transparentWindow = await getOrCreateTransparentWindow(
-    state,
-    PRELOAD_PATH,
-    SITE_URL,
-    windowOpenHandler
-  );
+  const transparentWindow = await windowService.openTransparentWindow();
 
-  createTray(state, LOGO_TEMPLATE_PATH);
+  trayService.createTray();
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
   handleSystemShutdown(state);

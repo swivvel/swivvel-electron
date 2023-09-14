@@ -1,4 +1,3 @@
-import getOrCreateBrowserWindow from './getOrCreateBrowserWindow';
 import isLinux from './isLinux';
 import isProduction from './isProduction';
 import loadUrl from './loadUrl';
@@ -9,7 +8,6 @@ import showErrorMessage from './showErrorMessage';
 import sleep from './sleep';
 
 export {
-  getOrCreateBrowserWindow,
   isLinux,
   isProduction,
   loadUrl,

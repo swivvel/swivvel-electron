@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 import log from 'electron-log';
 
-import { State } from '../types';
+import { State } from '../../types';
 
 export default async (
   state: State,
@@ -13,7 +13,8 @@ export default async (
   const existingWindow = state.windows[browserWindowName];
 
   if (existingWindow && !existingWindow.isDestroyed()) {
-    log.info(`Returning existing window: ${browserWindowName}`);
+    log.info(`Showing existing window: ${browserWindowName}`);
+    existingWindow.show();
     return existingWindow;
   }
 
@@ -29,6 +30,8 @@ export default async (
   state.windows[browserWindowName] = browserWindow;
 
   log.info(`Created window: ${browserWindowName}`);
+
+  browserWindow.show();
 
   return browserWindow;
 };

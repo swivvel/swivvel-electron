@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from 'electron';
+import { app } from 'electron';
 import log from 'electron-log';
 
 import { State } from '../types';
@@ -13,11 +13,11 @@ export default (state: State): void => {
 
   app.removeAllListeners(`window-all-closed`);
 
-  Object.values(state).forEach((stateValue) => {
-    if (stateValue && stateValue instanceof BrowserWindow) {
-      if (!stateValue.isDestroyed()) {
-        stateValue.removeAllListeners(`close`);
-      }
+  const { windows } = state;
+
+  Object.values(windows).forEach((window) => {
+    if (window && !window.isDestroyed()) {
+      window.removeAllListeners(`close`);
     }
   });
 
@@ -25,11 +25,9 @@ export default (state: State): void => {
   // using `destroy()` instead
   log.info(`Closing windows...`);
 
-  Object.values(state).forEach((stateValue) => {
-    if (stateValue && stateValue instanceof BrowserWindow) {
-      if (!stateValue.isDestroyed()) {
-        stateValue.destroy();
-      }
+  Object.values(windows).forEach((window) => {
+    if (window && !window.isDestroyed()) {
+      window.destroy();
     }
   });
 };
