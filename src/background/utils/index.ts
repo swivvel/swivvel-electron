@@ -1,3 +1,4 @@
+import getBrowserWindowName from './getBrowserWindowName';
 import getLogoTemplatePath from './getLogoTemplatePath';
 import getPreloadPath from './getPreloadPath';
 import getSiteUrl from './getSiteUrl';
@@ -12,6 +13,7 @@ import showErrorMessage from './showErrorMessage';
 import sleep from './sleep';
 
 export {
+  getBrowserWindowName,
   getLogoTemplatePath,
   getPreloadPath,
   getSiteUrl,

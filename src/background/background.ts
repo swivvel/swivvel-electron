@@ -18,6 +18,7 @@ const run = async (): Promise<void> => {
 
   const state: State = {
     allowQuit: false,
+    logInFlowCompleted: false,
     tray: null,
     windows: {
       hq: null,

@@ -8,6 +8,11 @@ export interface State {
   allowQuit: boolean;
 
   /**
+   * True if the user has completed the log in flow and is authenticated.
+   */
+  logInFlowCompleted: boolean;
+
+  /**
    * The Swivvel item in the OS system tray.
    */
   tray: Tray | null;

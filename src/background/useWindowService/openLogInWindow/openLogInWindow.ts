@@ -19,7 +19,7 @@ const openLogInWindow: OpenLogInWindow = async (args) => {
     window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
 
     configureCloseHandler(window, state);
-    listenForRedirects(window, args);
+    listenForRedirects(window, args, state);
     configureAppActivateHandler(openLogInWindow, args);
     updateTray(openLogInWindow, args, trayService);
 

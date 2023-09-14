@@ -1,6 +1,7 @@
 import { BrowserWindow, shell } from 'electron';
 import log from 'electron-log';
 
+import { State } from '../../types';
 import { getSiteUrl, isProduction, removeQueryParams } from '../../utils';
 import openTransparentWindow from '../openTransparentWindow';
 
@@ -8,7 +9,8 @@ import { OpenLogInWindowArgs } from './types';
 
 export default (
   logInWindow: BrowserWindow,
-  args: OpenLogInWindowArgs
+  args: OpenLogInWindowArgs,
+  state: State
 ): void => {
   logInWindow.webContents.on(`will-redirect`, async (event) => {
     const { url } = event;
@@ -49,6 +51,14 @@ export default (
 
       log.info(`Reloading transparent window...`);
       transparentWindow.reload();
+
+      // When closing the log in window, We were getting an error that the
+      // `/api/auth/callback` URL failed to load, even though we know that at
+      // this point it must have succeeded. To work around this, we're flagging
+      // that authentication is complete so that we don't throw an error if the
+      // URL fails to load.
+      log.info(`Setting state.logInFlowCompleted = true`);
+      state.logInFlowCompleted = true;
 
       log.info(`Closing log in window...`);
       logInWindow.destroy();
