@@ -65,6 +65,8 @@ const getOrCreateHqWindow = async (
     // The home page will redirect the user to their company's HQ page
     await loadUrl(`${siteUrl}/`, hqWindow, state);
 
+    log.info(`Updating system tray...`);
+
     if (state.tray) {
       const contextMenu = Menu.buildFromTemplate([
         {
