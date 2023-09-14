@@ -23,12 +23,9 @@ export default (
       await loadUrl(convertDeepLinkUrlToHttps(url), logInWindow, state);
       log.info(`Loaded OAuth callback URL into log in window`);
 
-      // When the transparent window reloads the user will now be authenticated,
-      // so the page will open the HQ window
-      const transparentWindow = await windowService.openTransparentWindow();
-      transparentWindow.reload();
-
-      logInWindow.close();
+      // After the OAuth URL loads, the log in window will catch a redirect
+      // to the HQ page and refresh the transparent window to update the
+      // transparent window state and trigger the the HQ page to open
     }
   };
 };

@@ -13,10 +13,10 @@ contextBridge.exposeInMainWorld(`electron`, {
     // Google session so they don't have to type their password
     loginFlowV2: true,
   },
-  isLinux: process.platform === `linux`,
-  isProduction: (): Promise<boolean> => {
+  getIsProduction: (): Promise<boolean> => {
     return ipcRenderer.invoke(`isProduction`);
   },
+  isLinux: process.platform === `linux`,
   offIdleChange: (callback: IdleChangeCallback) => {
     ipcRenderer.off(`isIdle`, callback);
   },
