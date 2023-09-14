@@ -37,12 +37,14 @@ export default (state: State, deepLinkHandler: (url: string) => void): void => {
 
     app.on(`second-instance`, (event, commandLine) => {
       const url = commandLine?.pop()?.slice(0, -1);
-      const urlForLog = url ? removeQueryParams(url) : null;
+      const urlNoParams = url ? removeQueryParams(url) : null;
 
-      log.info(`Deep link detected from second-instance: ${urlForLog}`);
+      log.info(`Deep link detected from second-instance: ${urlNoParams}`);
 
       if (!url) {
-        showErrorMessage({ description: `Failed to open URL: ${url}` });
+        showErrorMessage({
+          description: `Unable to load page:\n${urlNoParams}\n\nCheck your internet connection and try again.`,
+        });
       } else {
         deepLinkHandler(url);
       }
