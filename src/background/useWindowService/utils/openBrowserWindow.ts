@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
 import log from 'electron-log';
 
 import { State } from '../../types';
@@ -6,7 +6,8 @@ import { State } from '../../types';
 export default async (
   state: State,
   browserWindowName: keyof State['windows'],
-  createBrowserWindow: () => Promise<BrowserWindow>
+  browserWindowOptions: BrowserWindowConstructorOptions,
+  instantiateBrowserWindow: (window: BrowserWindow) => Promise<BrowserWindow>
 ): Promise<BrowserWindow> => {
   log.info(`Get or create window: ${browserWindowName}`);
 
@@ -25,9 +26,11 @@ export default async (
 
   log.info(`Creating window: ${browserWindowName}`);
 
-  const browserWindow = await createBrowserWindow();
+  const browserWindow = new BrowserWindow(browserWindowOptions);
 
   state.windows[browserWindowName] = browserWindow;
+
+  await instantiateBrowserWindow(browserWindow);
 
   log.info(`Created window: ${browserWindowName}`);
 
