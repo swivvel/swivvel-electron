@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { app, systemPreferences } from 'electron';
+import { app, ipcMain, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import configureApp from './configureApp';
@@ -14,6 +14,7 @@ import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
+import { isProduction } from './utils';
 
 const PRELOAD_PATH = path.join(__dirname, `..`, `preload.js`);
 const LOGO_TEMPLATE_PATH = path.join(__dirname, `..`, `logoTemplate.png`);
@@ -44,6 +45,8 @@ const run = async (): Promise<void> => {
   configureApp();
   configureAppQuitHandling(state);
   listenForDeepLinks(state, getDeepLinkHandler(state, windowService));
+
+  ipcMain.handle(`isProduction`, isProduction);
 
   await app.whenReady();
 

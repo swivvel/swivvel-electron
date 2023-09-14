@@ -11,6 +11,11 @@ import { getTrayQuitMenuItem } from './utils';
 export default (state: State, logoTemplatePath: string): Tray => {
   log.info(`Creating tray...`);
 
+  if (state.tray) {
+    log.info(`Tray already exists; returning existing tray`);
+    return state.tray;
+  }
+
   const tray = new Tray(logoTemplatePath);
 
   state.tray = tray;

@@ -20,10 +20,10 @@ export default (
   }
 ): WindowOpenRequestHandler => {
   return ({ url }) => {
-    log.info(`Caught URL opened by log in window: ${url}`);
+    log.info(`Caught URL opened by window: ${url}`);
 
     if (url.startsWith(siteUrl)) {
-      log.info(`User opening internal URL`);
+      log.info(`Window requesting to open internal URL`);
 
       // See main repo README for description of desktop log in flow
       if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
@@ -51,7 +51,7 @@ export default (
       return { action: `allow` };
     }
 
-    log.info(`User opening external URL, opening in browser`);
+    log.info(`Window requesting to open external URL, opening in browser`);
 
     // Open all external URLs in the browser since we don't want users doing
     // general web browsing in the desktop app.

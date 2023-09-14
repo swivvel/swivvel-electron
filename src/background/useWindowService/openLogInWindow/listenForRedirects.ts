@@ -1,8 +1,7 @@
 import { BrowserWindow, shell } from 'electron';
 import log from 'electron-log';
 
-import { isProduction } from '../../../utils';
-import { removeQueryParams } from '../../utils';
+import { isProduction, removeQueryParams } from '../../utils';
 
 export default (logInWindow: BrowserWindow): void => {
   logInWindow.webContents.on(`will-redirect`, (event) => {
@@ -20,6 +19,10 @@ export default (logInWindow: BrowserWindow): void => {
         shell.openExternal(url);
         return;
       }
+    }
+
+    if (url.endsWith(`/`)) {
+      //
     }
 
     log.info(`Proceeding with redirect in log in window`);

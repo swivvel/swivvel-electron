@@ -1,6 +1,6 @@
 import { BrowserWindowConstructorOptions, screen } from 'electron';
 
-import { isLinux } from '../../../utils';
+import { isLinux } from '../../utils';
 
 export default (preloadPath: string): BrowserWindowConstructorOptions => {
   const primaryDisplay = screen.getPrimaryDisplay();
