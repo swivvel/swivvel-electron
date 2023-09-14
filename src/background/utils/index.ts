@@ -1,20 +1,18 @@
+import getOrCreateBrowserWindow from './getOrCreateBrowserWindow';
 import isLinux from './isLinux';
 import isProduction from './isProduction';
 import loadUrl from './loadUrl';
-import makeBrowserWindow, { WindowOpenHandler } from './makeBrowserWindow';
 import prepareToQuitApp from './prepareToQuitApp';
 import quitApp from './quitApp';
 import removeQueryParams from './removeQueryParams';
 import showErrorMessage from './showErrorMessage';
 import sleep from './sleep';
 
-export type { WindowOpenHandler };
-
 export {
+  getOrCreateBrowserWindow,
   isLinux,
   isProduction,
   loadUrl,
-  makeBrowserWindow,
   prepareToQuitApp,
   quitApp,
   removeQueryParams,

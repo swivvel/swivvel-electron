@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, Tray } from 'electron';
 
 export interface State {
   /**
@@ -8,17 +8,27 @@ export interface State {
   allowQuit: boolean;
 
   /**
-   * The window that displays the HQ page of the web app
+   * The Swivvel item in the OS system tray.
    */
-  hqWindow: BrowserWindow | null;
+  tray: Tray | null;
 
   /**
-   * The window that displays the Swivvel log in page.
+   * The different windows that the app can open.
    */
-  logInWindow: BrowserWindow | null;
+  windows: {
+    /**
+     * The window that displays the HQ page of the web app
+     */
+    hq: BrowserWindow | null;
 
-  /**
-   * The transparent, always-on-top window
-   */
-  transparentWindow: BrowserWindow | null;
+    /**
+     * The window that displays the Swivvel log in page.
+     */
+    logIn: BrowserWindow | null;
+
+    /**
+     * The transparent, always-on-top window
+     */
+    transparent: BrowserWindow | null;
+  };
 }
