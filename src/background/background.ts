@@ -45,7 +45,6 @@ const run = async (): Promise<void> => {
   configureApp();
   configureAppQuitHandling(state);
   listenForDeepLinks(state, getDeepLinkHandler(state, windowService));
-
   ipcMain.handle(`isProduction`, isProduction);
 
   await app.whenReady();
