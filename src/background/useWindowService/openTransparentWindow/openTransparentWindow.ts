@@ -1,6 +1,7 @@
 import { BrowserWindow } from 'electron';
 
-import { isLinux, loadUrl, sleep } from '../../utils';
+import { isLinux } from '../../../utils';
+import { loadUrl, sleep } from '../../utils';
 import { openBrowserWindow } from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';

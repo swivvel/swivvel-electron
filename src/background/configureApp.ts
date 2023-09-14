@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import log from 'electron-log';
 
-import { isLinux, isProduction } from './utils';
+import { isLinux, isProduction } from '../utils';
 
 /**
  * Configure the global app settings.

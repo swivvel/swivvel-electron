@@ -1,4 +1,4 @@
-import { isProduction } from './utils';
+import { isProduction } from '../utils';
 
 export default (): string => {
   if (isProduction()) {

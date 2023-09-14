@@ -1,7 +1,8 @@
 import { BrowserWindow, shell } from 'electron';
 import log from 'electron-log';
 
-import { isProduction, removeQueryParams } from '../../utils';
+import { isProduction } from '../../../utils';
+import { removeQueryParams } from '../../utils';
 
 export default (logInWindow: BrowserWindow): void => {
   logInWindow.webContents.on(`will-redirect`, (event) => {
