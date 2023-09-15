@@ -19,11 +19,18 @@ export type WindowOpenRequestHandler = ({
 export default (callbacks: {
   onHqPageRequested: () => void;
   onLogInPageRequested: () => void;
+  onSetupPageRequested: () => void;
 }): WindowOpenRequestHandler => {
   return ({ url }) => {
     log.info(`Caught URL opened by window: ${url}`);
 
     const siteUrl = getSiteUrl();
+
+    if (removeQueryParams(url) === `${siteUrl}/electron/hq`) {
+      log.info(`HQ page requested`);
+      callbacks.onHqPageRequested();
+      return { action: `deny` };
+    }
 
     // See main repo README for description of desktop log in flow
     if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
@@ -32,9 +39,9 @@ export default (callbacks: {
       return { action: `deny` };
     }
 
-    if (removeQueryParams(url) === `${siteUrl}/electron/hq`) {
-      log.info(`HQ page requested`);
-      callbacks.onHqPageRequested();
+    if (removeQueryParams(url) === `${siteUrl}/electron/setup`) {
+      log.info(`Setup page requested`);
+      callbacks.onSetupPageRequested();
       return { action: `deny` };
     }
 

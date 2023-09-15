@@ -6,6 +6,7 @@ import { TrayService } from '../useTrayService';
 import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
 import openHqWindow from './openHqWindow';
 import openLogInWindow from './openLogInWindow';
+import openSetupWindow from './openSetupWindow';
 import openTransparentWindow from './openTransparentWindow';
 import { WindowService } from './types';
 
@@ -20,6 +21,9 @@ export default (state: State, trayService: TrayService): WindowService => {
     onLogInPageRequested: () => {
       openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
+    onSetupPageRequested: () => {
+      openSetupWindow({ state, trayService, windowOpenRequestHandler });
+    },
   });
 
   return {
@@ -28,6 +32,9 @@ export default (state: State, trayService: TrayService): WindowService => {
     },
     openLogInWindow: async (): Promise<BrowserWindow> => {
       return openLogInWindow({ state, trayService, windowOpenRequestHandler });
+    },
+    openSetupWindow: async (): Promise<BrowserWindow> => {
+      return openSetupWindow({ state, trayService, windowOpenRequestHandler });
     },
     openTransparentWindow: async (): Promise<BrowserWindow> => {
       return openTransparentWindow({ state, windowOpenRequestHandler });
