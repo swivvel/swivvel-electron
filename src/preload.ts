@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 type IdleChangeCallback = (event: unknown, isIdle: boolean) => void;
+type JoinRequestCallback = (event: unknown, podId: string) => void;
 
 // NOTE: values exposed in the main world should be added to window.d.ts
 // in the web app
@@ -17,10 +18,21 @@ contextBridge.exposeInMainWorld(`electron`, {
     return ipcRenderer.invoke(`isProduction`);
   },
   isLinux: process.platform === `linux`,
-  offIdleChange: (callback: IdleChangeCallback) => {
-    ipcRenderer.off(`isIdle`, callback);
-  },
   onIdleChange: (callback: IdleChangeCallback) => {
     ipcRenderer.on(`isIdle`, callback);
+
+    return (): void => {
+      ipcRenderer.removeListener(`isIdle`, callback);
+    }
+  },
+  onJoinRequested: (callback: JoinRequestCallback) => {
+    ipcRenderer.on(`requestJoin`, callback);
+
+    return (): void => {
+      ipcRenderer.removeListener(`requestJoin`, callback);
+    }
+  },
+  requestJoin: (podId: string) => {
+    ipcRenderer.send(`requestJoin`, podId);
   },
 });

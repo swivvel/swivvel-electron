@@ -28,6 +28,8 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
 
     await loadUrl(`${getSiteUrl()}/notifications`, window, state);
 
+    window.webContents.openDevTools();
+
     return window;
   });
 };

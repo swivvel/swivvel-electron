@@ -12,6 +12,7 @@ import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
 import { isProduction } from './utils';
+import { BrowserWindow } from 'electron/main';
 
 const run = async (): Promise<void> => {
   log.info(`App starting...`);
@@ -36,12 +37,23 @@ const run = async (): Promise<void> => {
   ipcMain.handle(`isProduction`, isProduction);
 
   await app.whenReady();
-
+  
   if (systemPreferences.askForMediaAccess) {
     await systemPreferences.askForMediaAccess(`microphone`);
   }
-
+  
   const transparentWindow = await windowService.openTransparentWindow();
+    
+  ipcMain.on(`requestJoin`, (event, podId: string): void => {
+    const webContents = event.sender;
+    const win = BrowserWindow.fromWebContents(webContents);
+    
+    if (win) {
+      win.setTitle(`requestedJoin`);
+    }
+      
+    transparentWindow.webContents.send(`requestJoin`, podId);
+  });
 
   trayService.createTray();
   configureAutoUpdates(state);
