@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 
 export interface WindowService {
-  openLogInWindow: () => Promise<BrowserWindow>;
   openHqWindow: () => Promise<BrowserWindow>;
+  openLogInWindow: () => Promise<BrowserWindow>;
   openTransparentWindow: () => Promise<BrowserWindow>;
 }
