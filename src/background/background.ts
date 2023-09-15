@@ -14,7 +14,7 @@ import useWindowService from './useWindowService';
 import { isProduction } from './utils';
 
 const run = async (): Promise<void> => {
-  log.info(`App starting...`);
+  log.info(`App v=${app.getVersion()} starting...`);
 
   const state: State = {
     allowQuit: false,
