@@ -23,12 +23,8 @@ export default (state: State): void => {
   // Make sure the app closes if someone clicks "Quit" from the OS top bar
   // or from the app icon in the dock
   app.on(`before-quit`, () => {
-    if (state.allowQuit) {
-      log.info(`Received 'before-quit' event`);
-      prepareToQuitApp(state);
-    } else {
-      log.info(`Received 'before-quit' event, quitting not allowed`);
-    }
+    log.info(`Received 'before-quit' event`);
+    prepareToQuitApp(state);
   });
 
   log.info(`Configured app quit handling`);

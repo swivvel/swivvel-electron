@@ -25,16 +25,16 @@ export default (callbacks: {
 
     const siteUrl = getSiteUrl();
 
+    if (removeQueryParams(url) === `${siteUrl}/electron/hq`) {
+      log.info(`HQ page requested`);
+      callbacks.onHqPageRequested();
+      return { action: `deny` };
+    }
+
     // See main repo README for description of desktop log in flow
     if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
       log.info(`Log in page requested`);
       callbacks.onLogInPageRequested();
-      return { action: `deny` };
-    }
-
-    if (removeQueryParams(url) === `${siteUrl}/electron/hq`) {
-      log.info(`HQ page requested`);
-      callbacks.onHqPageRequested();
       return { action: `deny` };
     }
 

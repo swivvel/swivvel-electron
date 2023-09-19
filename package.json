@@ -1,7 +1,7 @@
 {
   "name": "swivvel",
   "productName": "Swivvel",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "author": {
     "name": "Swivvel",
     "email": "support@swivvel.io"
@@ -10,7 +10,7 @@
   "homepage": "https://www.swivvel.io",
   "main": "compiled/background/background.js",
   "build": {
-    "appId": "com.swivvel.swivvel",
+    "appId": "com.electron.swivvel",
     "productName": "Swivvel",
     "protocols": {
       "name": "swivvel",
