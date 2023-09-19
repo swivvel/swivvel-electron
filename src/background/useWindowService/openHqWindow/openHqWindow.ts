@@ -14,6 +14,7 @@ const openHqWindow: OpenHqWindow = async (args) => {
 
   return openBrowserWindow(state, `hq`, options, async (window) => {
     window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
+    window.webContents.openDevTools();
 
     configureCloseHandler(window, state);
     configureAppActivateHandler(openHqWindow, args);
