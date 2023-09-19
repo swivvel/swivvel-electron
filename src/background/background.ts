@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, systemPreferences } from 'electron';
+import { app, ipcMain, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import configureApp from './configureApp';
@@ -43,14 +43,7 @@ const run = async (): Promise<void> => {
   
   const transparentWindow = await windowService.openTransparentWindow();
     
-  ipcMain.on(`requestJoin`, (event, podId: string): void => {
-    const webContents = event.sender;
-    const win = BrowserWindow.fromWebContents(webContents);
-    
-    if (win) {
-      win.setTitle(`requestedJoin`);
-    }
-      
+  ipcMain.on(`requestJoin`, (event, podId: string): void => {      
     transparentWindow.webContents.send(`requestJoin`, podId);
   });
 
