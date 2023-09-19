@@ -1,4 +1,4 @@
-import { app, ipcMain, systemPreferences } from 'electron';
+import { app, BrowserWindow, ipcMain, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import configureApp from './configureApp';
@@ -12,7 +12,6 @@ import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
 import { isProduction } from './utils';
-import { BrowserWindow } from 'electron/main';
 
 const run = async (): Promise<void> => {
   log.info(`App starting...`);
