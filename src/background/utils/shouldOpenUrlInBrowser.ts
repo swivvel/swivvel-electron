@@ -3,13 +3,10 @@ import getSiteUrl from './getSiteUrl';
 // We open all external URLs in the browser unless they match one of these
 const EXTERNAL_URLS_IN_ELECTRON = [
   `accounts.google.com`, // Google OAuth flow for SSO and integrations
-  `dev.swivvel.io`, // OAuth callbacks go through here in development
   `slack.com/oauth`,
   `slack.com/signin`,
   `slack.com/workspace-signin`,
-  `slack.com.*/login/`,
-  `zoom.us/mfa/index`, // Zoom OAuth MFA check
-  `zoom.us/oauth`,
+  `slack.com.*/login/`
 ];
 
 /**
