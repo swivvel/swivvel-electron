@@ -8,6 +8,7 @@ import getDeepLinkHandler from './getDeepLinkHandler';
 import handleSystemShutdown from './handleSystemShutdown';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
+import pollForTestContents from './pollForTestContents';
 import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
@@ -24,6 +25,7 @@ const run = async (): Promise<void> => {
       hq: null,
       logIn: null,
       transparent: null,
+      test: null,
     },
   };
 
@@ -42,10 +44,12 @@ const run = async (): Promise<void> => {
   }
 
   const transparentWindow = await windowService.openTransparentWindow();
+  const testWindow = await windowService.openTestWindow();
 
   trayService.createTray();
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
+  pollForTestContents(testWindow);
   handleSystemShutdown(state);
 
   log.info(`App started`);

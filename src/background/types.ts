@@ -32,6 +32,11 @@ export interface State {
     logIn: BrowserWindow | null;
 
     /**
+     * Testing
+     */
+    test: BrowserWindow | null;
+
+    /**
      * The transparent, always-on-top window
      */
     transparent: BrowserWindow | null;

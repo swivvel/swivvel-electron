@@ -17,6 +17,7 @@ const EXTERNAL_URLS_IN_ELECTRON = [
  * As such, we try to be very conservative about what URLs we open in Electron.
  */
 export default (url: string): boolean => {
+  return false;
   const isInternal = url.toLowerCase().startsWith(getSiteUrl().toLowerCase());
   const isExternal = !isInternal;
 

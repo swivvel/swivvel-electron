@@ -6,6 +6,7 @@ import { TrayService } from '../useTrayService';
 import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
 import openHqWindow from './openHqWindow';
 import openLogInWindow from './openLogInWindow';
+import openTestWindow from './openTestWindow';
 import openTransparentWindow from './openTransparentWindow';
 import { WindowService } from './types';
 
@@ -31,6 +32,9 @@ export default (state: State, trayService: TrayService): WindowService => {
     },
     openTransparentWindow: async (): Promise<BrowserWindow> => {
       return openTransparentWindow({ state, windowOpenRequestHandler });
+    },
+    openTestWindow: async (): Promise<BrowserWindow> => {
+      return openTestWindow({ state, windowOpenRequestHandler });
     },
   };
 };
