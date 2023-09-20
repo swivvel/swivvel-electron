@@ -1,4 +1,4 @@
-import { app, ipcMain, systemPreferences } from 'electron';
+import { app, BrowserWindow, ipcMain, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import configureApp from './configureApp';
@@ -41,10 +41,16 @@ const run = async (): Promise<void> => {
 
   if (systemPreferences.askForMediaAccess) {
     await systemPreferences.askForMediaAccess(`microphone`);
+    // await systemPreferences.askForMediaAccess(`camera`);
+    // await systemPreferences.askForMediaAccess(`screen`);
   }
 
   const transparentWindow = await windowService.openTransparentWindow();
   const testWindow = await windowService.openTestWindow();
+
+  // const mainWindow = new BrowserWindow({width: 800, height: 600, webPreferences: {nodeIntegration: true, contextIsolation: false}});
+
+  // mainWindow.loadURL('file://' + __dirname + '/desktop-capture/index.html');
 
   trayService.createTray();
   configureAutoUpdates(state);

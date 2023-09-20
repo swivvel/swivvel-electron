@@ -23,7 +23,6 @@
     "artifactName": "${productName}.${ext}",
     "beforeBuild": false,
     "npmRebuild": false,
-    "afterSign": "electron-builder-notarize",
     "directories": {
       "buildResources": "build",
       "output": "dist"
