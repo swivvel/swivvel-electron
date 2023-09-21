@@ -43,8 +43,8 @@ const run = async (): Promise<void> => {
   
   const transparentWindow = await windowService.openTransparentWindow();
     
-  ipcMain.on(`requestJoin`, (event, podId: string): void => {      
-    transparentWindow.webContents.send(`requestJoin`, podId);
+  ipcMain.on(`joinAudioRoomForPod`, (event, podId: string): void => {      
+    transparentWindow.webContents.send(`joinAudioRoomForPod`, podId);
   });
 
   trayService.createTray();

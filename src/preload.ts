@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 type IdleChangeCallback = (event: unknown, isIdle: boolean) => void;
-type JoinRequestCallback = (event: unknown, podId: string) => void;
+type JoinAudioRoomCallback = (event: unknown, podId: string) => void;
 
 // NOTE: values exposed in the main world should be added to window.d.ts
 // in the web app
@@ -25,14 +25,14 @@ contextBridge.exposeInMainWorld(`electron`, {
       ipcRenderer.removeListener(`isIdle`, callback);
     }
   },
-  onJoinRequested: (callback: JoinRequestCallback) => {
-    ipcRenderer.on(`requestJoin`, callback);
+  onJoinAudioRoomForPod: (callback: JoinAudioRoomCallback) => {
+    ipcRenderer.on(`joinAudioRoomForPod`, callback);
 
     return (): void => {
-      ipcRenderer.removeListener(`requestJoin`, callback);
+      ipcRenderer.removeListener(`joinAudioRoomForPod`, callback);
     }
   },
-  requestJoin: (podId: string) => {
-    ipcRenderer.send(`requestJoin`, podId);
+  joinAudioRoomForPod: (podId: string) => {
+    ipcRenderer.send(`joinAudioRoomForPod`, podId);
   },
 });
