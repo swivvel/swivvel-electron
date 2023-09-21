@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 type IdleChangeCallback = (event: unknown, isIdle: boolean) => void;
-type JoinAudioRoomForPodCallback = (event: unknown, podId: string) => void;
+type LaunchAudioRoomFromSetupCallback = (event: unknown) => void;
 
 // NOTE: values exposed in the main world should be added to window.d.ts
 // in the web app
@@ -18,8 +18,8 @@ contextBridge.exposeInMainWorld(`electron`, {
     return ipcRenderer.invoke(`isProduction`);
   },
   isLinux: process.platform === `linux`,
-  joinAudioRoomForPod: (podId: string) => {
-    ipcRenderer.send(`joinAudioRoomForPod`, podId);
+  launchAudioRoomFromSetup: () => {
+    ipcRenderer.send(`launchAudioRoomFromSetup`);
   },
   offIdleChange: (callback: IdleChangeCallback) => {
     ipcRenderer.off(`isIdle`, callback);
@@ -27,11 +27,11 @@ contextBridge.exposeInMainWorld(`electron`, {
   onIdleChange: (callback: IdleChangeCallback) => {
     ipcRenderer.on(`isIdle`, callback);
   },
-  onJoinAudioRoomForPod: (callback: JoinAudioRoomForPodCallback) => {
-    ipcRenderer.on(`joinAudioRoomForPod`, callback);
+  onLaunchAudioRoomFromSetup: (callback: LaunchAudioRoomFromSetupCallback) => {
+    ipcRenderer.on(`launchAudioRoomFromSetup`, callback);
 
     return (): void => {
-      ipcRenderer.removeListener(`joinAudioRoomForPod`, callback);
+      ipcRenderer.removeListener(`launchAudioRoomFromSetup`, callback);
     };
   },
 });

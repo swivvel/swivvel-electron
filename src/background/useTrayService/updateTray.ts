@@ -4,7 +4,7 @@ import log from 'electron-log';
 import { State } from '../types';
 
 import createTray from './createTray';
-import { getTrayQuitMenuItem } from './utils';
+import { getBaseMenuItems } from './utils';
 
 export default (
   state: State,
@@ -27,7 +27,7 @@ export default (
 
   const contextMenu = Menu.buildFromTemplate([
     ...menuItems,
-    getTrayQuitMenuItem(state),
+    ...getBaseMenuItems(state),
   ]);
 
   tray.setContextMenu(contextMenu);

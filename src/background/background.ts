@@ -4,7 +4,7 @@ import log from 'electron-log';
 import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
-import configureJoinAudioRoomHandler from './configureJoinAudioRoomHandler';
+import configureIpcHandlers from './configureIpcHandlers';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import handleSystemShutdown from './handleSystemShutdown';
 import listenForDeepLinks from './listenForDeepLinks';
@@ -46,7 +46,7 @@ const run = async (): Promise<void> => {
   const transparentWindow = await windowService.openTransparentWindow();
 
   trayService.createTray();
-  configureJoinAudioRoomHandler(windowService);
+  configureIpcHandlers(windowService);
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
   handleSystemShutdown(state);

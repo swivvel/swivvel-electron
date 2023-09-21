@@ -4,7 +4,7 @@ import log from 'electron-log';
 import { State } from '../types';
 import { getLogoTemplatePath } from '../utils';
 
-import { getTrayQuitMenuItem } from './utils';
+import { getBaseMenuItems } from './utils';
 
 /**
  * Add Swivvel to the OS system tray.
@@ -21,7 +21,7 @@ export default (state: State): Tray => {
 
   state.tray = tray;
 
-  const contextMenu = Menu.buildFromTemplate([getTrayQuitMenuItem(state)]);
+  const contextMenu = Menu.buildFromTemplate(getBaseMenuItems(state));
 
   tray.setContextMenu(contextMenu);
 
