@@ -25,7 +25,7 @@ export default (): BrowserWindowConstructorOptions => {
     skipTaskbar: true,
     transparent: true,
     webPreferences: { preload: getPreloadPath() },
-    width: primaryDisplay.workAreaSize.width / 4,
+    width: primaryDisplay.workAreaSize.width,
     x: 0,
     y: 0,
   };
