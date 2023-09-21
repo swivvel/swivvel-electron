@@ -19,7 +19,7 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
   }
 
   menuItems.push({
-    label: `Quit`,
+    label: `Quit Swivvel`,
     type: `normal`,
     click: (): void => {
       quitApp(state);
