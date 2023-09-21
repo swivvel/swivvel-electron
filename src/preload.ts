@@ -18,7 +18,13 @@ contextBridge.exposeInMainWorld(`electron`, {
     return ipcRenderer.invoke(`isProduction`);
   },
   isLinux: process.platform === `linux`,
+  offIdleChange: (callback: IdleChangeCallback) => {
+    ipcRenderer.off(`isIdle`, callback);
+  },
   onIdleChange: (callback: IdleChangeCallback) => {
+    ipcRenderer.on(`isIdle`, callback);
+  },
+  onIdleChange2: (callback: IdleChangeCallback) => {
     ipcRenderer.on(`isIdle`, callback);
 
     return (): void => {
