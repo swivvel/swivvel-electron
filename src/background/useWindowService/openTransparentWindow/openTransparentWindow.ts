@@ -21,7 +21,7 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     }
 
     window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
-    
+
     showOnAllWorkspaces(window);
     configureCloseHandler(window, state);
     pollForMouseEvents(window);

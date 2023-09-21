@@ -29,14 +29,14 @@ contextBridge.exposeInMainWorld(`electron`, {
 
     return (): void => {
       ipcRenderer.removeListener(`isIdle`, callback);
-    }
+    };
   },
   onJoinAudioRoomForPod: (callback: JoinAudioRoomCallback) => {
     ipcRenderer.on(`joinAudioRoomForPod`, callback);
 
     return (): void => {
       ipcRenderer.removeListener(`joinAudioRoomForPod`, callback);
-    }
+    };
   },
   joinAudioRoomForPod: (podId: string) => {
     ipcRenderer.send(`joinAudioRoomForPod`, podId);
