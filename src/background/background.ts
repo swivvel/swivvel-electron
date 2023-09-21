@@ -36,16 +36,18 @@ const run = async (): Promise<void> => {
   ipcMain.handle(`isProduction`, isProduction);
 
   await app.whenReady();
+
   if (systemPreferences.askForMediaAccess) {
     await systemPreferences.askForMediaAccess(`microphone`);
   }
+
   const transparentWindow = await windowService.openTransparentWindow();
     
   ipcMain.on(`joinAudioRoomForPod`, async (event, podId: string): Promise<void> => { 
     const window = await windowService.openTransparentWindow();
     window.webContents.send(`joinAudioRoomForPod`, podId);
   });
-
+  
   trayService.createTray();
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
