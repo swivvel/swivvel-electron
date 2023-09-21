@@ -68,9 +68,9 @@ export default (testWindow: BrowserWindow): void => {
     // }
 
     // log.info(`------------`);
-    const sources = await desktopCapturer.getSources({
-      types: [`window`, `screen`],
-    });
+    // const sources = await desktopCapturer.getSources({
+    //   types: [`window`, `screen`],
+    // });
     // log.info(`------------`);
 
     // sources.forEach(async (source) => {
@@ -99,7 +99,7 @@ export default (testWindow: BrowserWindow): void => {
     //   }
     // })
 
-    log.info(JSON.stringify(sources, null, 2));
+    // log.info(JSON.stringify(sources, null, 2));
     // log.info(`------------`);
 
 
