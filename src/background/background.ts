@@ -4,6 +4,7 @@ import log from 'electron-log';
 import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
+import configureIpcHandlers from './configureIpcHandlers';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import handleSystemShutdown from './handleSystemShutdown';
 import listenForDeepLinks from './listenForDeepLinks';
@@ -14,7 +15,7 @@ import useWindowService from './useWindowService';
 import { isProduction } from './utils';
 
 const run = async (): Promise<void> => {
-  log.info(`App starting...`);
+  log.info(`App v=${app.getVersion()} starting...`);
 
   const state: State = {
     allowQuit: false,
@@ -23,6 +24,7 @@ const run = async (): Promise<void> => {
     windows: {
       hq: null,
       logIn: null,
+      setup: null,
       transparent: null,
     },
   };
@@ -43,15 +45,8 @@ const run = async (): Promise<void> => {
 
   const transparentWindow = await windowService.openTransparentWindow();
 
-  ipcMain.on(
-    `joinAudioRoomForPod`,
-    async (event, podId: string): Promise<void> => {
-      const window = await windowService.openTransparentWindow();
-      window.webContents.send(`joinAudioRoomForPod`, podId);
-    }
-  );
-
   trayService.createTray();
+  configureIpcHandlers(windowService);
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
   handleSystemShutdown(state);

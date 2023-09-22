@@ -19,6 +19,7 @@ export type WindowOpenRequestHandler = ({
 export default (callbacks: {
   onHqPageRequested: () => void;
   onLogInPageRequested: () => void;
+  onSetupPageRequested: () => void;
 }): WindowOpenRequestHandler => {
   return ({ url }) => {
     log.info(`Caught URL opened by window: ${url}`);
@@ -35,6 +36,12 @@ export default (callbacks: {
     if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
       log.info(`Log in page requested`);
       callbacks.onLogInPageRequested();
+      return { action: `deny` };
+    }
+
+    if (removeQueryParams(url) === `${siteUrl}/electron/setup`) {
+      log.info(`Setup page requested`);
+      callbacks.onSetupPageRequested();
       return { action: `deny` };
     }
 
