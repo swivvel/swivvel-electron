@@ -1,4 +1,10 @@
-import { BrowserWindow, app, ipcMain, systemPreferences } from 'electron';
+import {
+  BrowserWindow,
+  app,
+  desktopCapturer,
+  ipcMain,
+  systemPreferences,
+} from 'electron';
 import log from 'electron-log';
 
 import configureApp from './configureApp';
@@ -38,6 +44,8 @@ window.navigator.mediaDevices.getDisplayMedia =
 `;
 
 const foo3 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:true})`;
+
+const foo4 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:{mandatory:{chromeMediaSource: 'desktop',chromeMediaSourceId: 'window:44040195:0'}}})`;
 
 const fooJs = `
 console.log('setting window.navigator.mediaDevices.getDisplayMedia');
@@ -121,11 +129,16 @@ const run = async (): Promise<void> => {
     // }
     return { action: `allow` };
   });
+  console.log(`=====================`);
+  const sources = await desktopCapturer.getSources({
+    types: [`screen`, `window`],
+  });
+  console.log(sources);
   await foo.loadURL(`https://meet.google.com/zec-feoq-gdv?authuser=0&hl=en`);
   // await foo.loadURL(`https://www.google.com`);
   // await foo.loadURL(`https://app.localhost.architect.sh/meet`);
   foo.webContents.openDevTools();
-  await foo.webContents.executeJavaScript(promisify(foo3));
+  await foo.webContents.executeJavaScript(promisify(foo4));
   log.info(`Created Google Meet window`);
 
   log.info(`App started`);
