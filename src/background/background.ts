@@ -1,4 +1,4 @@
-import { app, ipcMain, systemPreferences } from 'electron';
+import { BrowserWindow, app, ipcMain, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import configureApp from './configureApp';
@@ -12,7 +12,52 @@ import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
-import { isProduction } from './utils';
+import { getPreloadPath, isProduction } from './utils';
+
+const promisify = (fnString: string): string => {
+  return `new Promise((resolve, reject) => { resolve(${fnString}); });`;
+};
+
+const fooJsSlim = `setTimeout(() => console.log('foo'), 3000)`;
+
+const foo2 = `
+window.navigator.mediaDevices.getDisplayMedia =
+  async (): Promise<MediaStream> => {
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('getDisplayMedia called');
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!');
+    // const sources = await desktopCapturer.getSources({ types: ['screen', 'window'] })
+
+    const stream = await window.navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: true,
+    });
+
+    return stream;
+  }
+`;
+
+const foo3 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:true})`;
+
+const fooJs = `
+console.log('setting window.navigator.mediaDevices.getDisplayMedia');
+window.navigator.mediaDevices.getDisplayMedia =
+  async (): Promise<MediaStream> => {
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('getDisplayMedia called');
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!');
+    // const sources = await desktopCapturer.getSources({ types: ['screen', 'window'] })
+
+    const stream = await window.navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: true,
+    });
+
+    return stream;
+  };
+  console.log('window.navigator.mediaDevices.getDisplayMedia:');
+  console.log(window?.navigator?.mediaDevices?.getDisplayMedia);
+`;
 
 const run = async (): Promise<void> => {
   log.info(`App v=${app.getVersion()} starting...`);
@@ -32,6 +77,9 @@ const run = async (): Promise<void> => {
   const trayService = useTrayService(state);
   const windowService = useWindowService(state, trayService);
 
+  // todo
+  app.disableHardwareAcceleration();
+
   configureApp();
   configureAppQuitHandling(state);
   listenForDeepLinks(state, getDeepLinkHandler(state, windowService));
@@ -43,13 +91,42 @@ const run = async (): Promise<void> => {
     await systemPreferences.askForMediaAccess(`microphone`);
   }
 
-  const transparentWindow = await windowService.openTransparentWindow();
+  // const transparentWindow = await windowService.openTransparentWindow();
 
   trayService.createTray();
-  configureIpcHandlers(windowService);
-  configureAutoUpdates(state);
-  pollForIdleTime(transparentWindow);
+  // configureIpcHandlers(windowService);
+  // configureAutoUpdates(state);
+  // pollForIdleTime(transparentWindow);
   handleSystemShutdown(state);
+
+  log.info(`Creating Google Meet window`);
+  app.commandLine.appendSwitch(`enable-features`, `WebRTCPipeWireCapturer`);
+  const foo = new BrowserWindow({
+    width: 1400,
+    height: 1000,
+    webPreferences: {
+      experimentalFeatures: true,
+      // contextIsolation: false,
+      // webSecurity: false,
+      preload: getPreloadPath(),
+    },
+  });
+  foo.webContents.setWindowOpenHandler(({ url }) => {
+    console.log(url);
+    // if (url.includes(`meet.google.com`)) {
+    //   log.info(`Opening url in foo`);
+    //   foo.loadURL(url);
+    //   log.info(`Denying navigation`);
+    //   return { action: `deny` };
+    // }
+    return { action: `allow` };
+  });
+  await foo.loadURL(`https://meet.google.com/zec-feoq-gdv?authuser=0&hl=en`);
+  // await foo.loadURL(`https://www.google.com`);
+  // await foo.loadURL(`https://app.localhost.architect.sh/meet`);
+  foo.webContents.openDevTools();
+  await foo.webContents.executeJavaScript(promisify(foo3));
+  log.info(`Created Google Meet window`);
 
   log.info(`App started`);
 };
