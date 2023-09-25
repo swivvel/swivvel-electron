@@ -7,7 +7,7 @@ import log from 'electron-log';
 export default (transparentWindow: BrowserWindow): void => {
   log.info(`Configuring idle time polling...`);
 
-  let isIdle = false;
+  let isIdle: boolean | null = null;
 
   const interval = setInterval(async () => {
     if (transparentWindow.isDestroyed()) {
