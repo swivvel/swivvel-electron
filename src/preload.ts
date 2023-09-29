@@ -18,6 +18,9 @@ contextBridge.exposeInMainWorld(`electron`, {
   getIsProduction: (): Promise<boolean> => {
     return ipcRenderer.invoke(`isProduction`);
   },
+  getDesktopAppVersion: (): Promise<string> => {
+    return ipcRenderer.invoke(`getDesktopAppVersion`);
+  },
   isLinux: process.platform === `linux`,
   joinAudioRoomForPod: (podId: string) => {
     ipcRenderer.send(`joinAudioRoomForPod`, podId);
