@@ -46,7 +46,9 @@ window.navigator.mediaDevices.getDisplayMedia =
 const foo3 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:true})`;
 
 const fooBefore = `console.log('before')`;
-const fooWindow = `window.foo = 'hi'`;
+const fooWindow1 = `console.log(window.navigator)`;
+const fooWindow2 = `console.log(window.navigator.mediaDevices)`;
+const fooWindow3 = `console.log(window.navigator.mediaDevices.getDisplayMedia)`;
 const foo4 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:{mandatory:{chromeMediaSource: 'desktop',chromeMediaSourceId: 'screen:1:0'}}})`;
 const fooAfter = `console.log('after')`;
 
@@ -142,8 +144,9 @@ const run = async (): Promise<void> => {
   foo.webContents.openDevTools();
   const a = await foo.webContents.executeJavaScript(promisify(fooBefore));
   log.info(`a: ${a}`);
-  const a2 = await foo.webContents.executeJavaScript(promisify(fooWindow));
-  log.info(`a2: ${a2}`);
+  await foo.webContents.executeJavaScript(promisify(fooWindow1));
+  await foo.webContents.executeJavaScript(promisify(fooWindow2));
+  await foo.webContents.executeJavaScript(promisify(fooWindow3));
   const b = await foo.webContents.executeJavaScript(promisify(foo4));
   log.info(`b: ${b}`);
   const c = await foo.webContents.executeJavaScript(promisify(fooAfter));
