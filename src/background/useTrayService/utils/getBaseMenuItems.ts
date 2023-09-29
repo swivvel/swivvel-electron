@@ -1,12 +1,16 @@
 import { MenuItemConstructorOptions } from 'electron';
 
 import { State } from '../../types';
-import { isProduction, quitApp } from '../../utils';
+import { isLinux, isProduction, quitApp } from '../../utils';
 
 export default (state: State): Array<MenuItemConstructorOptions> => {
   const menuItems: Array<MenuItemConstructorOptions> = [];
 
-  if (!isProduction()) {
+  // It is highly unlikely that we will have any real Linux users and there is
+  // currently no way to open the dev tools for the transparent window on prod,
+  // so for now we're allowing the dev tools menu item to show in production
+  // for Linux users.
+  if (!isProduction() || isLinux()) {
     menuItems.push({
       label: `Dev Tools`,
       type: `normal`,

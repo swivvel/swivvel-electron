@@ -18,7 +18,7 @@ export default (
 
     if (
       url.includes(`auth0.com/authorize`) ||
-      url.includes(`auth.swivvel.io`)
+      url.includes(`auth.swivvel.io/authorize`)
     ) {
       // The `swivvel://` protocol doesn't work in development environments,
       // so we have to perform the log in flow within Electron

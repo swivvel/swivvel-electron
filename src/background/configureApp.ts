@@ -7,7 +7,7 @@ import { isLinux, isProduction } from './utils';
  * Configure the global app settings.
  */
 export default (): void => {
-  log.info(`Configuring app v=${app.getVersion()}...`);
+  log.info(`Configuring app...`);
 
   // Electron stores everything related to the app (cache, local storage,
   // databases, logs, etc.) in a directory in the user's home directory.
