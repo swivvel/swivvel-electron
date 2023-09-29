@@ -140,7 +140,7 @@ const run = async (): Promise<void> => {
   // await foo.loadURL(`https://app.localhost.architect.sh/meet`);
   foo.webContents.openDevTools();
   await foo.webContents.executeJavaScript(promisify(fooBefore));
-  await foo.webContents.executeJavaScript(promisify(foo4));
+  // await foo.webContents.executeJavaScript(promisify(foo4));
   await foo.webContents.executeJavaScript(promisify(fooAfter));
   log.info(`Created Google Meet window`);
 
