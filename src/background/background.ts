@@ -45,7 +45,9 @@ window.navigator.mediaDevices.getDisplayMedia =
 
 const foo3 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:true})`;
 
+const fooBefore = `console.log('before')`;
 const foo4 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:{mandatory:{chromeMediaSource: 'desktop',chromeMediaSourceId: 'screen:1:0'}}})`;
+const fooAfter = `console.log('after')`;
 
 const fooJs = `
 console.log('setting window.navigator.mediaDevices.getDisplayMedia');
@@ -137,7 +139,9 @@ const run = async (): Promise<void> => {
   // await foo.loadURL(`https://www.google.com`);
   // await foo.loadURL(`https://app.localhost.architect.sh/meet`);
   foo.webContents.openDevTools();
+  await foo.webContents.executeJavaScript(promisify(fooBefore));
   await foo.webContents.executeJavaScript(promisify(foo4));
+  await foo.webContents.executeJavaScript(promisify(fooAfter));
   log.info(`Created Google Meet window`);
 
   log.info(`App started`);
