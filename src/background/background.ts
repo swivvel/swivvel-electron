@@ -45,7 +45,7 @@ window.navigator.mediaDevices.getDisplayMedia =
 
 const foo3 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:true})`;
 
-const foo4 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:{mandatory:{chromeMediaSource: 'desktop',chromeMediaSourceId: 'window:44040195:0'}}})`;
+const foo4 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:{mandatory:{chromeMediaSource: 'desktop',chromeMediaSourceId: 'screen:1:0'}}})`;
 
 const fooJs = `
 console.log('setting window.navigator.mediaDevices.getDisplayMedia');
