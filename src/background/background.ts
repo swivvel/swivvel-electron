@@ -49,7 +49,7 @@ const fooBefore = `console.log('before')`;
 const fooWindow1 = `console.log(window.navigator)`;
 const fooWindow2 = `console.log(window.navigator.mediaDevices)`;
 const fooWindow3 = `console.log(window.navigator.mediaDevices.getDisplayMedia)`;
-const foo4 = `window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:{mandatory:{chromeMediaSource: 'desktop',chromeMediaSourceId: 'screen:1:0'}}})`;
+const foo4 = `(window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:{mandatory:{chromeMediaSource: 'desktop',chromeMediaSourceId: 'screen:1:0'}}})) && 'foo'`;
 const fooAfter = `console.log('after')`;
 
 const fooJs = `
