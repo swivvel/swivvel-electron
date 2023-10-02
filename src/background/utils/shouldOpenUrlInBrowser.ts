@@ -3,10 +3,6 @@ import getSiteUrl from './getSiteUrl';
 // We open all external URLs in the browser unless they match one of these
 const EXTERNAL_URLS_IN_ELECTRON = [
   `accounts.google.com`, // Google OAuth flow for SSO and integrations
-  `slack.com/oauth`,
-  `slack.com/signin`,
-  `slack.com/workspace-signin`,
-  `slack.com.*/login/`
 ];
 
 /**
