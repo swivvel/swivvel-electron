@@ -21,6 +21,11 @@ contextBridge.exposeInMainWorld(`electron`, {
   getDesktopAppVersion: (): Promise<string> => {
     return ipcRenderer.invoke(`getDesktopAppVersion`);
   },
+  getDesktopSources: () => {
+    console.log('ehard ta')
+    console.log(ipcRenderer)
+    return ipcRenderer.invoke(`getDesktopSources`);
+  },
   isLinux: process.platform === `linux`,
   joinAudioRoomForPod: (podId: string) => {
     ipcRenderer.send(`joinAudioRoomForPod`, podId);

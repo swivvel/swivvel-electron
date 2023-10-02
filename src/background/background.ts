@@ -49,7 +49,43 @@ const fooBefore = `console.log('before')`;
 const fooWindow1 = `console.log(window.navigator)`;
 const fooWindow2 = `console.log(window.navigator.mediaDevices)`;
 const fooWindow3 = `console.log(window.navigator.mediaDevices.getDisplayMedia)`;
-const foo4 = `(window.navigator.mediaDevices.getDisplayMedia = () => window.navigator.mediaDevices.getUserMedia({audio:false,video:{mandatory:{chromeMediaSource: 'desktop',chromeMediaSourceId: 'screen:1:0'}}})) && 'foo'`;
+const foo4 = `(window.navigator.mediaDevices.getDisplayMedia = async () => {
+  console.log('!!!!!!!!!!!!!!!!!!!!!!!');
+
+  console.log(window.electron)
+
+  const sources = await window.electron.getDesktopSources();
+  console.log(sources);
+
+  console.log('&&&&&&&&&&&&&&&&&&&&&')
+
+  return window.navigator.mediaDevices.getUserMedia({
+    audio:false,
+    video:{
+      mandatory:{
+        chromeMediaSource: 'desktop',
+        chromeMediaSourceId: sources[3].id
+      }
+    }
+  })
+}) && 'hammy'`;
+
+
+
+// const foo5 = `(window.navigator.mediaDevices.getDisplayMedia = () => {
+//   console.log('!!!!!!!!!!!!!!!!!!!!!!!');
+//   window.navigator.mediaDevices.getUserMedia(
+//     {
+//       audio:false,
+//       video: {
+//         mandatory:{
+//           chromeMediaSource: 'desktop',
+//           chromeMediaSourceId: 'screen:1:0'
+//         }
+//       }
+//     }
+//   )
+// } && 'hammy')`;
 const fooAfter = `console.log('after')`;
 
 const fooJs = `
@@ -90,8 +126,8 @@ const run = async (): Promise<void> => {
   const trayService = useTrayService(state);
   const windowService = useWindowService(state, trayService);
 
-  // todo
-  app.disableHardwareAcceleration();
+  // // todo
+  // app.disableHardwareAcceleration();
 
   configureApp();
   configureAppQuitHandling(state);
@@ -106,7 +142,7 @@ const run = async (): Promise<void> => {
   // const transparentWindow = await windowService.openTransparentWindow();
 
   trayService.createTray();
-  // configureIpcHandlers(windowService);
+  configureIpcHandlers(windowService);
   // configureAutoUpdates(state);
   // pollForIdleTime(transparentWindow);
   handleSystemShutdown(state);
@@ -157,3 +193,4 @@ const run = async (): Promise<void> => {
 };
 
 run();
+
