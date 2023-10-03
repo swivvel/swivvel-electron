@@ -18,8 +18,6 @@ interface Bounds {
 export default (): Bounds => {
   const primaryDisplay = screen.getPrimaryDisplay();
 
-  console.log(primaryDisplay);
-
   const x = 0;
   const width = primaryDisplay.workArea.width;
 
