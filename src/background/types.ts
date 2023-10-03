@@ -22,6 +22,11 @@ export interface State {
    */
   windows: {
     /**
+     * Creates and joins a new Google Meet meeting
+     */
+    createGoogleMeet: BrowserWindow | null;
+
+    /**
      * The window that displays the HQ page of the web app
      */
     hq: BrowserWindow | null;

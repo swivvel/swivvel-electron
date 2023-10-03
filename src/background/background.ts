@@ -116,6 +116,7 @@ const run = async (): Promise<void> => {
     logInFlowCompleted: false,
     tray: null,
     windows: {
+      createGoogleMeet: null,
       hq: null,
       logIn: null,
       setup: null,
