@@ -1,10 +1,9 @@
-// We are unlikely to have any Linux users, so we're optimizing for Ubuntu for
-// now. The top bar may be different heights on other Linux distros, but we can
-
 import { screen } from 'electron';
 
 import { isLinux } from '../../../utils';
 
+// We are unlikely to have any Linux users, so we're optimizing for Ubuntu for
+// now. The top bar may be different heights on other Linux distros, but we can
 // implement something more robust if that ever becomes a problem.
 const UBUNTU_TOP_BAR_HEIGHT = 27;
 
