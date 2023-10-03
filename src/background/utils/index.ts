@@ -5,6 +5,7 @@ import getSiteUrl from './getSiteUrl';
 import isLinux from './isLinux';
 import isProduction from './isProduction';
 import loadUrl from './loadUrl';
+import parseQueryParams from './parseQueryParams';
 import prepareToQuitApp from './prepareToQuitApp';
 import quitApp from './quitApp';
 import removeQueryParams from './removeQueryParams';
@@ -20,6 +21,7 @@ export {
   isLinux,
   isProduction,
   loadUrl,
+  parseQueryParams,
   prepareToQuitApp,
   quitApp,
   removeQueryParams,

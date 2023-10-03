@@ -3,6 +3,10 @@ import { contextBridge, ipcRenderer } from 'electron';
 type IdleChangeCallback = (event: unknown, isIdle: boolean) => void;
 type JoinAudioRoomForPodCallback = (event: unknown, podId: string) => void;
 type LaunchAudioRoomFromSetupCallback = (event: unknown) => void;
+type MeetBreakoutUrlCreatedForPodCallback = (
+  event: unknown,
+  meetUrl: string
+) => void;
 
 // NOTE: values exposed in the main world should be added to window.d.ts
 // in the web app
@@ -59,6 +63,15 @@ contextBridge.exposeInMainWorld(`electron`, {
 
     return (): void => {
       ipcRenderer.removeListener(`launchAudioRoomFromSetup`, callback);
+    };
+  },
+  onMeetBreakoutUrlCreatedForPod: (
+    callback: MeetBreakoutUrlCreatedForPodCallback
+  ) => {
+    ipcRenderer.on(`meetBreakoutUrlCreatedForPod`, callback);
+
+    return (): void => {
+      ipcRenderer.removeListener(`meetBreakoutUrlCreatedForPod`, callback);
     };
   },
 });
