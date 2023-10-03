@@ -1,19 +1,14 @@
 import { BrowserWindow } from 'electron';
 import log from 'electron-log';
-import ms from 'ms';
 
 import { State } from '../../types';
 
 export default (window: BrowserWindow, state: State, podId: string): void => {
   log.info(`Scraping and saving meeting URL for pod ${podId}...`);
 
-  const intervalStartTime = new Date().getTime();
-
   const interval = setInterval(async () => {
-    const timeSinceIntervalStart = new Date().getTime() - intervalStartTime;
-
-    if (timeSinceIntervalStart > ms(`10 seconds`)) {
-      log.info(`Could not find meeting URL after 10 seconds, aborting`);
+    if (window.isDestroyed()) {
+      log.info(`Create Google Meet window destroyed, stopping interval`);
       clearInterval(interval);
       return;
     }
