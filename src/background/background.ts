@@ -19,6 +19,7 @@ import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
 import { getPreloadPath, isProduction } from './utils';
+import { readFileSync } from 'original-fs';
 
 const promisify = (fnString: string): string => {
   return `new Promise((resolve, reject) => { resolve(${fnString}); });`;
@@ -49,26 +50,60 @@ const fooBefore = `console.log('before')`;
 const fooWindow1 = `console.log(window.navigator)`;
 const fooWindow2 = `console.log(window.navigator.mediaDevices)`;
 const fooWindow3 = `console.log(window.navigator.mediaDevices.getDisplayMedia)`;
-const foo4 = `(window.navigator.mediaDevices.getDisplayMedia = async () => {
-  console.log('!!!!!!!!!!!!!!!!!!!!!!!');
 
-  console.log(window.electron)
+const filesContents = readFileSync(`${__dirname}/getDisplayMedia.js`, `utf8`);
+const matches = filesContents.match(/"use strict";\n([\S\s]*);/);
 
-  const sources = await window.electron.getDesktopSources();
-  console.log(sources);
+if (!matches) {
+  throw new Error(`Could not find contents of getDisplayMedia.js`);
+}
 
-  console.log('&&&&&&&&&&&&&&&&&&&&&')
+console.log(matches[1]);
 
-  return window.navigator.mediaDevices.getUserMedia({
-    audio:false,
-    video:{
-      mandatory:{
-        chromeMediaSource: 'desktop',
-        chromeMediaSourceId: sources[3].id
-      }
-    }
-  })
-}) && 'hammy'`;
+const foo4 = `(window.navigator.mediaDevices.getDisplayMedia = ${matches[1]}) && 'hammy'`;
+// const foo4 = `(window.navigator.mediaDevices.getDisplayMedia = async () => {
+//   console.log('!!!!!!!!!!!!!!!!!!!!!!!');
+
+//   console.log(window.electron)
+
+//   const sources = await window.electron.getDesktopSources();
+//   console.log(sources);
+
+//   console.log('&&&&&&&&&&&&&&&&&&&&&##')
+
+//   const selected = new Promise((resolve, reject) => {
+
+//   });
+
+
+
+//   // const screenShareModal = document.querySelector('div[role="dialog"]');
+
+//   var elemDiv = document.createElement('div');
+//   elemDiv.style.cssText = 'position:absolute;width:100%;height:100%;opacity:0.3;z-index:100;background:rgb(196 114 114);';
+//   elemDiv.text = 'zoop';//await window.electron.getScreenShareSelectionModalHtml();
+//   document.body.appendChild(elemDiv);
+
+//   console.log('yo tango')
+
+//   const val = await selected;
+
+//   console.log('!!!!!!!!!!!!!!!!!!!!!!!', val);
+
+//   // return window.navigator.mediaDevices.getUserMedia({
+//   //   audio:false,
+//   //   video:{
+//   //     mandatory:{
+//   //       chromeMediaSource: 'desktop',
+//   //       chromeMediaSourceId: sources[3].id
+//   //     }
+//   //   }
+//   // })
+// }) && 'hammy'`;
+
+const foo5 = `
+  console.log('ONLOAD')
+`
 
 
 
@@ -154,7 +189,7 @@ const run = async (): Promise<void> => {
     width: 1400,
     height: 1000,
     webPreferences: {
-      experimentalFeatures: true,
+      // experimentalFeatures: true,
       // contextIsolation: false,
       // webSecurity: false,
       preload: getPreloadPath(),
@@ -184,8 +219,11 @@ const run = async (): Promise<void> => {
   await foo.webContents.executeJavaScript(promisify(fooWindow1));
   await foo.webContents.executeJavaScript(promisify(fooWindow2));
   await foo.webContents.executeJavaScript(promisify(fooWindow3));
+  console.log(foo4)
   const b = await foo.webContents.executeJavaScript(promisify(foo4));
   log.info(`b: ${b}`);
+  const bb = await foo.webContents.executeJavaScript(promisify(foo5));
+  log.info(`bb: ${bb}`);
   const c = await foo.webContents.executeJavaScript(promisify(fooAfter));
   log.info(`c: ${c}`);
   log.info(`Created Google Meet window`);

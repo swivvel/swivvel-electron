@@ -26,8 +26,6 @@ contextBridge.exposeInMainWorld(`electron`, {
     return ipcRenderer.invoke(`getDesktopAppVersion`);
   },
   getDesktopSources: () => {
-    console.log('ehard ta')
-    console.log(ipcRenderer)
     return ipcRenderer.invoke(`getDesktopSources`);
   },
   isLinux: process.platform === `linux`,
