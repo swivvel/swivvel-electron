@@ -1,4 +1,4 @@
-import { app, ipcMain, systemPreferences } from 'electron';
+import { app, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import configureApp from './configureApp';
@@ -12,7 +12,6 @@ import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
-import { isProduction } from './utils';
 
 const run = async (): Promise<void> => {
   log.info(`App v=${app.getVersion()} starting...`);
@@ -22,6 +21,7 @@ const run = async (): Promise<void> => {
     logInFlowCompleted: false,
     tray: null,
     windows: {
+      createGoogleMeet: null,
       hq: null,
       logIn: null,
       setup: null,
@@ -35,7 +35,6 @@ const run = async (): Promise<void> => {
   configureApp();
   configureAppQuitHandling(state);
   listenForDeepLinks(state, getDeepLinkHandler(state, windowService));
-  ipcMain.handle(`isProduction`, isProduction);
 
   await app.whenReady();
 
@@ -43,10 +42,12 @@ const run = async (): Promise<void> => {
     await systemPreferences.askForMediaAccess(`microphone`);
   }
 
+  // Make sure handlers are registered before opening any windows
+  configureIpcHandlers(windowService);
+
   const transparentWindow = await windowService.openTransparentWindow();
 
   trayService.createTray();
-  configureIpcHandlers(windowService);
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
   handleSystemShutdown(state);

@@ -12,6 +12,7 @@ export default (): BrowserWindowConstructorOptions => {
     frame: !isLinux(),
     height: primaryDisplay.workArea.height,
     hiddenInMissionControl: false,
+    show: false,
     skipTaskbar: false,
     webPreferences: { preload: getPreloadPath() },
     width: primaryDisplay.workArea.width,

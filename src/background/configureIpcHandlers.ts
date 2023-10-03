@@ -1,9 +1,16 @@
-import { ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import log from 'electron-log';
 
 import { WindowService } from './useWindowService';
+import { isProduction } from './utils';
 
 export default (windowService: WindowService): void => {
+  ipcMain.handle(`getDesktopAppVersion`, () => {
+    return app.getVersion();
+  });
+
+  ipcMain.handle(`isProduction`, isProduction);
+
   ipcMain.on(`joinAudioRoomForPod`, async (event, podId): Promise<void> => {
     log.info(`Received joinAudioRoomForPod event, podId=${podId}`);
 

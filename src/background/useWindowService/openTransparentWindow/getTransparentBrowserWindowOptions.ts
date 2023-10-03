@@ -1,22 +1,32 @@
 import { BrowserWindowConstructorOptions, screen } from 'electron';
+import log from 'electron-log';
 
 import { getPreloadPath, isLinux } from '../../utils';
 
+import { getBounds } from './utils';
+
 export default (): BrowserWindowConstructorOptions => {
-  const primaryDisplay = screen.getPrimaryDisplay();
+  log.info(`All displays: ${JSON.stringify(screen.getAllDisplays())}`);
+
+  const bounds = getBounds();
+  const { height, width, x, y } = bounds;
+
+  log.info(`Setting transparent window bounds: ${JSON.stringify(bounds)}`);
 
   return {
     alwaysOnTop: true,
     autoHideMenuBar: true,
     closable: false,
     // On Mac, the window needs to be focusable for the mouse cursor to appear
-    // as a pointer. On Linux, the mouse cursor appears as a pointer on a
-    // non-focusable window, but if the window is focusable then it appears
-    // when using alt+tab to switch between windows.
-    focusable: !isLinux(),
+    // as a pointer. On Linux, focusable must be true in order for the user
+    // to type in text fields.
+    focusable: true,
+    // The "splash" type prevents the window from appearing in the alt+tab
+    // window switcher on Linux.
+    type: isLinux() ? `splash` : undefined,
     frame: false,
     hasShadow: false,
-    height: primaryDisplay.workAreaSize.height,
+    height,
     hiddenInMissionControl: true,
     maximizable: false,
     minimizable: false,
@@ -25,8 +35,8 @@ export default (): BrowserWindowConstructorOptions => {
     skipTaskbar: true,
     transparent: true,
     webPreferences: { preload: getPreloadPath() },
-    width: primaryDisplay.workAreaSize.width,
-    x: 0,
-    y: 0,
+    width,
+    x,
+    y,
   };
 };
