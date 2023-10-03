@@ -12,8 +12,8 @@ export default (window: BrowserWindow, state: State, podId: string): void => {
   const interval = setInterval(async () => {
     const timeSinceIntervalStart = new Date().getTime() - intervalStartTime;
 
-    if (timeSinceIntervalStart > ms(`2 seconds`)) {
-      log.info(`Could not find meeting URL after 2 seconds, aborting`);
+    if (timeSinceIntervalStart > ms(`10 seconds`)) {
+      log.info(`Could not find meeting URL after 10 seconds, aborting`);
       clearInterval(interval);
       return;
     }
