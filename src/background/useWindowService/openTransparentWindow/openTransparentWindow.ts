@@ -4,6 +4,7 @@ import { openBrowserWindow } from '../utils';
 import configureCloseHandler from './configureCloseHandler';
 import getTransparentBrowserWindowOptions from './getTransparentBrowserWindowOptions';
 import pollForMouseEvents from './pollForMouseEvents';
+import resizeOnDisplayChange from './resizeOnDisplayChange';
 import showOnAllWorkspaces from './showOnAllWorkspaces';
 import { OpenTransparentWindow } from './types';
 
@@ -22,9 +23,14 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
 
     window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
 
+    window.focus();
+    window.center();
+    window.maximize();
+
     showOnAllWorkspaces(window);
     configureCloseHandler(window, state);
     pollForMouseEvents(window);
+    resizeOnDisplayChange(window);
 
     await loadUrl(`${getSiteUrl()}/notifications`, window, state);
 
