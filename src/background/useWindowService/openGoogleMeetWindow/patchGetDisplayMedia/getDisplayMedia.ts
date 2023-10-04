@@ -1,6 +1,6 @@
 import { ShareableMediaSource } from "../../../types";
 
-async (): Promise<void> => {
+async (): Promise<MediaStream | void> => {
   // This file _MUST_ contain just one top level function to be used
   // as an event callback
 
@@ -130,12 +130,10 @@ async (): Promise<void> => {
   try {
     selectedMediaId = await getSelectedMediaId;
   } catch (err) {
-    console.log(`WE SEENT AND ERROR`, err)
     return;
   }
 
-  console.log(`YOU SELECTED`, selectedMediaId)
-  window.navigator.mediaDevices.getUserMedia({
+  return window.navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
       mandatory: {

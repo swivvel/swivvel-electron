@@ -1,5 +1,3 @@
-import log from 'electron-log';
-
 import { loadUrl } from '../../utils';
 import { openBrowserWindow } from '../utils';
 
@@ -8,9 +6,9 @@ import getCreateGoogleMeetWindowBrowserOptions from './getCreateGoogleMeetWindow
 import patchGetDisplayMedia from './patchGetDisplayMedia';
 import scrapeAndSaveMeetingUrl from './scrapeAndSaveMeetingUrl';
 import triggerMeetingCreatedEvent from './triggerMeetingCreatedEvent';
-import { OpenCreateGoogleMeetWindow } from './types';
+import { OpenGoogleMeetWindow } from './types';
 
-const openCreateGoogleMeetWindow: OpenCreateGoogleMeetWindow = async (args) => {
+const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
   const { podId, meetingUrl, state, windowOpenRequestHandler } = args;
 
   const options = getCreateGoogleMeetWindowBrowserOptions();
@@ -55,4 +53,4 @@ const openCreateGoogleMeetWindow: OpenCreateGoogleMeetWindow = async (args) => {
   );
 };
 
-export default openCreateGoogleMeetWindow;
+export default openGoogleMeetWindow;

@@ -18,7 +18,7 @@ export type WindowOpenRequestHandler = ({
  * Handle requests from the renderer process to open a specific Electron window.
  */
 export default (callbacks: {
-  onCreateGoogleMeetRequested: (
+  onGoogleMeetRequested: (
     podId: string,
     meetingUrl: string | null
   ) => void;
@@ -43,7 +43,7 @@ export default (callbacks: {
       log.info(`Pod ID=${podId}`);
       const meetingUrl = urlParams.meetingUrl;
       log.info(`Meeting URL=${meetingUrl}`);
-      callbacks.onCreateGoogleMeetRequested(podId, meetingUrl || null);
+      callbacks.onGoogleMeetRequested(podId, meetingUrl || null);
       return { action: `deny` };
     }
 
