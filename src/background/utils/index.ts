@@ -1,6 +1,7 @@
 import getBrowserWindowName from './getBrowserWindowName';
 import getLogoTemplatePath from './getLogoTemplatePath';
 import getPreloadPath from './getPreloadPath';
+import getRedirectUrl from './getRedirectUrl';
 import getShareableMediaSources from './getShareableMediaSources';
 import getSiteUrl from './getSiteUrl';
 import isLinux from './isLinux';
@@ -19,6 +20,7 @@ export {
   getBrowserWindowName,
   getLogoTemplatePath,
   getPreloadPath,
+  getRedirectUrl,
   getShareableMediaSources,
   getSiteUrl,
   isLinux,

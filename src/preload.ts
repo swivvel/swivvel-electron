@@ -7,6 +7,8 @@ type MeetBreakoutUrlCreatedForPodCallback = (
   event: unknown,
   meetUrl: string
 ) => void;
+type MeetJoinedCallback = (event: unknown, meetUrl: string) => void;
+type MeetLeftCallback = (event: unknown, meetUrl: string) => void;
 
 // NOTE: values exposed in the main world should be added to window.d.ts
 // in the web app
@@ -78,6 +80,20 @@ contextBridge.exposeInMainWorld(`electron`, {
 
     return (): void => {
       ipcRenderer.removeListener(`meetBreakoutUrlCreatedForPod`, callback);
+    };
+  },
+  onMeetJoined: (callback: MeetJoinedCallback) => {
+    ipcRenderer.on(`meetJoined`, callback);
+
+    return (): void => {
+      ipcRenderer.removeListener(`meetJoined`, callback);
+    };
+  },
+  onMeetLeft: (callback: MeetLeftCallback) => {
+    ipcRenderer.on(`meetLeft`, callback);
+
+    return (): void => {
+      ipcRenderer.removeListener(`meetLeft`, callback);
     };
   },
 });

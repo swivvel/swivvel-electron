@@ -6,7 +6,7 @@ import {
 import log from 'electron-log';
 
 import { State } from '../../types';
-import { removeQueryParams, shouldOpenUrlInBrowser } from '../../utils';
+import { getRedirectUrl, removeQueryParams, shouldOpenUrlInBrowser } from '../../utils';
 
 export default async (
   state: State,

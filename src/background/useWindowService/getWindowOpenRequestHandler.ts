@@ -19,7 +19,7 @@ export type WindowOpenRequestHandler = ({
  */
 export default (callbacks: {
   onGoogleMeetRequested: (
-    podId: string,
+    podId: string | null,
     meetingUrl: string | null
   ) => void;
   onHqPageRequested: () => void;

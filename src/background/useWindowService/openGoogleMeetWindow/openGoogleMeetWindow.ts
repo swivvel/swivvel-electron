@@ -4,6 +4,7 @@ import { openBrowserWindow } from '../utils';
 import configureCloseHandler from './configureCloseHandler';
 import getCreateGoogleMeetWindowBrowserOptions from './getCreateGoogleMeetWindowBrowserOptions';
 import patchGetDisplayMedia from './patchGetDisplayMedia';
+import pollForJoinAndLeaveEvents from './pollForJoinAndLeaveEvents';
 import scrapeAndSaveMeetingUrl from './scrapeAndSaveMeetingUrl';
 import triggerMeetingCreatedEvent from './triggerMeetingCreatedEvent';
 import { OpenGoogleMeetWindow } from './types';
@@ -19,6 +20,15 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
     options,
     async (window) => {
       window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
+
+      window.webContents.on(`will-navigate`, async (event) => {
+        // Prevent click of rejoin button from opening in new tab
+        if (event.url.startsWith(window.webContents.getURL())) {
+          event.preventDefault();
+          await loadUrl(event.url, window, state);
+          await patchGetDisplayMedia(window);
+        }
+      });
 
       configureCloseHandler(window, state);
 
@@ -45,6 +55,8 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
       // size. Once we've loaded the meeting we can lower the minimum size
       // to something reasonable
       window.setMinimumSize(200, 200);
+
+      pollForJoinAndLeaveEvents(window, state);
 
       await patchGetDisplayMedia(window);
 

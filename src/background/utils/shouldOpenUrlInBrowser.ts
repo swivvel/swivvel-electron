@@ -6,7 +6,8 @@ const EXTERNAL_URLS_IN_ELECTRON = [
   `slack.com/oauth`,
   `slack.com/signin`,
   `slack.com/workspace-signin`,
-  `slack.com.*/login/`
+  `slack.com.*/login/`,
+  `meet.google.com`
 ];
 
 /**
