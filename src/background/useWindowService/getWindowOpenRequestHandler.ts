@@ -18,7 +18,10 @@ export type WindowOpenRequestHandler = ({
  * Handle requests from the renderer process to open a specific Electron window.
  */
 export default (callbacks: {
-  onCreateGoogleMeetRequested: (podId: string) => void;
+  onCreateGoogleMeetRequested: (
+    podId: string,
+    meetingUrl: string | null
+  ) => void;
   onHqPageRequested: () => void;
   onLogInPageRequested: () => void;
   onSetupPageRequested: () => void;
@@ -28,13 +31,19 @@ export default (callbacks: {
 
     const siteUrl = getSiteUrl();
 
-    if (removeQueryParams(url) === `${siteUrl}/electron/new-meet-for-pod`) {
+    log.info(`Site URL=${siteUrl}`);
+
+    log.info(removeQueryParams(url))
+
+    if (removeQueryParams(url) === `${siteUrl}/electron/google-meet`) {
       log.info(`Create Google Meet page requested`);
       const urlParams = parseQueryParams(url);
       log.info(`URL params=${JSON.stringify(urlParams)}`);
       const podId = urlParams.podId;
       log.info(`Pod ID=${podId}`);
-      callbacks.onCreateGoogleMeetRequested(podId);
+      const meetingUrl = urlParams.meetingUrl;
+      log.info(`Meeting URL=${meetingUrl}`);
+      callbacks.onCreateGoogleMeetRequested(podId, meetingUrl || null);
       return { action: `deny` };
     }
 

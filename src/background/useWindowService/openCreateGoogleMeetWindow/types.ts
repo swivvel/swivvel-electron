@@ -8,8 +8,8 @@ export type OpenCreateGoogleMeetWindow = (
 ) => Promise<BrowserWindow>;
 
 export interface OpenCreateGoogleMeetArgs {
-  meetingId: string | null;
-  podId: string;
+  meetingUrl: string | null;
+  podId: string | null;
   state: State;
   windowOpenRequestHandler: WindowOpenRequestHandler;
 }

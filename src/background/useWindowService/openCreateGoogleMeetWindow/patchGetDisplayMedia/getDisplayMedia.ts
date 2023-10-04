@@ -130,9 +130,11 @@ async (): Promise<void> => {
   try {
     selectedMediaId = await getSelectedMediaId;
   } catch (err) {
+    console.log(`WE SEENT AND ERROR`, err)
     return;
   }
 
+  console.log(`YOU SELECTED`, selectedMediaId)
   window.navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {

@@ -1,14 +1,17 @@
-import { loadUrl, sleep } from '../../utils';
+import log from 'electron-log';
+
+import { loadUrl } from '../../utils';
 import { openBrowserWindow } from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';
 import getCreateGoogleMeetWindowBrowserOptions from './getCreateGoogleMeetWindowBrowserOptions';
 import patchGetDisplayMedia from './patchGetDisplayMedia';
 import scrapeAndSaveMeetingUrl from './scrapeAndSaveMeetingUrl';
+import triggerMeetingCreatedEvent from './triggerMeetingCreatedEvent';
 import { OpenCreateGoogleMeetWindow } from './types';
 
 const openCreateGoogleMeetWindow: OpenCreateGoogleMeetWindow = async (args) => {
-  const { meetingId, podId, state, windowOpenRequestHandler } = args;
+  const { podId, meetingUrl, state, windowOpenRequestHandler } = args;
 
   const options = getCreateGoogleMeetWindowBrowserOptions();
 
@@ -21,16 +24,20 @@ const openCreateGoogleMeetWindow: OpenCreateGoogleMeetWindow = async (args) => {
 
       configureCloseHandler(window, state);
 
-      let meetingIdToOpen: string | null = meetingId;
+      let meetingUrlToOpen: string | null = meetingUrl;
 
-      if (!meetingIdToOpen) {
+      if (!meetingUrlToOpen) {
         await loadUrl(`https://meet.google.com/getalink`, window, state);
 
-        meetingIdToOpen = await scrapeAndSaveMeetingUrl(window, state, podId);
+        meetingUrlToOpen = await scrapeAndSaveMeetingUrl(window);
+
+        if (podId){
+          triggerMeetingCreatedEvent(state, podId, meetingUrlToOpen);
+        }
       }
 
       await loadUrl(
-        meetingIdToOpen,
+        meetingUrlToOpen,
         window,
         state
       );
