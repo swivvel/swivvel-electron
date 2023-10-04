@@ -28,6 +28,9 @@ export default (state: State): void => {
 
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
+    if (state.windows.hq) {
+      state.windows.hq.destroy();
+    }
     refreshTransparentWindow();
   });
 
