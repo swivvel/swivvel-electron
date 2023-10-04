@@ -2,9 +2,10 @@ import { powerMonitor } from 'electron';
 import log from 'electron-log';
 
 import { State } from './types';
+import { WindowService } from './useWindowService';
 import { quitApp } from './utils';
 
-export default (state: State): void => {
+export default (state: State, windowService: WindowService): void => {
   // We have observed the app getting into a weird state when a Mac comes out
   // of sleep mode. Opening the developer tools shows a blank Elements tab and
   // nothing in the console, and clicking the "Join" button shows the spinner
@@ -36,12 +37,12 @@ export default (state: State): void => {
 
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
-    refreshTransparentWindow();
+    windowService.closeAllWindows();
   });
 
   powerMonitor.on(`resume`, () => {
     log.info(`Power monitor: resume detected`);
-    refreshTransparentWindow();
+    windowService.openTransparentWindow();
   });
 
   // Without this, Macs would hang when trying to shut down because the

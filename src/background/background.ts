@@ -50,7 +50,7 @@ const run = async (): Promise<void> => {
   trayService.createTray();
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
-  handlePowerMonitorStateChanges(state);
+  handlePowerMonitorStateChanges(state, windowService);
 
   log.info(`App started`);
 };
