@@ -6,7 +6,7 @@ import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import configureIpcHandlers from './configureIpcHandlers';
 import getDeepLinkHandler from './getDeepLinkHandler';
-import handleSystemShutdown from './handleSystemShutdown';
+import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
@@ -50,7 +50,7 @@ const run = async (): Promise<void> => {
   trayService.createTray();
   configureAutoUpdates(state);
   pollForIdleTime(transparentWindow);
-  handleSystemShutdown(state);
+  handlePowerMonitorStateChanges(state);
 
   log.info(`App started`);
 };
