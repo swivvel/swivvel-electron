@@ -15,6 +15,9 @@ contextBridge.exposeInMainWorld(`electron`, {
   // Feature flags can be used to gate features in the renderer if they would
   // be incompatible with old versions of the desktop app
   featureFlags: {
+    // We are able to open Google Meet URLs in the desktop app
+    googleMeetsSupport: true,
+
     // The log in flow that sends users to the browser to reuse their existing
     // Google session so they don't have to type their password
     loginFlowV2: true,
