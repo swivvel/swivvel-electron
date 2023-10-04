@@ -28,8 +28,12 @@ export default (state: State): void => {
 
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
+    // Destroy the HQ window to help prevent it from getting in a bad state
+    // while the computer sleeps. It will get recreated when the transparent
+    // window refreshes when the computer wakes up.
     if (state.windows.hq) {
       state.windows.hq.destroy();
+      state.windows.hq = null;
     }
     refreshTransparentWindow();
   });
