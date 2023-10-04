@@ -6,7 +6,7 @@ import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import configureIpcHandlers from './configureIpcHandlers';
 import getDeepLinkHandler from './getDeepLinkHandler';
-import handleSystemShutdown from './handleSystemShutdown';
+import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
@@ -45,12 +45,12 @@ const run = async (): Promise<void> => {
   // Make sure handlers are registered before opening any windows
   configureIpcHandlers(windowService);
 
-  const transparentWindow = await windowService.openTransparentWindow();
+  await windowService.openTransparentWindow();
 
   trayService.createTray();
   configureAutoUpdates(state);
-  pollForIdleTime(transparentWindow);
-  handleSystemShutdown(state);
+  pollForIdleTime(state);
+  handlePowerMonitorStateChanges(state, windowService);
 
   log.info(`App started`);
 };
