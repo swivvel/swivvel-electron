@@ -6,40 +6,30 @@ import { WindowService } from './useWindowService';
 import { quitApp } from './utils';
 
 export default (state: State, windowService: WindowService): void => {
-  // We have observed the app getting into a weird state when a Mac comes out
-  // of sleep mode. Opening the developer tools shows a blank Elements tab and
-  // nothing in the console, and clicking the "Join" button shows the spinner
-  // but hangs. This only happens on a very small subset of users, but in an
-  // attempt to fix it we're refreshing the transparent window whenever the
-  // computer sleeps and wakes. This is probably a good idea regardless of the
-  // bug because refreshing the transparent window will remove the user from the
-  // audio room, and if their computer is asleep then they aren't available to
-  // talk.
-
-  const refreshTransparentWindow = (): void => {
-    if (!state.windows.transparent) {
-      log.info(`No transparent window to refresh`);
-    } else if (state.windows.transparent?.isDestroyed()) {
-      log.info(`Transparent window is destroyed; not refreshing`);
-    } else {
-      // The HQ window might also get in a bad state while the computer sleeps.
-      // Destroy it to help prevent sleep-related issues.
-      log.info(`Destroying HQ window...`);
-      if (state.windows.hq) {
-        state.windows.hq.destroy();
-        state.windows.hq = null;
-      }
-
-      log.info(`Refreshing transparent window...`);
-      state.windows.transparent.reload();
-    }
-  };
-
+  // Closing the windows on sleep and re-opening them on resume solves (or
+  // attempts to solve) a handful of issues:
+  //
+  // 1. We have observed (in a very small subset of users) the app getting into
+  //    a weird state when a Mac comes out of sleep mode. Opening the developer
+  //    tools shows blank Elements and Console tabs, and clicking the "Join"
+  //    button shows the spinner but hangs.
+  // 2. We have received various error alerts at late times of the night that
+  //    seem to indicate that the app is unable to fetch data from our back end.
+  //    Our assumption is that the computer is asleep and this is causing some
+  //    kind of connectivity problem.
+  // 3. For many users, their computer sleeps overnight. Closing and re-opening
+  //    the windows can make sure that the client has the latest version of the
+  //    web app code when the user resumes their computer in the morning.
+  // 4. If a user has no activity over the weekend, Auth0 will expire their
+  //    session. We don't currently handle this very well - the app can end
+  //    up displaying an "Access Denied" page. Closing and re-opening the
+  //    windows will make sure that an unauthenticated user is presented with
+  //    the log in page when they resume their computer on Monday morning.
+  //
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
     windowService.closeAllWindows();
   });
-
   powerMonitor.on(`resume`, () => {
     log.info(`Power monitor: resume detected`);
     windowService.openTransparentWindow();

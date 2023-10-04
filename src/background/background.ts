@@ -45,11 +45,11 @@ const run = async (): Promise<void> => {
   // Make sure handlers are registered before opening any windows
   configureIpcHandlers(windowService);
 
-  const transparentWindow = await windowService.openTransparentWindow();
+  await windowService.openTransparentWindow();
 
   trayService.createTray();
   configureAutoUpdates(state);
-  pollForIdleTime(transparentWindow);
+  pollForIdleTime(state);
   handlePowerMonitorStateChanges(state, windowService);
 
   log.info(`App started`);
