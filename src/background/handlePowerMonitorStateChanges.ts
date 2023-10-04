@@ -5,17 +5,6 @@ import { State } from './types';
 import { quitApp } from './utils';
 
 export default (state: State): void => {
-  const refreshTransparentWindow = (): void => {
-    if (!state.windows.transparent) {
-      log.info(`No transparent window to refresh`);
-    } else if (state.windows.transparent?.isDestroyed()) {
-      log.info(`Transparent window is destroyed; not refreshing`);
-    } else {
-      log.info(`Refreshing transparent window`);
-      state.windows.transparent.reload();
-    }
-  };
-
   // We have observed the app getting into a weird state when a Mac comes out
   // of sleep mode. Opening the developer tools shows a blank Elements tab and
   // nothing in the console, and clicking the "Join" button shows the spinner
@@ -26,15 +15,27 @@ export default (state: State): void => {
   // audio room, and if their computer is asleep then they aren't available to
   // talk.
 
+  const refreshTransparentWindow = (): void => {
+    if (!state.windows.transparent) {
+      log.info(`No transparent window to refresh`);
+    } else if (state.windows.transparent?.isDestroyed()) {
+      log.info(`Transparent window is destroyed; not refreshing`);
+    } else {
+      // The HQ window might also get in a bad state while the computer sleeps.
+      // Destroy it to help prevent sleep-related issues.
+      log.info(`Destroying HQ window...`);
+      if (state.windows.hq) {
+        state.windows.hq.destroy();
+        state.windows.hq = null;
+      }
+
+      log.info(`Refreshing transparent window...`);
+      state.windows.transparent.reload();
+    }
+  };
+
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
-    // Destroy the HQ window to help prevent it from getting in a bad state
-    // while the computer sleeps. It will get recreated when the transparent
-    // window refreshes when the computer wakes up.
-    if (state.windows.hq) {
-      state.windows.hq.destroy();
-      state.windows.hq = null;
-    }
     refreshTransparentWindow();
   });
 
