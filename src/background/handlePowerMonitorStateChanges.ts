@@ -10,21 +10,23 @@ export default (state: State, windowService: WindowService): void => {
   // attempts to solve) a handful of issues:
   //
   // 1. We have observed (in a very small subset of users) the app getting into
-  //    a weird state when a Mac comes out of sleep mode. Opening the developer
+  //    a weird state when a Mac is locked overnight. Opening the developer
   //    tools shows blank Elements and Console tabs, and clicking the "Join"
   //    button shows the spinner but hangs.
   // 2. We have received various error alerts at late times of the night that
   //    seem to indicate that the app is unable to fetch data from our back end.
   //    Our assumption is that the computer is asleep and this is causing some
   //    kind of connectivity problem.
-  // 3. For many users, their computer sleeps overnight. Closing and re-opening
-  //    the windows can make sure that the client has the latest version of the
-  //    web app code when the user resumes their computer in the morning.
+  // 3. Many users keep their computer on overnight, but in sleep mode or
+  //    locked. Closing and re-opening the windows can make sure that the client
+  //    has the latest version of the web app code when the user unlocks/resumes
+  //    their computer in the morning.
   // 4. If a user has no activity over the weekend, Auth0 will expire their
   //    session. We don't currently handle this very well - the app can end
   //    up displaying an "Access Denied" page. Closing and re-opening the
   //    windows will make sure that an unauthenticated user is presented with
-  //    the log in page when they resume their computer on Monday morning.
+  //    the log in page when they unlock/resume their computer on Monday
+  //    morning.
   //
   powerMonitor.on(`lock-screen`, () => {
     log.info(`Power monitor: lock-screen detected`);
