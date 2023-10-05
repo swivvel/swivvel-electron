@@ -1,29 +1,31 @@
-import { app, ipcMain, systemPreferences } from 'electron';
+import { app, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
+import configureIpcHandlers from './configureIpcHandlers';
 import getDeepLinkHandler from './getDeepLinkHandler';
-import handleSystemShutdown from './handleSystemShutdown';
+import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
-import { isProduction } from './utils';
 
 const run = async (): Promise<void> => {
-  log.info(`App starting...`);
+  log.info(`App v=${app.getVersion()} starting...`);
 
   const state: State = {
     allowQuit: false,
     logInFlowCompleted: false,
     tray: null,
     windows: {
+      createGoogleMeet: null,
       hq: null,
       logIn: null,
       settings: null,
+      setup: null,
       transparent: null,
     },
   };
@@ -34,7 +36,6 @@ const run = async (): Promise<void> => {
   configureApp();
   configureAppQuitHandling(state);
   listenForDeepLinks(state, getDeepLinkHandler(state, windowService));
-  ipcMain.handle(`isProduction`, isProduction);
 
   await app.whenReady();
 
@@ -42,20 +43,15 @@ const run = async (): Promise<void> => {
     await systemPreferences.askForMediaAccess(`microphone`);
   }
 
-  const transparentWindow = await windowService.openTransparentWindow();
+  // Make sure handlers are registered before opening any windows
+  configureIpcHandlers(windowService);
 
-  ipcMain.on(
-    `joinAudioRoomForPod`,
-    async (event, podId: string): Promise<void> => {
-      const window = await windowService.openTransparentWindow();
-      window.webContents.send(`joinAudioRoomForPod`, podId);
-    }
-  );
+  await windowService.openTransparentWindow();
 
   trayService.createTray();
   configureAutoUpdates(state);
-  pollForIdleTime(transparentWindow);
-  handleSystemShutdown(state);
+  pollForIdleTime(state);
+  handlePowerMonitorStateChanges(state, windowService);
 
   log.info(`App started`);
 };

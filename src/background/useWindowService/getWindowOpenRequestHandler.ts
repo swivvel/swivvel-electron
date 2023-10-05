@@ -3,6 +3,7 @@ import log from 'electron-log';
 
 import {
   getSiteUrl,
+  parseQueryParams,
   removeQueryParams,
   shouldOpenUrlInBrowser,
 } from '../utils';
@@ -17,14 +18,26 @@ export type WindowOpenRequestHandler = ({
  * Handle requests from the renderer process to open a specific Electron window.
  */
 export default (callbacks: {
+  onCreateGoogleMeetRequested: (podId: string) => void;
   onHqPageRequested: () => void;
   onLogInPageRequested: () => void;
   onSettingsPageRequested: () => void;
+  onSetupPageRequested: () => void;
 }): WindowOpenRequestHandler => {
   return ({ url }) => {
     log.info(`Caught URL opened by window: ${url}`);
 
     const siteUrl = getSiteUrl();
+
+    if (removeQueryParams(url) === `${siteUrl}/electron/new-meet-for-pod`) {
+      log.info(`Create Google Meet page requested`);
+      const urlParams = parseQueryParams(url);
+      log.info(`URL params=${JSON.stringify(urlParams)}`);
+      const podId = urlParams.podId;
+      log.info(`Pod ID=${podId}`);
+      callbacks.onCreateGoogleMeetRequested(podId);
+      return { action: `deny` };
+    }
 
     if (removeQueryParams(url) === `${siteUrl}/electron/hq`) {
       log.info(`HQ page requested`);
@@ -42,6 +55,12 @@ export default (callbacks: {
     if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
       log.info(`Log in page requested`);
       callbacks.onLogInPageRequested();
+      return { action: `deny` };
+    }
+
+    if (removeQueryParams(url) === `${siteUrl}/electron/setup`) {
+      log.info(`Setup page requested`);
+      callbacks.onSetupPageRequested();
       return { action: `deny` };
     }
 

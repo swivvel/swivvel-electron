@@ -1,3 +1,3 @@
-import getTrayQuitMenuItem from './getTrayQuitMenuItem';
+import getBaseMenuItems from './getBaseMenuItems';
 
-export { getTrayQuitMenuItem };
+export { getBaseMenuItems };

@@ -60,7 +60,7 @@ export default async (
 
   log.info(`Created window: ${browserWindowName}`);
 
-  if (!browserWindow.isDestroyed()) {
+  if (!browserWindow.isDestroyed() && browserWindowOptions.show !== false) {
     browserWindow.show();
   }
 

@@ -22,6 +22,11 @@ export interface State {
    */
   windows: {
     /**
+     * Creates and joins a new Google Meet meeting
+     */
+    createGoogleMeet: BrowserWindow | null;
+
+    /**
      * The window that displays the HQ page of the web app
      */
     hq: BrowserWindow | null;
@@ -35,6 +40,11 @@ export interface State {
      * The window that displays the Swivvel log in page.
      */
     logIn: BrowserWindow | null;
+
+    /**
+     * The window where new individual-auth users can set up their account.
+     */
+    setup: BrowserWindow | null;
 
     /**
      * The transparent, always-on-top window

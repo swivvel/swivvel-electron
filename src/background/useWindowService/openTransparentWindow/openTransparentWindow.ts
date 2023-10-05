@@ -4,6 +4,7 @@ import { openBrowserWindow } from '../utils';
 import configureCloseHandler from './configureCloseHandler';
 import getTransparentBrowserWindowOptions from './getTransparentBrowserWindowOptions';
 import pollForMouseEvents from './pollForMouseEvents';
+import resizeOnDisplayChange from './resizeOnDisplayChange';
 import showOnAllWorkspaces from './showOnAllWorkspaces';
 import { OpenTransparentWindow } from './types';
 
@@ -25,8 +26,14 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     showOnAllWorkspaces(window);
     configureCloseHandler(window, state);
     pollForMouseEvents(window);
+    resizeOnDisplayChange(window);
 
-    await loadUrl(`${getSiteUrl()}/notifications`, window, state);
+    await loadUrl(`${getSiteUrl()}/notifications`, window, state, {
+      // The transparent window is core to the application because it's
+      // responsible for opening all of the other windows and displaying the
+      // audio room. Retry loading the URL indefinitely if it fails.
+      retry: true,
+    });
 
     return window;
   });
