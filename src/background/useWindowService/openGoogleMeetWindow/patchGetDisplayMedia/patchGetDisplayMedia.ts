@@ -1,13 +1,13 @@
+import fs from 'fs';
+
 import { BrowserWindow } from 'electron';
 import log from 'electron-log';
-import { readFileSync } from 'original-fs';
 
-import { promisifyJsString } from '../../../utils';
 
 export default async (meetWindow: BrowserWindow): Promise<void> => {
   log.info(`Patching getDisplayMedia...`);
 
-  const filesContents = readFileSync(`${__dirname}/getDisplayMedia.js`, `utf8`);
+  const filesContents = fs.readFileSync(`${__dirname}/getDisplayMedia.js`, `utf-8`);
   const matches = filesContents.match(/(async [\S\s]*);/);
 
   if (!matches) {

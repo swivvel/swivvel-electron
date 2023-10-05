@@ -1,4 +1,5 @@
 import log from 'electron-log';
+
 import { State } from '../../../types';
 
 

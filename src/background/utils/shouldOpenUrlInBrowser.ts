@@ -7,7 +7,7 @@ const EXTERNAL_URLS_IN_ELECTRON = [
   `slack.com/signin`,
   `slack.com/workspace-signin`,
   `slack.com.*/login/`,
-  `meet.google.com`
+  `meet.google.com` // Need this here for when we rejoin a Google Meet
 ];
 
 /**

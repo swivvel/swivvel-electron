@@ -58,6 +58,9 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
 
       pollForJoinAndLeaveEvents(window, state);
 
+      //TODO - if everyone leaves, call ends, after 60 seconds i am taken to
+      // home screen which pops a new tab and is annoying
+
       await patchGetDisplayMedia(window);
 
       return window;

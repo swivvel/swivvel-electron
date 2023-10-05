@@ -1,7 +1,6 @@
 import getBrowserWindowName from './getBrowserWindowName';
 import getLogoTemplatePath from './getLogoTemplatePath';
 import getPreloadPath from './getPreloadPath';
-import getRedirectUrl from './getRedirectUrl';
 import getShareableMediaSources from './getShareableMediaSources';
 import getSiteUrl from './getSiteUrl';
 import isLinux from './isLinux';
@@ -9,7 +8,6 @@ import isProduction from './isProduction';
 import loadUrl from './loadUrl';
 import parseQueryParams from './parseQueryParams';
 import prepareToQuitApp from './prepareToQuitApp';
-import promisifyJsString from './promisifyJsString';
 import quitApp from './quitApp';
 import removeQueryParams from './removeQueryParams';
 import shouldOpenUrlInBrowser from './shouldOpenUrlInBrowser';
@@ -20,7 +18,6 @@ export {
   getBrowserWindowName,
   getLogoTemplatePath,
   getPreloadPath,
-  getRedirectUrl,
   getShareableMediaSources,
   getSiteUrl,
   isLinux,
@@ -28,7 +25,6 @@ export {
   loadUrl,
   parseQueryParams,
   prepareToQuitApp,
-  promisifyJsString,
   quitApp,
   removeQueryParams,
   shouldOpenUrlInBrowser,
