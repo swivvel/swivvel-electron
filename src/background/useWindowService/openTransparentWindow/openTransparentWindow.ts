@@ -28,7 +28,12 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     pollForMouseEvents(window);
     resizeOnDisplayChange(window);
 
-    await loadUrl(`${getSiteUrl()}/notifications`, window, state);
+    await loadUrl(`${getSiteUrl()}/notifications`, window, state, {
+      // The transparent window is core to the application because it's
+      // responsible for opening all of the other windows and displaying the
+      // audio room. Retry loading the URL indefinitely if it fails.
+      retry: true,
+    });
 
     return window;
   });
