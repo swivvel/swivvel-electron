@@ -6,6 +6,7 @@ import { TrayService } from '../useTrayService';
 import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
 import openHqWindow from './openHqWindow';
 import openLogInWindow from './openLogInWindow';
+import openSettingsWindow from './openSettingsWindow';
 import openTransparentWindow from './openTransparentWindow';
 import { WindowService } from './types';
 
@@ -21,7 +22,7 @@ export default (state: State, trayService: TrayService): WindowService => {
       openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
     onSettingsPageRequested: () => {
-      // openSettingsWindow({ state, trayService, windowOpenRequestHandler });
+      openSettingsWindow({ state, trayService, windowOpenRequestHandler });
     },
   });
 

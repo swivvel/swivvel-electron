@@ -23,6 +23,7 @@ const run = async (): Promise<void> => {
     windows: {
       hq: null,
       logIn: null,
+      settings: null,
       transparent: null,
     },
   };

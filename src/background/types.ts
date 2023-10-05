@@ -27,6 +27,11 @@ export interface State {
     hq: BrowserWindow | null;
 
     /**
+     * The window that displays the settings page of the web app
+     */
+    settings: BrowserWindow | null;
+
+    /**
      * The window that displays the Swivvel log in page.
      */
     logIn: BrowserWindow | null;
