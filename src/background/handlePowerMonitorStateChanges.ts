@@ -6,7 +6,7 @@ import { WindowService } from './useWindowService';
 import { quitApp } from './utils';
 
 export default (state: State, windowService: WindowService): void => {
-  // Closing the windows on sleep and re-opening them on resume solves (or
+  // Closing the windows on lock/sleep and re-opening them on resume solves (or
   // attempts to solve) a handful of issues:
   //
   // 1. We have observed (in a very small subset of users) the app getting into
@@ -26,9 +26,17 @@ export default (state: State, windowService: WindowService): void => {
   //    windows will make sure that an unauthenticated user is presented with
   //    the log in page when they resume their computer on Monday morning.
   //
+  powerMonitor.on(`lock-screen`, () => {
+    log.info(`Power monitor: lock-screen detected`);
+    windowService.closeAllWindows();
+  });
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
     windowService.closeAllWindows();
+  });
+  powerMonitor.on(`unlock-screen`, () => {
+    log.info(`Power monitor: unlock-screen detected`);
+    windowService.openTransparentWindow();
   });
   powerMonitor.on(`resume`, () => {
     log.info(`Power monitor: resume detected`);
