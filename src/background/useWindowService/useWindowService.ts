@@ -20,6 +20,9 @@ export default (state: State, trayService: TrayService): WindowService => {
     onLogInPageRequested: () => {
       openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
+    onSettingsPageRequested: () => {
+      // openSettingsWindow({ state, trayService, windowOpenRequestHandler });
+    },
   });
 
   return {
