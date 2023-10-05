@@ -10,11 +10,11 @@ export default (): BrowserWindowConstructorOptions => {
     backgroundColor: `#ffffff`,
     focusable: true,
     frame: !isLinux(),
-    height: primaryDisplay.workArea.height,
+    height: 800,
     hiddenInMissionControl: false,
     skipTaskbar: false,
     webPreferences: { preload: getPreloadPath() },
-    width: primaryDisplay.workArea.width,
+    width: 920,
     x: primaryDisplay.workArea.x,
     y: primaryDisplay.workArea.y,
   };
