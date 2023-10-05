@@ -5,7 +5,7 @@ import getSettingsWindowBrowserOptions from './getSettingsWindowBrowserOptions';
 import { OpenHqWindow } from './types';
 
 const openSettingsWindow: OpenHqWindow = async (args) => {
-  const { state, windowOpenRequestHandler } = args;
+  const { companyId, state, windowOpenRequestHandler } = args;
 
   const options = getSettingsWindowBrowserOptions();
 
@@ -15,7 +15,7 @@ const openSettingsWindow: OpenHqWindow = async (args) => {
     // By the time we open the settings window the user should be logged in, so
     // the home page will redirect the user to their company's HQ page
     await loadUrl(
-      `${getSiteUrl()}/office/clg10ovxn0000pz0ivl5ocgrq/settings/users`,
+      `${getSiteUrl()}/office/${companyId}/settings/users`,
       window,
       state
     );

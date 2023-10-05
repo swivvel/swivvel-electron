@@ -31,8 +31,12 @@ export default (state: State, trayService: TrayService): WindowService => {
     onSetupPageRequested: () => {
       openSetupWindow({ state, trayService, windowOpenRequestHandler });
     },
-    onSettingsPageRequested: () => {
-      openSettingsWindow({ state, trayService, windowOpenRequestHandler });
+    onSettingsPageRequested: (companyId) => {
+      openSettingsWindow({
+        companyId,
+        state,
+        windowOpenRequestHandler,
+      });
     },
   });
 
