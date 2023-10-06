@@ -6,7 +6,7 @@ import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import configureIpcHandlers from './configureIpcHandlers';
 import getDeepLinkHandler from './getDeepLinkHandler';
-import handleSystemShutdown from './handleSystemShutdown';
+import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
 import { State } from './types';
@@ -42,15 +42,16 @@ const run = async (): Promise<void> => {
     await systemPreferences.askForMediaAccess(`microphone`);
   }
 
-  // Make sure handlers are registered before opening any windows
+  // These functions set up IPC handlers that must be registered before the
+  // transparent window loads
   configureIpcHandlers(windowService);
+  pollForIdleTime(state);
 
-  const transparentWindow = await windowService.openTransparentWindow();
+  await windowService.openTransparentWindow();
 
   trayService.createTray();
   configureAutoUpdates(state);
-  pollForIdleTime(transparentWindow);
-  handleSystemShutdown(state);
+  handlePowerMonitorStateChanges(state, windowService);
 
   log.info(`App started`);
 };

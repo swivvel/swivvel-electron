@@ -1,6 +1,6 @@
 import { desktopCapturer } from 'electron';
 
-import { ShareableMediaSource } from "../types";
+import { ShareableMediaSource } from "../../types";
 
 export default async (): Promise<Array<ShareableMediaSource>> => {
   return desktopCapturer
