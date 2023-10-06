@@ -38,7 +38,8 @@ export default (state: State): void => {
       log.info(`Idle changed: ${isIdle} -> ${newIsIdle}`);
       isIdle = newIsIdle;
       const idleChangeEvent = { isIdle, timestamp: new Date().getTime() };
-      log.info(`Adding idle change event to buffer: ${idleChangeEvent}`);
+      const key = getKey(idleChangeEvent);
+      log.info(`Adding idle change event to buffer: ${key}`);
       buffer.set(getKey(idleChangeEvent), idleChangeEvent);
     }
 
