@@ -23,11 +23,7 @@ export default (state: State, trayService: TrayService): WindowService => {
       openCreateGoogleMeetWindow({ podId, state, windowOpenRequestHandler });
     },
     onHqPageRequested: () => {
-      openHqWindow({
-        state,
-        trayService,
-        windowOpenRequestHandler,
-      });
+      openHqWindow({ state, trayService, windowOpenRequestHandler });
     },
     onLogInPageRequested: () => {
       openLogInWindow({ state, trayService, windowOpenRequestHandler });
