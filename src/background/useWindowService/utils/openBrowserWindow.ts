@@ -48,7 +48,7 @@ export default async (
   if (!browserWindow.isDestroyed()) {
     browserWindow.webContents.on(`will-navigate`, async (event) => {
       if (options?.onWillNavigate) {
-        const handled = await options.onWillNavigate(browserWindow, event)
+        const handled = await options.onWillNavigate(browserWindow, event);
         if (handled) {
           return;
         }

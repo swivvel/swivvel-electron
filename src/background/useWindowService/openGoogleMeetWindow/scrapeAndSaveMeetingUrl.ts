@@ -1,9 +1,7 @@
 import { BrowserWindow } from 'electron';
 import log from 'electron-log';
 
-export default (
-  window: BrowserWindow,
-): Promise<string> => {
+export default (window: BrowserWindow): Promise<string> => {
   return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
       if (window.isDestroyed()) {

@@ -1,3 +1,3 @@
-import pollForJoinAndLeaveEvents from "./pollForJoinAndLeaveEvents";
+import pollForJoinAndLeaveEvents from './pollForJoinAndLeaveEvents';
 
 export default pollForJoinAndLeaveEvents;

@@ -22,7 +22,7 @@ contextBridge.exposeInMainWorld(`electron`, {
   /**
    * Returns a list of media sources available for screen sharing
    */
-  getDesktopSources: (): Promise<Array<ShareableMediaSource>>  => {
+  getDesktopSources: (): Promise<Array<ShareableMediaSource>> => {
     return ipcRenderer.invoke(`getDesktopSources`);
   },
 
@@ -126,9 +126,7 @@ contextBridge.exposeInMainWorld(`electron`, {
    * Listener allowing the transparent window to know when the user has
    * created a new Google Meet.
    */
-  onMeetCreated: (
-    callback: MeetCreatedCallback
-  ) => {
+  onMeetCreated: (callback: MeetCreatedCallback) => {
     ipcRenderer.on(`meetCreated`, callback);
     return (): void => {
       ipcRenderer.removeListener(`meetCreated`, callback);

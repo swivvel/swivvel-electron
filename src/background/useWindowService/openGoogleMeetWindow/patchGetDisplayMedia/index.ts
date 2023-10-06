@@ -1,3 +1,3 @@
-import patchGetDisplayMedia from "./patchGetDisplayMedia";
+import patchGetDisplayMedia from './patchGetDisplayMedia';
 
 export default patchGetDisplayMedia;

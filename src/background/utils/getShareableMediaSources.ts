@@ -1,6 +1,6 @@
 import { desktopCapturer } from 'electron';
 
-import { ShareableMediaSource } from "../../types";
+import { ShareableMediaSource } from '../../types';
 
 export default async (): Promise<Array<ShareableMediaSource>> => {
   return desktopCapturer
@@ -13,10 +13,8 @@ export default async (): Promise<Array<ShareableMediaSource>> => {
           id: source.id,
           name: source.name,
           appIconUrl: source?.appIcon?.toDataURL(),
-          thumbnailUrl: source?.thumbnail
-            ?.resize({ height: 160 })
-            .toDataURL(),
+          thumbnailUrl: source?.thumbnail?.resize({ height: 160 }).toDataURL(),
         };
       });
     });
-}
+};

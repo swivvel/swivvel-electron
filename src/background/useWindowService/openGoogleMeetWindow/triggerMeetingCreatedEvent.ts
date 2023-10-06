@@ -1,6 +1,6 @@
 import log from 'electron-log';
 
-import { State } from "../../types";
+import { State } from '../../types';
 
 export default (
   state: State,
@@ -17,4 +17,4 @@ export default (
   } else {
     log.info(`Transparent window not found, could not save meeting URL`);
   }
-}
+};

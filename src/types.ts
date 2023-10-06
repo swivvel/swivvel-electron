@@ -3,4 +3,4 @@ export type ShareableMediaSource = {
   id: string;
   name: string;
   thumbnailUrl: string | null;
-}
+};
