@@ -37,11 +37,6 @@ export interface State {
     logIn: BrowserWindow | null;
 
     /**
-     * The window that displays the settings page of the web app
-     */
-    settings: BrowserWindow | null;
-
-    /**
      * The window where new individual-auth users can set up their account.
      */
     setup: BrowserWindow | null;

@@ -24,7 +24,6 @@ const run = async (): Promise<void> => {
       createGoogleMeet: null,
       hq: null,
       logIn: null,
-      settings: null,
       setup: null,
       transparent: null,
     },

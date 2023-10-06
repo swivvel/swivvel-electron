@@ -21,7 +21,7 @@ export default (callbacks: {
   onCreateGoogleMeetRequested: (podId: string) => void;
   onHqPageRequested: () => void;
   onLogInPageRequested: () => void;
-  onSettingsPageRequested: (companyId: string) => void;
+  onSettingsPageRequested: () => void;
   onSetupPageRequested: () => void;
 }): WindowOpenRequestHandler => {
   return ({ url }) => {
@@ -54,11 +54,7 @@ export default (callbacks: {
 
     if (removeQueryParams(url) === `${siteUrl}/electron/settings`) {
       log.info(`Settings page requested`);
-      const urlParams = parseQueryParams(url);
-      log.info(`URL params=${JSON.stringify(urlParams)}`);
-      const companyId = urlParams.companyId;
-      log.info(`Company ID=${companyId}`);
-      callbacks.onSettingsPageRequested(companyId);
+      callbacks.onSettingsPageRequested();
       return { action: `deny` };
     }
 
