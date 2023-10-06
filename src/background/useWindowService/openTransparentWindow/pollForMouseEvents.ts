@@ -1,4 +1,5 @@
 import { BrowserWindow, screen } from 'electron';
+import log from 'electron-log';
 
 /**
  * Support mouse events on the transparent notification window.
@@ -18,6 +19,8 @@ import { BrowserWindow, screen } from 'electron';
  */
 export default (transparentWindow: BrowserWindow): void => {
   transparentWindow.setIgnoreMouseEvents(true);
+
+  let previousMouseIsOverTransparent: boolean | null = null;
 
   const interval = setInterval(async () => {
     if (transparentWindow.isDestroyed()) {
@@ -55,6 +58,12 @@ export default (transparentWindow: BrowserWindow): void => {
       }
 
       transparentWindow.setIgnoreMouseEvents(mouseIsOverTransparent);
+
+      if (previousMouseIsOverTransparent !== mouseIsOverTransparent) {
+        log.info(`Mouse is over transparent: ${mouseIsOverTransparent}`)
+      }
+
+      previousMouseIsOverTransparent = mouseIsOverTransparent;
     }
   }, 50);
 };
