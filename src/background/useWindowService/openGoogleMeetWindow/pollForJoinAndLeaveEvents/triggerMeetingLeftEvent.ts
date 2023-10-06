@@ -2,7 +2,6 @@ import log from 'electron-log';
 
 import { State } from '../../../types';
 
-
 export default (
   state: State,
   meetingUrl: string

@@ -54,7 +54,6 @@ export default async (
         }
       }
 
-      console.log(`BBBBBBBB`);
       log.info(`Detected page navigation to: ${removeQueryParams(event.url)}`);
 
       if (shouldOpenUrlInBrowser(event.url)) {

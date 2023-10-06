@@ -31,10 +31,6 @@ export default (callbacks: {
 
     const siteUrl = getSiteUrl();
 
-    log.info(`Site URL=${siteUrl}`);
-
-    log.info(removeQueryParams(url))
-
     if (removeQueryParams(url) === `${siteUrl}/electron/google-meet`) {
       log.info(`Create Google Meet page requested`);
       const urlParams = parseQueryParams(url);
