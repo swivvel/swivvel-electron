@@ -45,6 +45,13 @@ export default (callbacks: {
       return { action: `deny` };
     }
 
+    // See main repo README for description of desktop log in flow
+    if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
+      log.info(`Log in page requested`);
+      callbacks.onLogInPageRequested();
+      return { action: `deny` };
+    }
+
     if (removeQueryParams(url) === `${siteUrl}/electron/settings`) {
       log.info(`Settings page requested`);
       const urlParams = parseQueryParams(url);
@@ -52,13 +59,6 @@ export default (callbacks: {
       const companyId = urlParams.companyId;
       log.info(`Company ID=${companyId}`);
       callbacks.onSettingsPageRequested(companyId);
-      return { action: `deny` };
-    }
-
-    // See main repo README for description of desktop log in flow
-    if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
-      log.info(`Log in page requested`);
-      callbacks.onLogInPageRequested();
       return { action: `deny` };
     }
 

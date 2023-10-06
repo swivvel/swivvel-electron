@@ -1,21 +1,17 @@
-import { BrowserWindowConstructorOptions, screen } from 'electron';
+import { BrowserWindowConstructorOptions } from 'electron';
 
 import { getPreloadPath, isLinux } from '../../utils';
 
 export default (): BrowserWindowConstructorOptions => {
-  const primaryDisplay = screen.getPrimaryDisplay();
-
   return {
     autoHideMenuBar: isLinux(),
     backgroundColor: `#ffffff`,
     focusable: true,
     frame: !isLinux(),
-    height: 800,
+    height: 850,
     hiddenInMissionControl: false,
     skipTaskbar: false,
     webPreferences: { preload: getPreloadPath() },
-    width: 920,
-    x: primaryDisplay.workArea.x,
-    y: primaryDisplay.workArea.y,
+    width: 1200,
   };
 };
