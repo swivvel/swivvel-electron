@@ -7,6 +7,10 @@ async (): Promise<MediaStream | void> => {
   const sources: Array<ShareableMediaSource> =
     await window.electron.getDesktopSources();
 
+  // If we try to set the innerHTML of an element, we get an error saying
+  // that the string is not trusted. We can get around this by creating a
+  // trusted type policy that allows us to create HTML from a string.
+  // See: https://developer.mozilla.org/en-US/docs/Web/API/TrustedHTML
   const escapeHTMLPolicy = window.trustedTypes.createPolicy(`forceInner`, {
     createHTML: (toEscape: string) => {
       return toEscape;

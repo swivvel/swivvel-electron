@@ -7,11 +7,7 @@ import isInMeeting from './isInMeeting';
 import triggerMeetingJoinedEvent from './triggerMeetingJoinedEvent';
 import triggerMeetingLeftEvent from './triggerMeetingLeftEvent';
 
-export default (
-  googleMeetWindow: BrowserWindow,
-  state: State,
-): void =>{
-
+export default (googleMeetWindow: BrowserWindow, state: State): void => {
   let currentMeetingUrl: string | null = null;
 
   const interval = setInterval(async () => {
@@ -35,4 +31,4 @@ export default (
       currentMeetingUrl = null;
     }
   }, 1000);
-}
+};

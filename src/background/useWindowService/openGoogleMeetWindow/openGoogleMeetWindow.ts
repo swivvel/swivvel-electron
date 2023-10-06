@@ -4,7 +4,7 @@ import { loadUrl } from '../../utils';
 import { openBrowserWindow } from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';
-import getCreateGoogleMeetWindowBrowserOptions from './getCreateGoogleMeetWindowBrowserOptions';
+import getGoogleMeetWindowBrowserOptions from './getGoogleMeetWindowBrowserOptions';
 import loadMeetingUrl from './loadMeetingUrl';
 import pollForJoinAndLeaveEvents from './pollForJoinAndLeaveEvents';
 import scrapeAndSaveMeetingUrl from './scrapeAndSaveMeetingUrl';
@@ -14,7 +14,7 @@ import { OpenGoogleMeetWindow } from './types';
 const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
   const { podId, meetingUrl, state, windowOpenRequestHandler } = args;
 
-  const options = getCreateGoogleMeetWindowBrowserOptions();
+  const options = getGoogleMeetWindowBrowserOptions();
 
   return openBrowserWindow(
     state,
