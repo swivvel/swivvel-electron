@@ -13,7 +13,7 @@ export default async (): Promise<Array<ShareableMediaSource>> => {
           id: source.id,
           name: source.name,
           appIconUrl: source?.appIcon?.toDataURL(),
-          thumbnailUrl: source?.thumbnail?.resize({ height: 160 }).toDataURL(),
+          thumbnailUrl: source?.thumbnail?.resize({ height: 250 }).toDataURL(),
         };
       });
     });
