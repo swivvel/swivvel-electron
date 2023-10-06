@@ -8,7 +8,7 @@ import { ShareableMediaSource } from './types';
 contextBridge.exposeInMainWorld(`electron`, {
   featureFlags: {
     loginFlowV2: true, // Deprecated: remove when all clients on v1.2.0
-    googleMeetsSupport: true, // Remove when all clients on v1.2.16
+    googleMeetsSupport: true, // Remove when all clients on v1.2.18
   },
 
   /**
