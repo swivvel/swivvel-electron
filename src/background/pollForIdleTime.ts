@@ -14,9 +14,9 @@ interface IdleChangeEvent {
 // The transparent window is responsible for sending idle change events to the
 // server. However, sometimes the transparent window isn't available or is
 // unable to contact the server. To avoid losing idle change events, we put
-// them all in a buffer and inform the transparent window that there are events
-// that need to be synced. The transparent window fetches and syncs these events
-// when it is ready.
+// them all in a buffer and continually attempt to send that buffer to the
+// transparent window. After the transparent window successfully syncs an event,
+// it informs the Electron app, which then removes the event from the buffer.
 const buffer = new Map<string, IdleChangeEvent>();
 
 const getKey = (idleChangeEvent: IdleChangeEvent): string => {
