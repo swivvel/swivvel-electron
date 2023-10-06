@@ -3,12 +3,12 @@ import log from 'electron-log';
 
 import { State } from '../types';
 import { TrayService } from '../useTrayService';
+import { getSiteUrl, loadUrl } from '../utils';
 
 import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
 import openCreateGoogleMeetWindow from './openCreateGoogleMeetWindow';
 import openHqWindow from './openHqWindow';
 import openLogInWindow from './openLogInWindow';
-import openSettingsWindow from './openSettingsWindow';
 import openSetupWindow from './openSetupWindow';
 import openTransparentWindow from './openTransparentWindow';
 import { WindowService } from './types';
@@ -23,7 +23,11 @@ export default (state: State, trayService: TrayService): WindowService => {
       openCreateGoogleMeetWindow({ podId, state, windowOpenRequestHandler });
     },
     onHqPageRequested: () => {
-      openHqWindow({ state, trayService, windowOpenRequestHandler });
+      openHqWindow({
+        state,
+        trayService,
+        windowOpenRequestHandler,
+      });
     },
     onLogInPageRequested: () => {
       openLogInWindow({ state, trayService, windowOpenRequestHandler });
@@ -31,12 +35,18 @@ export default (state: State, trayService: TrayService): WindowService => {
     onSetupPageRequested: () => {
       openSetupWindow({ state, trayService, windowOpenRequestHandler });
     },
-    onSettingsPageRequested: (companyId) => {
-      openSettingsWindow({
-        companyId,
+    onSettingsPageRequested: async () => {
+      const hqWindow = await openHqWindow({
         state,
+        trayService,
         windowOpenRequestHandler,
       });
+
+      await loadUrl(
+        `${getSiteUrl()}/?p=/office/<companyId>/settings/users`,
+        hqWindow,
+        state
+      );
     },
   });
 
