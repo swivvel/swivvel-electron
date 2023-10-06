@@ -2,8 +2,9 @@ import getSiteUrl from './getSiteUrl';
 
 // We open all external URLs in the browser unless they match one of these
 const EXTERNAL_URLS_IN_ELECTRON = [
-  `accounts.google.com`, // Google OAuth flow for SSO and integrations
-  `meet.google.com` // Need this here for when we rejoin a Google Meet
+  /accounts.google.com/, // Google OAuth flow for SSO and integrations
+  // /meet.google.com\/getalink/, // Google Meet get-a-link flow
+  // /meet.google.com\/([a-z0-9-]+)/, // Google Meet meeting
 ];
 
 /**

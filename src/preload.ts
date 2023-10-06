@@ -6,10 +6,10 @@ import { ShareableMediaSource } from './types';
 // in the web app
 
 contextBridge.exposeInMainWorld(`electron`, {
-  /**
-   * Deprecated: remove when all clients on v1.2.0
-   */
-  featureFlags: { loginFlowV2: true },
+  featureFlags: {
+    loginFlowV2: true, // Deprecated: remove when all clients on v1.2.0
+    googleMeetsSupport: true,
+  },
 
   /**
    * Return desktop app version from package.json (note: returns Electron
@@ -124,14 +124,14 @@ contextBridge.exposeInMainWorld(`electron`, {
 
   /**
    * Listener allowing the transparent window to know when the user has
-   * created a new Google Meet breakout room URL for a pod.
+   * created a new Google Meet.
    */
-  onMeetBreakoutUrlCreatedForPod: (
-    callback: MeetBreakoutUrlCreatedForPodCallback
+  onMeetCreated: (
+    callback: MeetCreatedCallback
   ) => {
-    ipcRenderer.on(`meetBreakoutUrlCreatedForPod`, callback);
+    ipcRenderer.on(`meetCreated`, callback);
     return (): void => {
-      ipcRenderer.removeListener(`meetBreakoutUrlCreatedForPod`, callback);
+      ipcRenderer.removeListener(`meetCreated`, callback);
     };
   },
 
@@ -167,8 +167,9 @@ type IdleChangeEventsBufferedCallback = (
 ) => void;
 type JoinAudioRoomForPodCallback = (event: unknown, podId: string) => void;
 type LaunchAudioRoomFromSetupCallback = (event: unknown) => void;
-type MeetBreakoutUrlCreatedForPodCallback = (
+type MeetCreatedCallback = (
   event: unknown,
+  podId: string | null,
   meetUrl: string
 ) => void;
 type MeetJoinedCallback = (event: unknown, meetUrl: string) => void;
