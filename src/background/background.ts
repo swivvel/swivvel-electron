@@ -42,14 +42,15 @@ const run = async (): Promise<void> => {
     await systemPreferences.askForMediaAccess(`microphone`);
   }
 
-  // Make sure handlers are registered before opening any windows
+  // These functions set up IPC handlers that must be registered before the
+  // transparent window loads
   configureIpcHandlers(windowService);
+  pollForIdleTime(state);
 
   await windowService.openTransparentWindow();
 
   trayService.createTray();
   configureAutoUpdates(state);
-  pollForIdleTime(state);
   handlePowerMonitorStateChanges(state, windowService);
 
   log.info(`App started`);
