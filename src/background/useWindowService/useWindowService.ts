@@ -3,6 +3,7 @@ import log from 'electron-log';
 
 import { State } from '../types';
 import { TrayService } from '../useTrayService';
+import { getSiteUrl, loadUrl } from '../utils';
 
 import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
 import openGoogleMeetWindow from './openGoogleMeetWindow';
@@ -34,6 +35,19 @@ export default (state: State, trayService: TrayService): WindowService => {
     },
     onSetupPageRequested: () => {
       openSetupWindow({ state, trayService, windowOpenRequestHandler });
+    },
+    onSettingsPageRequested: async () => {
+      const hqWindow = await openHqWindow({
+        state,
+        trayService,
+        windowOpenRequestHandler,
+      });
+
+      await loadUrl(
+        `${getSiteUrl()}/?p=/office/<companyId>/settings/users`,
+        hqWindow,
+        state
+      );
     },
   });
 
