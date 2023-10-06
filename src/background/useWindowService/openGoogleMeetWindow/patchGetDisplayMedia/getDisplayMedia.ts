@@ -140,6 +140,6 @@ async (): Promise<MediaStream | void> => {
         chromeMediaSource: `desktop`,
         chromeMediaSourceId: selectedMediaId,
       },
-    },
+    } as MediaTrackConstraints,
   });
 };
