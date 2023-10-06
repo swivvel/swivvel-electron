@@ -21,6 +21,7 @@ export default (callbacks: {
   onCreateGoogleMeetRequested: (podId: string) => void;
   onHqPageRequested: () => void;
   onLogInPageRequested: () => void;
+  onSettingsPageRequested: () => void;
   onSetupPageRequested: () => void;
 }): WindowOpenRequestHandler => {
   return ({ url }) => {
@@ -48,6 +49,12 @@ export default (callbacks: {
     if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
       log.info(`Log in page requested`);
       callbacks.onLogInPageRequested();
+      return { action: `deny` };
+    }
+
+    if (removeQueryParams(url) === `${siteUrl}/electron/settings`) {
+      log.info(`Settings page requested`);
+      callbacks.onSettingsPageRequested();
       return { action: `deny` };
     }
 
