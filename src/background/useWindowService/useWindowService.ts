@@ -6,7 +6,7 @@ import { TrayService } from '../useTrayService';
 import { getSiteUrl, loadUrl } from '../utils';
 
 import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
-import openCreateGoogleMeetWindow from './openCreateGoogleMeetWindow';
+import openGoogleMeetWindow from './openGoogleMeetWindow';
 import openHqWindow from './openHqWindow';
 import openLogInWindow from './openLogInWindow';
 import openSetupWindow from './openSetupWindow';
@@ -19,8 +19,13 @@ import { closeBrowserWindow } from './utils';
  */
 export default (state: State, trayService: TrayService): WindowService => {
   const windowOpenRequestHandler = getWindowOpenRequestHandler({
-    onCreateGoogleMeetRequested: (podId) => {
-      openCreateGoogleMeetWindow({ podId, state, windowOpenRequestHandler });
+    onGoogleMeetRequested: (podId, meetingUrl) => {
+      openGoogleMeetWindow({
+        podId,
+        meetingUrl,
+        state,
+        windowOpenRequestHandler,
+      });
     },
     onHqPageRequested: () => {
       openHqWindow({ state, trayService, windowOpenRequestHandler });

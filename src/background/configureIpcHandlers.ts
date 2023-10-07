@@ -1,8 +1,10 @@
 import { app, ipcMain } from 'electron';
 import log from 'electron-log';
 
+import { ShareableMediaSource } from '../types';
+
 import { WindowService } from './useWindowService';
-import { isProduction } from './utils';
+import { getShareableMediaSources, isProduction } from './utils';
 
 export default (windowService: WindowService): void => {
   ipcMain.handle(`getDesktopAppVersion`, () => {
@@ -31,4 +33,13 @@ export default (windowService: WindowService): void => {
     log.info(`Sending launchAudioRoomFromSetup event to transparent window`);
     transparentWindow.webContents.send(`launchAudioRoomFromSetup`);
   });
+
+  ipcMain.handle(
+    `getDesktopSources`,
+    async (): Promise<Array<ShareableMediaSource>> => {
+      log.info(`Received getDesktopSources event`);
+
+      return getShareableMediaSources();
+    }
+  );
 };

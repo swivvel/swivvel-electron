@@ -12,7 +12,13 @@ export default async (
   state: State,
   browserWindowName: keyof State['windows'],
   browserWindowOptions: BrowserWindowConstructorOptions,
-  instantiateBrowserWindow: (window: BrowserWindow) => Promise<BrowserWindow>
+  instantiateBrowserWindow: (window: BrowserWindow) => Promise<BrowserWindow>,
+  options?: {
+    onWillNavigate?: (
+      window: BrowserWindow,
+      event: Electron.Event<Electron.WebContentsWillNavigateEventParams>
+    ) => Promise<boolean>;
+  }
 ): Promise<BrowserWindow> => {
   log.info(`Get or create window: ${browserWindowName}`);
 
@@ -40,7 +46,14 @@ export default async (
   state.windows[browserWindowName] = browserWindow;
 
   if (!browserWindow.isDestroyed()) {
-    browserWindow.webContents.on(`will-navigate`, (event) => {
+    browserWindow.webContents.on(`will-navigate`, async (event) => {
+      if (options?.onWillNavigate) {
+        const handled = await options.onWillNavigate(browserWindow, event);
+        if (handled) {
+          return;
+        }
+      }
+
       log.info(`Detected page navigation to: ${removeQueryParams(event.url)}`);
 
       if (shouldOpenUrlInBrowser(event.url)) {

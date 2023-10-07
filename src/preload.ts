@@ -1,13 +1,15 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+import { ShareableMediaSource } from './types';
+
 // NOTE: values exposed in the main world should be added to window.d.ts
 // in the web app
 
 contextBridge.exposeInMainWorld(`electron`, {
-  /**
-   * Deprecated: remove when all clients on v1.2.0
-   */
-  featureFlags: { loginFlowV2: true },
+  featureFlags: {
+    loginFlowV2: true, // Deprecated: remove when all clients on v1.2.0
+    googleMeetsSupport: true, // Remove when all clients on v1.2.18
+  },
 
   /**
    * Return desktop app version from package.json (note: returns Electron
@@ -15,6 +17,13 @@ contextBridge.exposeInMainWorld(`electron`, {
    */
   getDesktopAppVersion: (): Promise<string> => {
     return ipcRenderer.invoke(`getDesktopAppVersion`);
+  },
+
+  /**
+   * Returns a list of media sources available for screen sharing
+   */
+  getDesktopSources: (): Promise<Array<ShareableMediaSource>> => {
+    return ipcRenderer.invoke(`getDesktopSources`);
   },
 
   /**
@@ -115,14 +124,36 @@ contextBridge.exposeInMainWorld(`electron`, {
 
   /**
    * Listener allowing the transparent window to know when the user has
-   * created a new Google Meet breakout room URL for a pod.
+   * created a new Google Meet.
    */
-  onMeetBreakoutUrlCreatedForPod: (
-    callback: MeetBreakoutUrlCreatedForPodCallback
-  ) => {
-    ipcRenderer.on(`meetBreakoutUrlCreatedForPod`, callback);
+  onMeetCreated: (callback: MeetCreatedCallback) => {
+    ipcRenderer.on(`meetCreated`, callback);
     return (): void => {
-      ipcRenderer.removeListener(`meetBreakoutUrlCreatedForPod`, callback);
+      ipcRenderer.removeListener(`meetCreated`, callback);
+    };
+  },
+
+  /**
+   * Listener allowing the transparent window to know when the user has
+   * joined a Google Meet in the electron window.
+   */
+  onMeetJoined: (callback: MeetJoinedCallback) => {
+    ipcRenderer.on(`meetJoined`, callback);
+
+    return (): void => {
+      ipcRenderer.removeListener(`meetJoined`, callback);
+    };
+  },
+
+  /**
+   * Listener allowing the transparent window to know when the user has
+   * left a Google Meet in the electron window.
+   */
+  onMeetLeft: (callback: MeetLeftCallback) => {
+    ipcRenderer.on(`meetLeft`, callback);
+
+    return (): void => {
+      ipcRenderer.removeListener(`meetLeft`, callback);
     };
   },
 });
@@ -134,10 +165,13 @@ type IdleChangeEventsBufferedCallback = (
 ) => void;
 type JoinAudioRoomForPodCallback = (event: unknown, podId: string) => void;
 type LaunchAudioRoomFromSetupCallback = (event: unknown) => void;
-type MeetBreakoutUrlCreatedForPodCallback = (
+type MeetCreatedCallback = (
   event: unknown,
+  podId: string | null,
   meetUrl: string
 ) => void;
+type MeetJoinedCallback = (event: unknown, meetUrl: string) => void;
+type MeetLeftCallback = (event: unknown, meetUrl: string) => void;
 
 interface IdleChangeEvent {
   isIdle: boolean;

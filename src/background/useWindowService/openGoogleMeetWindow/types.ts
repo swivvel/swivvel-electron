@@ -3,12 +3,13 @@ import { BrowserWindow } from 'electron';
 import { State } from '../../types';
 import { WindowOpenRequestHandler } from '../getWindowOpenRequestHandler';
 
-export type OpenCreateGoogleMeetWindow = (
-  args: OpenCreateGoogleMeetArgs
+export type OpenGoogleMeetWindow = (
+  args: OpenGoogleMeetArgs
 ) => Promise<BrowserWindow>;
 
-export interface OpenCreateGoogleMeetArgs {
-  podId: string;
+export interface OpenGoogleMeetArgs {
+  meetingUrl: string | null;
+  podId: string | null;
   state: State;
   windowOpenRequestHandler: WindowOpenRequestHandler;
 }
