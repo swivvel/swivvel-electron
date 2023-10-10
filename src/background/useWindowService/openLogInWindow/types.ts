@@ -9,6 +9,7 @@ export type OpenLogInWindow = (
 ) => Promise<BrowserWindow>;
 
 export interface OpenLogInWindowArgs {
+  props: { autoJoinAudioRoom: boolean };
   state: State;
   trayService: TrayService;
   windowOpenRequestHandler: WindowOpenRequestHandler;

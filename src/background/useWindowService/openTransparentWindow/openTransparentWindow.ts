@@ -9,7 +9,8 @@ import showOnAllWorkspaces from './showOnAllWorkspaces';
 import { OpenTransparentWindow } from './types';
 
 const openTransparentWindow: OpenTransparentWindow = async (args) => {
-  const { state, windowOpenRequestHandler } = args;
+  const { state, props, windowOpenRequestHandler } = args;
+  const autoJoinAudioRoom = props.autoJoinAudioRoom;
 
   const options = getTransparentBrowserWindowOptions();
 
@@ -28,12 +29,19 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     pollForMouseEvents(window);
     resizeOnDisplayChange(window);
 
-    await loadUrl(`${getSiteUrl()}/notifications`, window, state, {
-      // The transparent window is core to the application because it's
-      // responsible for opening all of the other windows and displaying the
-      // audio room. Retry loading the URL indefinitely if it fails.
-      retry: true,
-    });
+    await loadUrl(
+      `${getSiteUrl()}/notifications${
+        autoJoinAudioRoom ? `?autoJoinAudioRoom=true` : ``
+      }`,
+      window,
+      state,
+      {
+        // The transparent window is core to the application because it's
+        // responsible for opening all of the other windows and displaying the
+        // audio room. Retry loading the URL indefinitely if it fails.
+        retry: true,
+      }
+    );
 
     return window;
   });

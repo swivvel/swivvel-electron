@@ -5,6 +5,8 @@ import { State } from './types';
 import { WindowService } from './useWindowService';
 import { quitApp } from './utils';
 
+const AUTO_JOIN_TIME_MS = 600000;
+
 export default (state: State, windowService: WindowService): void => {
   // Closing the windows on lock/sleep and re-opening them on resume solves (or
   // attempts to solve) a handful of issues:
@@ -28,21 +30,40 @@ export default (state: State, windowService: WindowService): void => {
   //    the log in page when they unlock/resume their computer on Monday
   //    morning.
   //
+
+  let closedWindowsAt: Date = new Date();
+
   powerMonitor.on(`lock-screen`, () => {
     log.info(`Power monitor: lock-screen detected`);
     windowService.closeAllWindows();
+    closedWindowsAt = new Date();
   });
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
     windowService.closeAllWindows();
+    closedWindowsAt = new Date();
   });
   powerMonitor.on(`unlock-screen`, () => {
+    const numMillisecondsClosedAt = closedWindowsAt
+      ? new Date().getTime() - closedWindowsAt.getTime()
+      : AUTO_JOIN_TIME_MS + 1;
+
     log.info(`Power monitor: unlock-screen detected`);
-    windowService.openTransparentWindow();
+
+    windowService.openTransparentWindow({
+      autoJoinAudioRoom: numMillisecondsClosedAt <= AUTO_JOIN_TIME_MS,
+    });
   });
   powerMonitor.on(`resume`, () => {
+    const numMillisecondsClosedAt = closedWindowsAt
+      ? new Date().getTime() - closedWindowsAt.getTime()
+      : AUTO_JOIN_TIME_MS + 1;
+
     log.info(`Power monitor: resume detected`);
-    windowService.openTransparentWindow();
+
+    windowService.openTransparentWindow({
+      autoJoinAudioRoom: numMillisecondsClosedAt <= AUTO_JOIN_TIME_MS,
+    });
   });
 
   // Without this, Macs would hang when trying to shut down because the

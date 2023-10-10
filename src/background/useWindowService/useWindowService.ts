@@ -26,7 +26,9 @@ export default (state: State, trayService: TrayService): WindowService => {
       openHqWindow({ state, trayService, windowOpenRequestHandler });
     },
     onLogInPageRequested: () => {
-      openLogInWindow({ state, trayService, windowOpenRequestHandler });
+      const props = { autoJoinAudioRoom: false };
+
+      openLogInWindow({ props, state, trayService, windowOpenRequestHandler });
     },
     onSetupPageRequested: () => {
       openSetupWindow({ state, trayService, windowOpenRequestHandler });
@@ -54,10 +56,19 @@ export default (state: State, trayService: TrayService): WindowService => {
       });
     },
     openLogInWindow: async (): Promise<BrowserWindow> => {
-      return openLogInWindow({ state, trayService, windowOpenRequestHandler });
+      const props = { autoJoinAudioRoom: false };
+
+      return openLogInWindow({
+        props,
+        state,
+        trayService,
+        windowOpenRequestHandler,
+      });
     },
-    openTransparentWindow: async (): Promise<BrowserWindow> => {
-      return openTransparentWindow({ state, windowOpenRequestHandler });
+    openTransparentWindow: async (props: {
+      autoJoinAudioRoom: boolean;
+    }): Promise<BrowserWindow> => {
+      return openTransparentWindow({ state, props, windowOpenRequestHandler });
     },
   };
 };

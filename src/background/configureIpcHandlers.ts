@@ -16,7 +16,9 @@ export default (windowService: WindowService): void => {
     async (event, podId: string): Promise<void> => {
       log.info(`Received joinAudioRoomForPod event, podId=${podId}`);
 
-      const transparentWindow = await windowService.openTransparentWindow();
+      const transparentWindow = await windowService.openTransparentWindow({
+        autoJoinAudioRoom: false,
+      });
 
       log.info(`Sending joinAudioRoomForPod event to transparent window`);
       transparentWindow.webContents.send(`joinAudioRoomForPod`, podId);
@@ -26,7 +28,9 @@ export default (windowService: WindowService): void => {
   ipcMain.on(`launchAudioRoomFromSetup`, async (): Promise<void> => {
     log.info(`Received launchAudioRoomFromSetup event`);
 
-    const transparentWindow = await windowService.openTransparentWindow();
+    const transparentWindow = await windowService.openTransparentWindow({
+      autoJoinAudioRoom: false,
+    });
 
     log.info(`Sending launchAudioRoomFromSetup event to transparent window`);
     transparentWindow.webContents.send(`launchAudioRoomFromSetup`);

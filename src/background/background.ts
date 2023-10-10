@@ -47,7 +47,9 @@ const run = async (): Promise<void> => {
   configureIpcHandlers(windowService);
   pollForIdleTime(state);
 
-  await windowService.openTransparentWindow();
+  await windowService.openTransparentWindow({
+    autoJoinAudioRoom: false,
+  });
 
   trayService.createTray();
   configureAutoUpdates(state);
