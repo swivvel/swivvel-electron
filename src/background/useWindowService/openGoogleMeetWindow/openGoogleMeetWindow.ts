@@ -1,3 +1,4 @@
+import { systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import { loadUrl } from '../../utils';
@@ -26,6 +27,11 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
       configureCloseHandler(window, state);
 
       let meetingUrlToOpen: string | null = meetingUrl;
+
+      if (systemPreferences.askForMediaAccess) {
+        log.info(`Asking for camera access`);
+        await systemPreferences.askForMediaAccess(`camera`);
+      }
 
       if (!meetingUrlToOpen) {
         await loadUrl(`https://meet.google.com/getalink`, window, state);
