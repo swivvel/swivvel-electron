@@ -14,6 +14,9 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const options = getTransparentBrowserWindowOptions();
 
   return openBrowserWindow(state, `transparent`, options, async (window) => {
+    // Prevent the transparent window from appearing in screenshots
+    window.setContentProtection(true);
+
     // Transparent windows don't work on Linux without some hacks
     // like this short delay
     // See: https://github.com/electron/electron/issues/15947
@@ -21,7 +24,6 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
       await sleep(1000);
     }
 
-    window.setContentProtection(true);
     window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
 
     showOnAllWorkspaces(window);
