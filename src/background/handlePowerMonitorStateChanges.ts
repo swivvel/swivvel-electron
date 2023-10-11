@@ -1,13 +1,17 @@
 import { powerMonitor } from 'electron';
 import log from 'electron-log';
+import ms from 'ms';
 
 import { State } from './types';
 import { WindowService } from './useWindowService';
 import { quitApp } from './utils';
 
+const TEN_MIN_MS = ms(`10 minutes`);
+
 export default (state: State, windowService: WindowService): void => {
-  // Closing the windows on lock/sleep and re-opening them on resume solves (or
-  // attempts to solve) a handful of issues:
+  // Closing the windows 10 minutes after lock/sleep and re-opening
+  // them (if already closed) on resume solves (or attempts to solve) a
+  // handful of issues:
   //
   // 1. We have observed (in a very small subset of users) the app getting into
   //    a weird state when a Mac is locked overnight. Opening the developer
@@ -28,21 +32,52 @@ export default (state: State, windowService: WindowService): void => {
   //    the log in page when they unlock/resume their computer on Monday
   //    morning.
   //
+
+  let timeout: NodeJS.Timeout | null = null;
+
   powerMonitor.on(`lock-screen`, () => {
     log.info(`Power monitor: lock-screen detected`);
-    windowService.closeAllWindows();
+
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    timeout = setTimeout(() => {
+      windowService.closeAllWindows();
+
+      timeout = null;
+    }, TEN_MIN_MS);
   });
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
-    windowService.closeAllWindows();
+
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    timeout = setTimeout(() => {
+      windowService.closeAllWindows();
+
+      timeout = null;
+    }, TEN_MIN_MS);
   });
   powerMonitor.on(`unlock-screen`, () => {
     log.info(`Power monitor: unlock-screen detected`);
-    windowService.openTransparentWindow();
+
+    if (timeout) {
+      clearTimeout(timeout);
+    } else {
+      windowService.openTransparentWindow();
+    }
   });
   powerMonitor.on(`resume`, () => {
     log.info(`Power monitor: resume detected`);
-    windowService.openTransparentWindow();
+
+    if (timeout) {
+      clearTimeout(timeout);
+    } else {
+      windowService.openTransparentWindow();
+    }
   });
 
   // Without this, Macs would hang when trying to shut down because the
