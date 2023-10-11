@@ -12,6 +12,7 @@ export default (state: State, options?: { quitAndInstall: boolean }): void => {
 
   if (quitAndInstall) {
     log.info(`Quitting app and installing updates`);
+    log.info(process.platform);
     autoUpdater.quitAndInstall();
   } else {
     log.info(`Quitting app`);
