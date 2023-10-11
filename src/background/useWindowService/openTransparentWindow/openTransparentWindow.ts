@@ -14,8 +14,9 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const options = getTransparentBrowserWindowOptions();
 
   return openBrowserWindow(state, `transparent`, options, async (window) => {
-    // Prevent the transparent window from getting focus when it loads
-    window.blur();
+    // Show the window but don't focus it because it would be confusing to users
+    // if an invisible window took focus.
+    window.showInactive();
 
     // Transparent windows don't work on Linux without some hacks
     // like this short delay

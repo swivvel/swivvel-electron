@@ -30,6 +30,7 @@ export default (): BrowserWindowConstructorOptions => {
     minimizable: false,
     resizable: false,
     roundedCorners: false,
+    show: false,
     skipTaskbar: true,
     transparent: true,
     webPreferences: { preload: getPreloadPath() },
