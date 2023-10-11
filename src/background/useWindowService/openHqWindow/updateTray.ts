@@ -15,7 +15,7 @@ export default (
       type: `normal`,
       click: async (): Promise<void> => {
         log.info(`Received "Open Swivvel" click from tray menu`);
-        openHqWindow(openHqWindowArgs);
+        openHqWindow({ ...openHqWindowArgs, show: true });
       },
     },
   ]);

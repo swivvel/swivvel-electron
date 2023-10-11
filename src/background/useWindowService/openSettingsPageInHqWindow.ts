@@ -20,6 +20,7 @@ export default async ({
   windowOpenRequestHandler,
 }: Args): Promise<void> => {
   const hqWindow = await openHqWindow({
+    show: true,
     state,
     trayService,
     windowOpenRequestHandler,

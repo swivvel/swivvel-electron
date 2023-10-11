@@ -8,9 +8,9 @@ import { OpenHqWindow } from './types';
 import updateTray from './updateTray';
 
 const openHqWindow: OpenHqWindow = async (args) => {
-  const { state, trayService, windowOpenRequestHandler } = args;
+  const { show, state, trayService, windowOpenRequestHandler } = args;
 
-  const options = getHqWindowBrowserOptions();
+  const options = getHqWindowBrowserOptions(show);
 
   return openBrowserWindow(state, `hq`, options, async (window) => {
     window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
