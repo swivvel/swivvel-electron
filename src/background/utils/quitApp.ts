@@ -17,6 +17,7 @@ export default (state: State, options?: { quitAndInstall: boolean }): void => {
     log.info(`Quitting app and installing updates`);
     log.info(process.platform);
     autoUpdater.quitAndInstall();
+    log.info(`Quit and install finished`);
   } else {
     log.info(`Quitting app`);
     app.quit();
