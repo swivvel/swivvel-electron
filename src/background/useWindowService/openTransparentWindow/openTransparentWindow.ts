@@ -14,6 +14,8 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const options = getTransparentBrowserWindowOptions();
 
   return openBrowserWindow(state, `transparent`, options, async (window) => {
+    window.blur();
+
     // Transparent windows don't work on Linux without some hacks
     // like this short delay
     // See: https://github.com/electron/electron/issues/15947
