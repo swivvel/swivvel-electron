@@ -1,5 +1,6 @@
-import { app, autoUpdater } from 'electron';
+import { app } from 'electron';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
 
 import { State } from '../types';
 
@@ -9,6 +10,8 @@ export default (state: State, options?: { quitAndInstall: boolean }): void => {
   prepareToQuitApp(state);
 
   const quitAndInstall = Boolean(options && options.quitAndInstall);
+
+  autoUpdater.logger = log;
 
   if (quitAndInstall) {
     log.info(`Quitting app and installing updates`);
