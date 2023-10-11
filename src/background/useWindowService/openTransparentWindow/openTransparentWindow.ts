@@ -21,6 +21,7 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
       await sleep(1000);
     }
 
+    window.setContentProtection(true);
     window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
 
     showOnAllWorkspaces(window);
