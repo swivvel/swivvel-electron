@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
 
@@ -15,6 +17,7 @@ export default (state: State): void => {
   let checkForUpdatesInterval: NodeJS.Timeout | null = null;
 
   autoUpdater.logger = log;
+  autoUpdater.logger.transports.file.level = `debug`;
 
   autoUpdater.on(`update-available`, () => {
     log.info(`Update available`);
