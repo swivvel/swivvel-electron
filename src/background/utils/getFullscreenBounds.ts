@@ -1,6 +1,6 @@
 import { screen } from 'electron';
 
-import { isLinux } from '../../../utils';
+import isLinux from './isLinux';
 
 // We are unlikely to have any Linux users, so we're optimizing for Ubuntu for
 // now. The top bar may be different heights on other Linux distros, but we can

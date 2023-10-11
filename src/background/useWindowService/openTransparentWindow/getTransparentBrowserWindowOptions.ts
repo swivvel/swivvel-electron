@@ -1,14 +1,12 @@
 import { BrowserWindowConstructorOptions, screen } from 'electron';
 import log from 'electron-log';
 
-import { getPreloadPath, isLinux } from '../../utils';
-
-import { getBounds } from './utils';
+import { getFullscreenBounds, getPreloadPath, isLinux } from '../../utils';
 
 export default (): BrowserWindowConstructorOptions => {
   log.info(`All displays: ${JSON.stringify(screen.getAllDisplays())}`);
 
-  const bounds = getBounds();
+  const bounds = getFullscreenBounds();
   const { height, width, x, y } = bounds;
 
   log.info(`Setting transparent window bounds: ${JSON.stringify(bounds)}`);
@@ -32,6 +30,7 @@ export default (): BrowserWindowConstructorOptions => {
     minimizable: false,
     resizable: false,
     roundedCorners: false,
+    show: false,
     skipTaskbar: true,
     transparent: true,
     webPreferences: { preload: getPreloadPath() },

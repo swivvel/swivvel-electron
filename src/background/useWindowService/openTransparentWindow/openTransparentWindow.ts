@@ -18,6 +18,10 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     // See: https://www.electronjs.org/docs/latest/api/browser-window#winsetcontentprotectionenable-macos-windows
     window.setContentProtection(true);
 
+    // Show the window but don't focus it because it would be confusing to users
+    // if an invisible window took focus.
+    window.showInactive();
+
     // Transparent windows don't work on Linux without some hacks
     // like this short delay
     // See: https://github.com/electron/electron/issues/15947
