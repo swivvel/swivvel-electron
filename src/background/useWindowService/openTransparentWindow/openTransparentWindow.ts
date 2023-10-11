@@ -14,6 +14,10 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const options = getTransparentBrowserWindowOptions();
 
   return openBrowserWindow(state, `transparent`, options, async (window) => {
+    // Prevent the transparent window from appearing in screenshots
+    // See: https://www.electronjs.org/docs/latest/api/browser-window#winsetcontentprotectionenable-macos-windows
+    window.setContentProtection(true);
+
     // Show the window but don't focus it because it would be confusing to users
     // if an invisible window took focus.
     window.showInactive();
