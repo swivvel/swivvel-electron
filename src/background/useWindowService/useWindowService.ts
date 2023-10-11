@@ -54,11 +54,7 @@ export default (state: State, trayService: TrayService): WindowService => {
       });
     },
     openLogInWindow: async (): Promise<BrowserWindow> => {
-      return openLogInWindow({
-        state,
-        trayService,
-        windowOpenRequestHandler,
-      });
+      return openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
     openTransparentWindow: async (): Promise<BrowserWindow> => {
       return openTransparentWindow({ state, windowOpenRequestHandler });
