@@ -1,5 +1,6 @@
-import { app, autoUpdater } from 'electron';
+import { app } from 'electron';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
 
 import { State } from '../types';
 
