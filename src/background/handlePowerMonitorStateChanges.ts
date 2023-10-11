@@ -9,8 +9,9 @@ import { quitApp } from './utils';
 const TEN_MIN_MS = ms(`10 seconds`);
 
 export default (state: State, windowService: WindowService): void => {
-  // Closing the windows on lock/sleep and re-opening them on resume solves (or
-  // attempts to solve) a handful of issues:
+  // Closing the windows in 10 minutes after lock/sleep and re-opening
+  // them (if closed) on resume solves (or attempts to solve) a
+  // handful of issues:
   //
   // 1. We have observed (in a very small subset of users) the app getting into
   //    a weird state when a Mac is locked overnight. Opening the developer
