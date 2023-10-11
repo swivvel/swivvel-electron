@@ -41,6 +41,7 @@
       }
     },
     "win": {
+      "artifactName": "${productName}-win.${ext}",
       "icon": "build/icon.ico"
     },
     "linux": {
