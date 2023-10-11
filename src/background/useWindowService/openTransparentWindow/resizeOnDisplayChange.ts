@@ -1,7 +1,7 @@
 import { BrowserWindow, screen } from 'electron';
 import log from 'electron-log';
 
-import { getBounds } from './utils';
+import { getFullscreenBounds } from '../../utils';
 
 /**
  * Make sure the transparent window is always resized to fit the primary
@@ -17,7 +17,7 @@ export default (window: BrowserWindow): void => {
       return;
     }
 
-    const bounds = getBounds();
+    const bounds = getFullscreenBounds();
     const { height, width, x, y } = bounds;
 
     log.info(
