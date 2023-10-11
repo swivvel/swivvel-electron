@@ -10,7 +10,13 @@ export default async (
   window: BrowserWindow,
   state: State
 ): Promise<void> => {
-  await loadUrl(url, window, state);
+  await loadUrl(url, window, state, {
+    // Since the Google Meet window is opened from a user action, we must
+    // display an error message to inform the user that their action failed.
+    // Since the Google Meet window is temporary and the user can retry the
+    // action, we can just destroy the window so the user tries again.
+    onError: `warnAndDestroyWindow`,
+  });
 
   // Out of the box, screen-sharing within the Meet does not work. To get around
   // this, we need to patch the window.getDisplayMedia function, which is

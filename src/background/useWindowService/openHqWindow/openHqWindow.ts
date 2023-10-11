@@ -21,7 +21,15 @@ const openHqWindow: OpenHqWindow = async (args) => {
 
     // By the time we open the HQ window the user should be logged in, so
     // the home page will redirect the user to their company's HQ page
-    await loadUrl(`${getSiteUrl()}/`, window, state);
+    await loadUrl(`${getSiteUrl()}/`, window, state, {
+      // The HQ window is opened automatically when the app starts, and it
+      // defaults to being hidden. If it fails to load the URL, we don't want
+      // to display an error message to the user because they probably don't
+      // realize that the window was being loaded in the background. Instead,
+      // we can just destroy the HQ window so that it gets recreated when the
+      // user tries to open it again.
+      onError: `destroyWindow`,
+    });
 
     return window;
   });

@@ -15,7 +15,6 @@ export default (transparentWindow: BrowserWindow, state: State): void => {
     } else if (!state.allowQuit) {
       log.info(`allowQuit=false, preventing transparent window from closing`);
       event.preventDefault();
-      transparentWindow.hide();
     } else {
       log.info(`Closing transparent window...`);
     }
