@@ -16,7 +16,7 @@ export default (): BrowserWindowConstructorOptions => {
   return {
     alwaysOnTop: true,
     autoHideMenuBar: true,
-    closable: false,
+    // closable: false,
     // On Mac, the window needs to be focusable for the mouse cursor to appear
     // as a pointer. On Linux, focusable must be true in order for the user
     // to type in text fields.
