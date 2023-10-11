@@ -65,10 +65,8 @@ export default (state: State, trayService: TrayService): WindowService => {
         windowOpenRequestHandler,
       });
     },
-    openTransparentWindow: async (props: {
-      autoJoinAudioRoom: boolean;
-    }): Promise<BrowserWindow> => {
-      return openTransparentWindow({ state, props, windowOpenRequestHandler });
+    openTransparentWindow: async (): Promise<BrowserWindow> => {
+      return openTransparentWindow({ state, windowOpenRequestHandler });
     },
   };
 };

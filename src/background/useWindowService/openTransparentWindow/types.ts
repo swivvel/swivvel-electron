@@ -9,8 +9,5 @@ export type OpenTransparentWindow = (
 
 export interface OpenTransparentWindowArgs {
   state: State;
-  props: {
-    autoJoinAudioRoom: boolean;
-  };
   windowOpenRequestHandler: WindowOpenRequestHandler;
 }

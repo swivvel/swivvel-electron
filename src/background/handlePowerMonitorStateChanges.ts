@@ -1,11 +1,12 @@
 import { powerMonitor } from 'electron';
 import log from 'electron-log';
+import ms from 'ms';
 
 import { State } from './types';
 import { WindowService } from './useWindowService';
 import { quitApp } from './utils';
 
-const AUTO_JOIN_TIME_MS = 600000;
+const TEN_MIN_MS = ms(`10 seconds`);
 
 export default (state: State, windowService: WindowService): void => {
   // Closing the windows on lock/sleep and re-opening them on resume solves (or
@@ -31,39 +32,43 @@ export default (state: State, windowService: WindowService): void => {
   //    morning.
   //
 
-  let closedWindowsAt: Date = new Date();
+  let timeOut: NodeJS.Timeout | null = null;
 
   powerMonitor.on(`lock-screen`, () => {
     log.info(`Power monitor: lock-screen detected`);
-    windowService.closeAllWindows();
-    closedWindowsAt = new Date();
+
+    timeOut = setTimeout(() => {
+      windowService.closeAllWindows();
+
+      timeOut = null;
+    }, TEN_MIN_MS);
   });
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
-    windowService.closeAllWindows();
-    closedWindowsAt = new Date();
+
+    timeOut = setTimeout(() => {
+      windowService.closeAllWindows();
+
+      timeOut = null;
+    }, TEN_MIN_MS);
   });
   powerMonitor.on(`unlock-screen`, () => {
-    const numMillisecondsClosedAt = closedWindowsAt
-      ? new Date().getTime() - closedWindowsAt.getTime()
-      : AUTO_JOIN_TIME_MS + 1;
-
     log.info(`Power monitor: unlock-screen detected`);
 
-    windowService.openTransparentWindow({
-      autoJoinAudioRoom: numMillisecondsClosedAt <= AUTO_JOIN_TIME_MS,
-    });
+    if (timeOut) {
+      clearTimeout(timeOut);
+    } else {
+      windowService.openTransparentWindow();
+    }
   });
   powerMonitor.on(`resume`, () => {
-    const numMillisecondsClosedAt = closedWindowsAt
-      ? new Date().getTime() - closedWindowsAt.getTime()
-      : AUTO_JOIN_TIME_MS + 1;
-
     log.info(`Power monitor: resume detected`);
 
-    windowService.openTransparentWindow({
-      autoJoinAudioRoom: numMillisecondsClosedAt <= AUTO_JOIN_TIME_MS,
-    });
+    if (timeOut) {
+      clearTimeout(timeOut);
+    } else {
+      windowService.openTransparentWindow();
+    }
   });
 
   // Without this, Macs would hang when trying to shut down because the
