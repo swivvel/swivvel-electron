@@ -3,12 +3,12 @@ import log from 'electron-log';
 
 import { State } from '../types';
 import { TrayService } from '../useTrayService';
-import { getSiteUrl, loadUrl } from '../utils';
 
 import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
 import openGoogleMeetWindow from './openGoogleMeetWindow';
 import openHqWindow from './openHqWindow';
 import openLogInWindow from './openLogInWindow';
+import openSettingsPageInHqWindow from './openSettingsPageInHqWindow';
 import openSetupWindow from './openSetupWindow';
 import openTransparentWindow from './openTransparentWindow';
 import { WindowService } from './types';
@@ -28,7 +28,12 @@ export default (state: State, trayService: TrayService): WindowService => {
       });
     },
     onHqPageRequested: () => {
-      openHqWindow({ state, trayService, windowOpenRequestHandler });
+      openHqWindow({
+        show: false,
+        state,
+        trayService,
+        windowOpenRequestHandler,
+      });
     },
     onLogInPageRequested: () => {
       openLogInWindow({ state, trayService, windowOpenRequestHandler });
@@ -37,17 +42,11 @@ export default (state: State, trayService: TrayService): WindowService => {
       openSetupWindow({ state, trayService, windowOpenRequestHandler });
     },
     onSettingsPageRequested: async () => {
-      const hqWindow = await openHqWindow({
+      openSettingsPageInHqWindow({
         state,
         trayService,
         windowOpenRequestHandler,
       });
-
-      await loadUrl(
-        `${getSiteUrl()}/?p=/office/<companyId>/settings/users`,
-        hqWindow,
-        state
-      );
     },
   });
 

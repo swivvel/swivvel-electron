@@ -7,6 +7,7 @@ import { WindowOpenRequestHandler } from '../getWindowOpenRequestHandler';
 export type OpenHqWindow = (args: OpenHqWindowArgs) => Promise<BrowserWindow>;
 
 export interface OpenHqWindowArgs {
+  show: boolean;
   state: State;
   trayService: TrayService;
   windowOpenRequestHandler: WindowOpenRequestHandler;

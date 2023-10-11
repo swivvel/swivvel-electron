@@ -16,6 +16,6 @@ export default (
   // Show the HQ window when user clicks on dock on Mac
   app.on(`activate`, () => {
     log.info(`App activate event received`);
-    openHqWindow(openHqWindowArgs);
+    openHqWindow({ ...openHqWindowArgs, show: true });
   });
 };

@@ -32,7 +32,7 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
       // The transparent window is core to the application because it's
       // responsible for opening all of the other windows and displaying the
       // audio room. Retry loading the URL indefinitely if it fails.
-      retry: true,
+      onError: `retry`,
     });
 
     return window;
