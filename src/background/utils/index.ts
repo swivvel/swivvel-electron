@@ -1,4 +1,5 @@
 import getBrowserWindowName from './getBrowserWindowName';
+import getFullscreenBounds from './getFullscreenBounds';
 import getLogoTemplatePath from './getLogoTemplatePath';
 import getPreloadPath from './getPreloadPath';
 import getShareableMediaSources from './getShareableMediaSources';
@@ -16,6 +17,7 @@ import sleep from './sleep';
 
 export {
   getBrowserWindowName,
+  getFullscreenBounds,
   getLogoTemplatePath,
   getPreloadPath,
   getShareableMediaSources,
