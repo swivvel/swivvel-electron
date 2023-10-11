@@ -6,11 +6,11 @@ import { State } from './types';
 import { WindowService } from './useWindowService';
 import { quitApp } from './utils';
 
-const TEN_MIN_MS = ms(`10 seconds`);
+const TEN_MIN_MS = ms(`10 minutes`);
 
 export default (state: State, windowService: WindowService): void => {
-  // Closing the windows in 10 minutes after lock/sleep and re-opening
-  // them (if closed) on resume solves (or attempts to solve) a
+  // Closing the windows 10 minutes after lock/sleep and re-opening
+  // them (if already closed) on resume solves (or attempts to solve) a
   // handful of issues:
   //
   // 1. We have observed (in a very small subset of users) the app getting into
@@ -33,31 +33,39 @@ export default (state: State, windowService: WindowService): void => {
   //    morning.
   //
 
-  let timeOut: NodeJS.Timeout | null = null;
+  let timeout: NodeJS.Timeout | null = null;
 
   powerMonitor.on(`lock-screen`, () => {
     log.info(`Power monitor: lock-screen detected`);
 
-    timeOut = setTimeout(() => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    timeout = setTimeout(() => {
       windowService.closeAllWindows();
 
-      timeOut = null;
+      timeout = null;
     }, TEN_MIN_MS);
   });
   powerMonitor.on(`suspend`, () => {
     log.info(`Power monitor: suspend detected`);
 
-    timeOut = setTimeout(() => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    timeout = setTimeout(() => {
       windowService.closeAllWindows();
 
-      timeOut = null;
+      timeout = null;
     }, TEN_MIN_MS);
   });
   powerMonitor.on(`unlock-screen`, () => {
     log.info(`Power monitor: unlock-screen detected`);
 
-    if (timeOut) {
-      clearTimeout(timeOut);
+    if (timeout) {
+      clearTimeout(timeout);
     } else {
       windowService.openTransparentWindow();
     }
@@ -65,8 +73,8 @@ export default (state: State, windowService: WindowService): void => {
   powerMonitor.on(`resume`, () => {
     log.info(`Power monitor: resume detected`);
 
-    if (timeOut) {
-      clearTimeout(timeOut);
+    if (timeout) {
+      clearTimeout(timeout);
     } else {
       windowService.openTransparentWindow();
     }
