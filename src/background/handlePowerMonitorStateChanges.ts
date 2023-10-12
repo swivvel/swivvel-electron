@@ -44,8 +44,8 @@ export default (state: State, windowService: WindowService): void => {
 
     timeout = setTimeout(() => {
       windowService.closeAllWindows();
-
       timeout = null;
+      log.info(`Power monitor lock-screen (timeout): closed all windows`);
     }, TEN_MIN_MS);
   });
   powerMonitor.on(`suspend`, () => {
@@ -57,27 +57,29 @@ export default (state: State, windowService: WindowService): void => {
 
     timeout = setTimeout(() => {
       windowService.closeAllWindows();
-
       timeout = null;
+      log.info(`Power monitor suspend (timeout): closed all windows`);
     }, TEN_MIN_MS);
   });
   powerMonitor.on(`unlock-screen`, () => {
     log.info(`Power monitor: unlock-screen detected`);
 
     if (timeout) {
+      log.info(`Power monitor: clearing timeout`);
       clearTimeout(timeout);
-    } else {
-      windowService.openTransparentWindow();
     }
+
+    windowService.openTransparentWindow();
   });
   powerMonitor.on(`resume`, () => {
     log.info(`Power monitor: resume detected`);
 
     if (timeout) {
+      log.info(`Power monitor: clearing timeout`);
       clearTimeout(timeout);
-    } else {
-      windowService.openTransparentWindow();
     }
+
+    windowService.openTransparentWindow();
   });
 
   // Without this, Macs would hang when trying to shut down because the
