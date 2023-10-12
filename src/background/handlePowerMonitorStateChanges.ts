@@ -39,12 +39,19 @@ export default (state: State, windowService: WindowService): void => {
     log.info(`Power monitor: lock-screen detected`);
 
     if (timeout) {
+      log.info(
+        `Power monitor: lock-screen: window close timeout already exists; clearing timeout`
+      );
       clearTimeout(timeout);
     }
 
+    log.info(`Power monitor: lock-screen: setting new window close timeout...`);
     timeout = setTimeout(() => {
+      log.info(`Power monitor: lock-screen: window close timeout reached`);
       windowService.closeAllWindows();
-
+      log.info(
+        `Power monitor: lock-screen: setting window close timeout to null`
+      );
       timeout = null;
     }, TEN_MIN_MS);
   });
@@ -52,12 +59,17 @@ export default (state: State, windowService: WindowService): void => {
     log.info(`Power monitor: suspend detected`);
 
     if (timeout) {
+      log.info(
+        `Power monitor: suspend: window close timeout already exists; clearing timeout`
+      );
       clearTimeout(timeout);
     }
 
+    log.info(`Power monitor: suspend: setting new window close timeout...`);
     timeout = setTimeout(() => {
+      log.info(`Power monitor: suspend: window close timeout reached`);
       windowService.closeAllWindows();
-
+      log.info(`Power monitor: suspend: setting window close timeout to null`);
       timeout = null;
     }, TEN_MIN_MS);
   });
@@ -65,19 +77,21 @@ export default (state: State, windowService: WindowService): void => {
     log.info(`Power monitor: unlock-screen detected`);
 
     if (timeout) {
+      log.info(`Power monitor: unlock-screen: clearing timeout`);
       clearTimeout(timeout);
-    } else {
-      windowService.openTransparentWindow();
     }
+
+    windowService.openTransparentWindow();
   });
   powerMonitor.on(`resume`, () => {
     log.info(`Power monitor: resume detected`);
 
     if (timeout) {
+      log.info(`Power monitor: resume: clearing timeout`);
       clearTimeout(timeout);
-    } else {
-      windowService.openTransparentWindow();
     }
+
+    windowService.openTransparentWindow();
   });
 
   // Without this, Macs would hang when trying to shut down because the
