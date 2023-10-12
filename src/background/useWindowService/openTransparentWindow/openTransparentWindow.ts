@@ -28,9 +28,13 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     // on top, so we have to explicitly re-enable the always-on-top setting.
     window.setAlwaysOnTop(true);
 
+    // Write all console messages to a log file so that we can include the file
+    // in Sentry alerts.
     window.webContents.on(`console-message`, (event, level, message) => {
       transparentWindowLog.info(message);
     });
+
+    window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
 
     // Transparent windows don't work on Linux without some hacks
     // like this short delay
@@ -38,8 +42,6 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     if (isLinux()) {
       await sleep(1000);
     }
-
-    window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
 
     showOnAllWorkspaces(window);
     configureCloseHandler(window, state);

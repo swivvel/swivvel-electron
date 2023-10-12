@@ -1,4 +1,4 @@
-import fs from 'fs';
+import path from 'path';
 
 import * as Sentry from '@sentry/electron/main';
 import log from 'electron-log';
@@ -16,14 +16,23 @@ export default (): void => {
 
   // Attach the log files to every Sentry alert
   Sentry.addGlobalEventProcessor((event, hint) => {
-    log.info(`Sentry addGlobalEventProcessor called; attaching log files`);
+    log.info(`Sentry addGlobalEventProcessor called`);
+    log.info(`Reading all log files...`);
 
-    const logFilePath = log.transports.file.getFile().path;
+    const allLogs = log.transports.file.readAllLogs();
+    const paths = allLogs.map((logFile) => {
+      return logFile.path;
+    });
 
-    log.info(`Reading log file: ${logFilePath}`);
-    const logFileContents = fs.readFileSync(logFilePath).toString();
+    log.info(`Attaching log files: ${JSON.stringify(paths)}`);
 
-    hint.attachments = [{ filename: `main.log`, data: logFileContents }];
+    hint.attachments = allLogs.map((logFile) => {
+      return {
+        filename: path.basename(logFile.path),
+        data: logFile.lines.join(`\n`),
+      };
+    });
+
     return event;
   });
 };
