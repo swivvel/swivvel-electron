@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/electron/main';
 import { app, ipcMain } from 'electron';
 import log from 'electron-log';
 
@@ -10,6 +11,26 @@ export default (windowService: WindowService): void => {
   ipcMain.handle(`getDesktopAppVersion`, () => {
     return app.getVersion();
   });
+
+  ipcMain.handle(
+    `getDesktopSources`,
+    async (): Promise<Array<ShareableMediaSource>> => {
+      log.info(`Received getDesktopSources event`);
+      return getShareableMediaSources();
+    }
+  );
+
+  ipcMain.on(
+    `identifyUser`,
+    async (
+      event,
+      user: { id: string; email: string | null } | null
+    ): Promise<void> => {
+      log.info(`Received identifyUser event, user=${JSON.stringify(user)}`);
+      log.info(`Setting Sentry user context`);
+      Sentry.setUser(user ? { ...user, email: user.email || undefined } : null);
+    }
+  );
 
   ipcMain.handle(`isProduction`, isProduction);
 
@@ -33,13 +54,4 @@ export default (windowService: WindowService): void => {
     log.info(`Sending launchAudioRoomFromSetup event to transparent window`);
     transparentWindow.webContents.send(`launchAudioRoomFromSetup`);
   });
-
-  ipcMain.handle(
-    `getDesktopSources`,
-    async (): Promise<Array<ShareableMediaSource>> => {
-      log.info(`Received getDesktopSources event`);
-
-      return getShareableMediaSources();
-    }
-  );
 };

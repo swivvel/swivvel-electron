@@ -5,13 +5,21 @@ import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import configureIpcHandlers from './configureIpcHandlers';
+import configureSentry from './configureSentry';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
+import setUserDataPath from './setUserDataPath';
 import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
+
+// Must be called before Sentry is configured
+setUserDataPath();
+
+// Call as early as possible to ensure that all exceptions are logged
+configureSentry();
 
 const run = async (): Promise<void> => {
   log.info(`App v=${app.getVersion()} starting...`);

@@ -7,7 +7,7 @@ import { ShareableMediaSource } from './types';
 
 contextBridge.exposeInMainWorld(`electron`, {
   featureFlags: {
-    loginFlowV2: true, // Deprecated: remove when all clients on v1.2.0
+    loginFlowV2: true, // Remove when all clients on v1.2.0
     googleMeetsSupport: true, // Remove when all clients on v1.2.18
   },
 
@@ -31,6 +31,15 @@ contextBridge.exposeInMainWorld(`electron`, {
    */
   getIsProduction: (): Promise<boolean> => {
     return ipcRenderer.invoke(`isProduction`);
+  },
+
+  /**
+   * Used by the app windows to inform the main process who the user is after
+   * they authenticate. The user information is included in Sentry error
+   * reports.
+   */
+  identifyUser: (user: { id: string; email: string | null } | null) => {
+    ipcRenderer.send(`identifyUser`, user);
   },
 
   /**
@@ -139,7 +148,6 @@ contextBridge.exposeInMainWorld(`electron`, {
    */
   onMeetJoined: (callback: MeetJoinedCallback) => {
     ipcRenderer.on(`meetJoined`, callback);
-
     return (): void => {
       ipcRenderer.removeListener(`meetJoined`, callback);
     };
@@ -151,7 +159,6 @@ contextBridge.exposeInMainWorld(`electron`, {
    */
   onMeetLeft: (callback: MeetLeftCallback) => {
     ipcRenderer.on(`meetLeft`, callback);
-
     return (): void => {
       ipcRenderer.removeListener(`meetLeft`, callback);
     };
