@@ -15,14 +15,16 @@ import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
 
-// Must be called before Sentry is configured
+// Call as early as possible since this changes the directory path where
+// Electron stores everything related to the app
 setUserDataPath();
-
-// Call as early as possible to ensure that all exceptions are logged
-configureSentry();
 
 const run = async (): Promise<void> => {
   log.info(`App v=${app.getVersion()} starting...`);
+  log.info(`User Data: ${app.getPath(`userData`)}`);
+
+  // Call at the beginning so that all exceptions are captured
+  configureSentry();
 
   const state: State = {
     allowQuit: false,

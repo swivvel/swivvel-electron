@@ -9,9 +9,11 @@ import { isLinux } from './utils';
 export default (): void => {
   log.info(`Configuring app...`);
 
-  // Transparent windows don't work in Linux without these settings
-  // See: https://github.com/electron/electron/issues/15947
   if (isLinux()) {
+    log.info(`Setting Linux configuration options...`);
+
+    // Transparent windows don't work in Linux without these settings
+    // See: https://github.com/electron/electron/issues/15947
     app.commandLine.appendSwitch(`enable-transparent-visuals`);
     app.commandLine.appendSwitch(`disable-gpu`);
     app.disableHardwareAcceleration();

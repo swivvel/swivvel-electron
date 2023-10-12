@@ -2,6 +2,7 @@ import { getSiteUrl, isLinux, loadUrl, sleep } from '../../utils';
 import { openBrowserWindow } from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';
+import getLogger from './getLogger';
 import getTransparentBrowserWindowOptions from './getTransparentBrowserWindowOptions';
 import pollForMouseEvents from './pollForMouseEvents';
 import resizeOnDisplayChange from './resizeOnDisplayChange';
@@ -11,6 +12,7 @@ import { OpenTransparentWindow } from './types';
 const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const { state, windowOpenRequestHandler } = args;
 
+  const transparentWindowLog = getLogger(`transparent`);
   const options = getTransparentBrowserWindowOptions();
 
   return openBrowserWindow(state, `transparent`, options, async (window) => {
@@ -25,6 +27,10 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     // On Linux, calling `showInactive()` causes the window to no longer appear
     // on top, so we have to explicitly re-enable the always-on-top setting.
     window.setAlwaysOnTop(true);
+
+    window.webContents.on(`console-message`, (event, level, message) => {
+      transparentWindowLog.info(message);
+    });
 
     // Transparent windows don't work on Linux without some hacks
     // like this short delay

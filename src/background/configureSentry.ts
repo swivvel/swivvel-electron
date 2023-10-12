@@ -1,4 +1,7 @@
+import fs from 'fs';
+
 import * as Sentry from '@sentry/electron/main';
+import log from 'electron-log';
 
 import { isProduction } from './utils';
 
@@ -10,4 +13,17 @@ export default (): void => {
   });
 
   Sentry.setTag(`swivvel.service`, `electron`);
+
+  // Attach the log files to every Sentry alert
+  Sentry.addGlobalEventProcessor((event, hint) => {
+    log.info(`Sentry addGlobalEventProcessor called; attaching log files`);
+
+    const logFilePath = log.transports.file.getFile().path;
+
+    log.info(`Reading log file: ${logFilePath}`);
+    const logFileContents = fs.readFileSync(logFilePath).toString();
+
+    hint.attachments = [{ filename: `main.log`, data: logFileContents }];
+    return event;
+  });
 };
