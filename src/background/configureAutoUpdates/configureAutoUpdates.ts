@@ -60,7 +60,7 @@ export default (state: State): void => {
       setImmediate(() => {
         quitApp(state, { quitAndInstall: true });
       });
-    }, msUntilMidnight);
+    }, 10000);
   });
 
   checkForUpdatesInterval = pollForUpdates();
