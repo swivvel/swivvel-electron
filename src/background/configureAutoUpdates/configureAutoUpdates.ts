@@ -42,17 +42,17 @@ export default (state: State): void => {
       clearInterval(checkForUpdatesInterval);
     }
 
-    const now = new Date();
+    // const now = new Date();
 
-    const midnight = new Date(now);
-    midnight.setHours(24);
-    midnight.setMinutes(0);
-    midnight.setSeconds(0);
-    midnight.setMilliseconds(0);
+    // const midnight = new Date(now);
+    // midnight.setHours(24);
+    // midnight.setMinutes(0);
+    // midnight.setSeconds(0);
+    // midnight.setMilliseconds(0);
 
-    const msUntilMidnight = midnight.getTime() - now.getTime();
+    // const msUntilMidnight = midnight.getTime() - now.getTime();
 
-    log.info(`Scheduling app relaunch for ${midnight.toISOString()}...`);
+    // log.info(`Scheduling app relaunch for ${midnight.toISOString()}...`);
 
     setTimeout(() => {
       log.info(`Installing new version and relaunching app...`);
