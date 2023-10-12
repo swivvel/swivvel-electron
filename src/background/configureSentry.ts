@@ -17,21 +17,28 @@ export default (): void => {
   // Attach the log files to every Sentry alert
   Sentry.addGlobalEventProcessor((event, hint) => {
     log.info(`Sentry addGlobalEventProcessor called`);
-    log.info(`Reading all log files...`);
 
-    const allLogs = log.transports.file.readAllLogs();
-    const paths = allLogs.map((logFile) => {
-      return logFile.path;
-    });
+    // It is important for the Sentry alert to still get reported even if
+    // we fail to attach the log files
+    try {
+      log.info(`Reading all log files...`);
 
-    log.info(`Attaching log files: ${JSON.stringify(paths)}`);
+      const allLogs = log.transports.file.readAllLogs();
+      const paths = allLogs.map((logFile) => {
+        return logFile.path;
+      });
 
-    hint.attachments = allLogs.map((logFile) => {
-      return {
-        filename: path.basename(logFile.path),
-        data: logFile.lines.join(`\n`),
-      };
-    });
+      log.info(`Attaching log files: ${JSON.stringify(paths)}`);
+
+      hint.attachments = allLogs.map((logFile) => {
+        return {
+          filename: path.basename(logFile.path),
+          data: logFile.lines.join(`\n`),
+        };
+      });
+    } catch (err) {
+      log.error(`Error reading log files: ${err}`);
+    }
 
     return event;
   });
