@@ -32,16 +32,10 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
         `Detected click on Send Bug Report menu item; sending Sentry alert`
       );
       Sentry.captureException(new Error(`Manual bug report`));
-
-      if (
-        state.windows.transparent &&
-        !state.windows.transparent.isDestroyed()
-      ) {
-        dialog.showErrorBox(
-          `Bug report submitted`,
-          `Oh snap! Sorry about that. We'll look into this. Please send us a brief description and screenshot via your company's Slack Connect channel or email us at support@swivvel.io. We'll get back to you ASAP.`
-        );
-      }
+      dialog.showErrorBox(
+        `Bug report submitted`,
+        `Oh snap! Sorry about that. We'll look into this. Please send us a brief description and screenshot via your company's Slack Connect channel or email us at support@swivvel.io. We'll get back to you ASAP.`
+      );
     },
   });
 
