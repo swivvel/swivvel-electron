@@ -5,16 +5,26 @@ import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import configureIpcHandlers from './configureIpcHandlers';
+import configureSentry from './configureSentry';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
+import setUserDataPath from './setUserDataPath';
 import { State } from './types';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
 
+// Call as early as possible since this changes the directory path where
+// Electron stores everything related to the app
+setUserDataPath();
+
 const run = async (): Promise<void> => {
   log.info(`App v=${app.getVersion()} starting...`);
+  log.info(`User Data: ${app.getPath(`userData`)}`);
+
+  // Call at the beginning so that all exceptions are captured
+  configureSentry();
 
   const state: State = {
     allowQuit: false,

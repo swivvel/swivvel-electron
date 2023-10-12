@@ -58,13 +58,14 @@
   "scripts": {
     "check": "npx npm-check --skip-unused",
     "compile": "rm -rf compiled && mkdir compiled && cp src/*.png compiled && tsc",
-    "dev": "electron compiled/background/background.js",
+    "dev": "electron .",
     "dist": "npm run compile && electron-builder",
     "lint": "eslint .",
     "types": "tsc --noEmit",
     "watch": "mkdir -p compiled && cp src/*.png compiled && tsc --watch"
   },
   "dependencies": {
+    "@sentry/electron": "^4.13.0",
     "electron-log": "^4.4.8",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
