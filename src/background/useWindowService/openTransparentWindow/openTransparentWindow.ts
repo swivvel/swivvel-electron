@@ -22,6 +22,10 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     // if an invisible window took focus.
     window.showInactive();
 
+    // On Linux, calling `showInactive()` causes the window to no longer appear
+    // on top, so we have to explicitly re-enable the always-on-top setting.
+    window.setAlwaysOnTop(true);
+
     // Transparent windows don't work on Linux without some hacks
     // like this short delay
     // See: https://github.com/electron/electron/issues/15947
