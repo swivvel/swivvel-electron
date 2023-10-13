@@ -5,7 +5,6 @@ export default (transparentWindow: BrowserWindow): (() => Promise<void>) => {
   let mouseIsOverTransparentPrevious: boolean | null = null;
 
   return async () => {
-    console.log(`mouseIgnoreHandler`);
     if (transparentWindow.isDestroyed()) {
       return;
     }

@@ -1,4 +1,5 @@
 import { BrowserWindow } from 'electron';
+import log from 'electron-log';
 import { throttle } from 'throttle-debounce';
 
 import { isMac } from '../../../utils';
@@ -22,6 +23,8 @@ import getMouseIgnoreHandler from './getMouseIgnoreHandler';
  * transparent part of the window and we should not ignore mouse events.
  */
 export default (transparentWindow: BrowserWindow): void => {
+  log.info(`Configuring mouse pass through`);
+
   transparentWindow.setIgnoreMouseEvents(true);
 
   const mouseIgnoreHandler = getMouseIgnoreHandler(transparentWindow);
@@ -41,7 +44,8 @@ export default (transparentWindow: BrowserWindow): void => {
   // move event wasn't triggered after calling `setIgnoreMouseEvents(false)`,
   // so we have to keep using the interval strategy on those platforms.
   if (isMac()) {
-    const mouseIgnoreHandlerThrottled = throttle(1000, mouseIgnoreHandler);
+    log.info(`Mouse pass through strategy: mouse move event`);
+    const mouseIgnoreHandlerThrottled = throttle(100, mouseIgnoreHandler);
 
     transparentWindow.webContents.on(`input-event`, (event, inputEvent) => {
       if (inputEvent.type === `mouseMove`) {
@@ -49,6 +53,7 @@ export default (transparentWindow: BrowserWindow): void => {
       }
     });
   } else {
+    log.info(`Mouse pass through strategy: interval`);
     const interval = setInterval(async () => {
       await mouseIgnoreHandler();
       if (transparentWindow.isDestroyed()) {
