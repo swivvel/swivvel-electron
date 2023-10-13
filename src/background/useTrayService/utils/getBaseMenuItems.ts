@@ -38,7 +38,8 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
         scope.setFingerprint([uuidv4()]);
 
         const userEmail = scope.getUser()?.email || `no user`;
-        const message = `Manual bug report - ${userEmail}`;
+        const now = new Date().toISOString();
+        const message = `Manual bug report - ${userEmail} - ${now}`;
         Sentry.captureException(new Error(message));
       });
       dialog.showErrorBox(
