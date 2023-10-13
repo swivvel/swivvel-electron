@@ -41,25 +41,25 @@ export default (state: State): void => {
       const key = getKey(idleChangeEvent);
       log.info(`Adding idle change event to buffer: ${key}`);
       buffer.set(getKey(idleChangeEvent), idleChangeEvent);
+      log.info(`Idle change events buffered: ${buffer.size}`);
     }
 
-    if (buffer.size > 0) {
-      log.info(`Idle change events buffered: ${buffer.size}`);
-
+    if (
+      buffer.size > 0 &&
+      state.windows.transparent &&
+      !state.windows.transparent.isDestroyed()
+    ) {
       // Note: we are purposefully not logging when the transparent window is
       // missing because we close the transparent window when someone locks
       // or sleeps their computer, so we could end up writing a log line every
       // second for hours.
-      if (
-        state.windows.transparent &&
-        !state.windows.transparent.isDestroyed()
-      ) {
-        log.info(`Reporting idle change to transparent window...`);
-        state.windows.transparent.webContents.send(
-          `idleChangeEventsBuffered`,
-          Array.from(buffer.values())
-        );
-      }
+      log.info(
+        `Reporting ${buffer.size} idle change events to transparent window`
+      );
+      state.windows.transparent.webContents.send(
+        `idleChangeEventsBuffered`,
+        Array.from(buffer.values())
+      );
     }
   }, 1000);
 
