@@ -4,8 +4,8 @@ import { openBrowserWindow } from '../utils';
 import configureCloseHandler from './configureCloseHandler';
 import getLogger from './getLogger';
 import getTransparentBrowserWindowOptions from './getTransparentBrowserWindowOptions';
-import pollForMouseEvents from './pollForMouseEvents';
 import resizeOnDisplayChange from './resizeOnDisplayChange';
+import setUpMousePassThrough from './setUpMousePassThrough';
 import showOnAllWorkspaces from './showOnAllWorkspaces';
 import { OpenTransparentWindow } from './types';
 
@@ -45,7 +45,7 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
 
     showOnAllWorkspaces(window);
     configureCloseHandler(window, state);
-    pollForMouseEvents(window);
+    setUpMousePassThrough(window);
     resizeOnDisplayChange(window);
 
     await loadUrl(`${getSiteUrl()}/notifications`, window, state, {
