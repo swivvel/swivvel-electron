@@ -80,6 +80,8 @@ jobs:
           ls D:\a\swivvel-electron\swivvel-electron\
           echo "++++++++++++++++++++++"
           ls D:\a\swivvel-electron\swivvel-electron\dist
+          echo "++++++++++++++++++++++"
+          ls D:\a\swivvel-electron\swivvel-electron\dist\win-unpacked
 
       # - name: Setup Windows Signing Certificate
       #   if: startsWith(matrix.os, 'windows')
