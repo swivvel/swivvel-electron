@@ -77,7 +77,7 @@ jobs:
       - name: Look around
         run: |
           pwd
-          ls -la
+          ls
 
       # - name: Setup Windows Signing Certificate
       #   if: startsWith(matrix.os, 'windows')
