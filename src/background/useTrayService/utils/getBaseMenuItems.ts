@@ -31,7 +31,15 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
       log.info(
         `Detected click on Send Bug Report menu item; sending Sentry alert`
       );
-      Sentry.captureException(new Error(`Manual bug report`));
+      Sentry.withScope((scope) => {
+        const userEmail = scope.getUser()?.email || `no user`;
+        const now = new Date().toISOString();
+        Sentry.captureException(
+          // Use a unique error message to avoid grouping in Sentry so that we
+          // don't accidentally miss an alert about a manual bug report
+          new Error(`Manual bug report - ${userEmail} - ${now}`)
+        );
+      });
       dialog.showErrorBox(
         `Bug report submitted`,
         `Oh snap! Sorry about that. We'll look into this. Please send us a brief description and screenshot via your company's Slack Connect channel or email us at support@swivvel.io. We'll get back to you ASAP.`
