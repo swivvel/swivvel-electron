@@ -49,30 +49,68 @@ jobs:
           mkdir -p ~/private_keys/
           echo '${{ env.APPLE_API_KEY }}' > ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
 
-      - name: Build/release Electron app
-        id: build
-        uses: samuelmeuli/action-electron-builder@v1
-        continue-on-error: true
-        with:
-          github_token: ${{ env.GITHUB_TOKEN }}
+      # - name: Build/release Electron app
+      #   id: build
+      #   uses: samuelmeuli/action-electron-builder@v1
+      #   continue-on-error: true
+      #   with:
+      #     github_token: ${{ env.GITHUB_TOKEN }}
 
-          # Signing certificates
-          mac_certs: ${{ env.MAC_CERTS }}
-          mac_certs_password: ${{ env.MAC_CERTS_PASSWORD }}
+      #     # Signing certificates
+      #     mac_certs: ${{ env.MAC_CERTS }}
+      #     mac_certs_password: ${{ env.MAC_CERTS_PASSWORD }}
 
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        env:
-          # MacOS notarization API key
-          APPLE_API_KEY_ID: ${{ env.APPLE_API_KEY_ID }}
-          APPLE_API_KEY_ISSUER: ${{ env.APPLE_API_KEY_ISSUER }}
-          APPLE_API_KEY: ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
+      #     # If the commit is tagged with a version (e.g. "v1.0.0"),
+      #     # release the app after building
+      #     release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      #   env:
+      #     # MacOS notarization API key
+      #     APPLE_API_KEY_ID: ${{ env.APPLE_API_KEY_ID }}
+      #     APPLE_API_KEY_ISSUER: ${{ env.APPLE_API_KEY_ISSUER }}
+      #     APPLE_API_KEY: ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
 
-      - name: Print notarization error log
-        if: startsWith(matrix.os, 'macos') && steps.build.outcome == 'failure'
+      - name: Setup Windows Signing Certificate
+        if: startsWith(matrix.os, 'windows')
         run: |
-          if [ -f "notarization-error.log" ]; then
-            cat notarization-error.log
-          fi
-          exit 1
+          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
+          cat  /d/Certificate_pkcs12.p12
+        shell: bash
+
+      - name: Setup Keylocker KSP on windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/Keylockertools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o Keylockertools-windows-x64.msi
+          msiexec /i Keylockertools-windows-x64.msi /quiet /qn
+          smksp_registrar.exe list
+          smctl.exe keypair ls
+          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user
+        shell: cmd
+
+      - name: Certificates Sync
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          smctl windows certsync
+        shell: cmd
+
+      - name: Signing using Signtool
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          copy D:\a\stm-github-action-demo\stm-github-action-demo\unsigned.exe D:\a\stm-github-action-demo\stm-github-action-demo\dist\unsigned.exe
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\stm-github-action-demo\stm-github-action-demo\dist\unsigned.exe"
+          signtool.exe verify /v /pa "D:\a\stm-github-action-demo\stm-github-action-demo\dist\unsigned.exe"
+
+    #  - name: Upload artifacts
+    #     if: startsWith(matrix.os, 'windows')
+    #     uses: actions/upload-artifact@v2
+    #     with:
+    #       name: ${{ matrix.os }}
+    #       path: |
+    #         dist
+
+    # - name: Print notarization error log
+    #   if: startsWith(matrix.os, 'macos') && steps.build.outcome == 'failure'
+    #   run: |
+    #     if [ -f "notarization-error.log" ]; then
+    #       cat notarization-error.log
+    #     fi
+    #     exit 1
