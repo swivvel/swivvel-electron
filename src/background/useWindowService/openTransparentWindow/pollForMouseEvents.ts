@@ -22,6 +22,7 @@ export default (transparentWindow: BrowserWindow): void => {
 
   ipcMain.on(`log`, (event, msg: string): void => {
     console.log(msg);
+    transparentWindow.setIgnoreMouseEvents(msg === `true`, { forward: true });
   });
 
   /*
