@@ -48,6 +48,11 @@ contextBridge.exposeInMainWorld(`electron`, {
   isLinux: process.platform === `linux`,
 
   /**
+   * True if desktop app is running on Mac
+   */
+  isMac: process.platform === `darwin`,
+
+  /**
    * Inform the transparent window that the user is requesting to join the
    * audio room for the given pod. Allows users to join audio room from other
    * windows.
