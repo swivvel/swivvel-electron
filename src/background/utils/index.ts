@@ -5,6 +5,7 @@ import getPreloadPath from './getPreloadPath';
 import getShareableMediaSources from './getShareableMediaSources';
 import getSiteUrl from './getSiteUrl';
 import isLinux from './isLinux';
+import isMac from './isMac';
 import isProduction from './isProduction';
 import loadUrl from './loadUrl';
 import parseQueryParams from './parseQueryParams';
@@ -23,6 +24,7 @@ export {
   getShareableMediaSources,
   getSiteUrl,
   isLinux,
+  isMac,
   isProduction,
   loadUrl,
   parseQueryParams,
