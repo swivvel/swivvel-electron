@@ -6,6 +6,10 @@ import { ShareableMediaSource } from './types';
 // in the web app
 
 contextBridge.exposeInMainWorld(`electron`, {
+  log: (msg: string) => {
+    ipcRenderer.send(`log`, msg);
+  },
+
   featureFlags: {
     loginFlowV2: true, // Remove when all clients on v1.2.0
     googleMeetsSupport: true, // Remove when all clients on v1.2.18
