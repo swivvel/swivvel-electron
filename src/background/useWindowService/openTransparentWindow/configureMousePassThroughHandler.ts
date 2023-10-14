@@ -13,7 +13,7 @@ import { isMac } from '../../utils';
  *
  * There are a few strategies to accomplish this with varying pros and cons and
  * varying OS support. There is a long GitHub issue about this here:
- * https://github.com/electron/electron/issues/1335#issuecomment-1585787243
+ * https://github.com/electron/electron/issues/1335
  */
 export default (transparentWindow: BrowserWindow): void => {
   log.info(`Configuring transparent window mouse pass-through handler`);
@@ -38,6 +38,10 @@ export default (transparentWindow: BrowserWindow): void => {
   // but unfortunately the `forward` option was not working on Windows or
   // Linux, meaning that the `mousemove` event in the web contents would stop
   // triggering after calling `setIgnoreMouseEvents(true)`.
+  //
+  // This strategy is inspired by:
+  // https://github.com/electron/electron/issues/1335#issuecomment-571066967
+  //
   if (isMac()) {
     log.info(`Mouse pass-through strategy: mousemove`);
 
@@ -71,6 +75,9 @@ export default (transparentWindow: BrowserWindow): void => {
   // window and we should ignore mouse events. If the pixel is not transparent,
   // then the user's cursor is over a non-transparent part of the window and we
   // should not ignore mouse events.
+  //
+  // This strategy is inspired by:
+  // https://github.com/electron/electron/issues/1335#issuecomment-1585787243
 
   log.info(`Mouse pass-through strategy: poll`);
 
