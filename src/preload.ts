@@ -6,10 +6,6 @@ import { ShareableMediaSource } from './types';
 // in the web app
 
 contextBridge.exposeInMainWorld(`electron`, {
-  log: (msg: string) => {
-    ipcRenderer.send(`log`, msg);
-  },
-
   featureFlags: {
     loginFlowV2: true, // Remove when all clients on v1.2.0
     googleMeetsSupport: true, // Remove when all clients on v1.2.18
@@ -166,6 +162,15 @@ contextBridge.exposeInMainWorld(`electron`, {
     return (): void => {
       ipcRenderer.removeListener(`meetLeft`, callback);
     };
+  },
+
+  /**
+   * Allows the transparent window to report when the mouse is over a
+   * transparent area or an element so that the Electron process can decide
+   * whether to ignore mouse events.
+   */
+  onMouseOverTransparentArea: (isOverTransparency: boolean) => {
+    ipcRenderer.send(`onMouseOverTransparentArea`, isOverTransparency);
   },
 });
 
