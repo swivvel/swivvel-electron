@@ -61,6 +61,8 @@ export default (transparentWindow: BrowserWindow): void => {
         isOverTransparencyPrevious = isOverTransparency;
       }
     );
+
+    return;
   }
 
   // On windows and Linux, our strategy is to periodically capture a 1x1 image
