@@ -16,6 +16,8 @@ import { isMac } from '../../utils';
  * https://github.com/electron/electron/issues/1335#issuecomment-1585787243
  */
 export default (transparentWindow: BrowserWindow): void => {
+  log.info(`Configuring transparent window mouse pass-through handler`);
+
   // On Mac, we originally used the polling screenshot strategy, but users were
   // getting an issue trying to use the "Capture Selected Window" screenshot
   // option. Even when mouse events were disabled on the transparent window,
@@ -37,6 +39,8 @@ export default (transparentWindow: BrowserWindow): void => {
   // Linux, meaning that the `mousemove` event in the web contents would stop
   // triggering after calling `setIgnoreMouseEvents(true)`.
   if (isMac()) {
+    log.info(`Mouse pass-through strategy: mousemove`);
+
     transparentWindow.setIgnoreMouseEvents(true, { forward: true });
 
     let isOverTransparencyPrevious: boolean | null = null;
@@ -65,6 +69,10 @@ export default (transparentWindow: BrowserWindow): void => {
   // window and we should ignore mouse events. If the pixel is not transparent,
   // then the user's cursor is over a non-transparent part of the window and we
   // should not ignore mouse events.
+
+  log.info(`Mouse pass-through strategy: poll`);
+
+  transparentWindow.setIgnoreMouseEvents(true);
 
   let mouseIsOverTransparentPrevious: boolean | null = null;
 
