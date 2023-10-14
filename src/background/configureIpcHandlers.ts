@@ -8,10 +8,6 @@ import { WindowService } from './useWindowService';
 import { getShareableMediaSources, isProduction } from './utils';
 
 export default (windowService: WindowService): void => {
-  ipcMain.on(`log`, (event, msg: string): void => {
-    console.log(msg);
-  });
-
   ipcMain.handle(`getDesktopAppVersion`, () => {
     return app.getVersion();
   });

@@ -1,4 +1,4 @@
-import { BrowserWindow, screen } from 'electron';
+import { BrowserWindow, ipcMain, screen } from 'electron';
 import log from 'electron-log';
 
 /**
@@ -18,8 +18,13 @@ import log from 'electron-log';
  * transparent part of the window and we should not ignore mouse events.
  */
 export default (transparentWindow: BrowserWindow): void => {
-  transparentWindow.setIgnoreMouseEvents(true);
+  transparentWindow.setIgnoreMouseEvents(true, { forward: true });
 
+  ipcMain.on(`log`, (event, msg: string): void => {
+    console.log(msg);
+  });
+
+  /*
   let mouseIsOverTransparentPrevious: boolean | null = null;
 
   const interval = setInterval(async () => {
@@ -68,4 +73,5 @@ export default (transparentWindow: BrowserWindow): void => {
       mouseIsOverTransparentPrevious = mouseIsOverTransparent;
     }
   }, 50);
+  */
 };
