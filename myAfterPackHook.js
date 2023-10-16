@@ -9,7 +9,7 @@ exports.default = async function (context) {
 
   console.log(execSync(`pwd`).toString());
 
-  console.log(execSync(`ls`).toString());
+  console.log(execSync(`ls dist`).toString());
 
   execSync(
     `signtool.exe sign /sha1 ${hash} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "./dist/Swivvel-win.exe"`
