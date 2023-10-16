@@ -21,6 +21,7 @@
     "copyright": "Copyright © 2023 Swivvel",
     "executableName": "swivvel",
     "artifactName": "${productName}.${ext}",
+    "afterPack": "./myAfterPackHook.js",
     "beforeBuild": false,
     "npmRebuild": false,
     "afterSign": "electron-builder-notarize",
@@ -41,7 +42,6 @@
       }
     },
     "win": {
-      "afterPack": "./myAfterPackHook.js",
       "artifactName": "${productName}-win.${ext}",
       "icon": "build/icon.ico"
     },
