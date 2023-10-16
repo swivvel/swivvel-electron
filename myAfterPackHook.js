@@ -1,7 +1,3 @@
-// eslint-disable-next-line
-import { CustomWindowsSignTaskConfiguration } from 'electron-builder';
-
-/** @param configuration {CustomWindowsSignTaskConfiguration} */
 exports.default = async (configuration) => {
   console.log('🐶 myBeforePackHook');
 
@@ -15,12 +11,12 @@ exports.default = async (configuration) => {
 
   console.log(execSync(`pwd`).toString());
 
-  console.log(execSync(`ls dist`).toString());
+  console.log(execSync(`ls dist/win-unpacked`).toString());
 
   execSync(
-    `signtool.exe sign /sha1 ${hash} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "./dist/Swivvel-win.exe"`
+    `signtool.exe sign /sha1 ${hash} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "./dist/win-unpacked/Swivvel-win.exe"`
   );
-  execSync(`signtool.exe verify /v /pa "./dist/Swivvel-win.exe"`);
+  execSync(`signtool.exe verify /v /pa "./dist/win-unpacked/Swivvel-win.exe"`);
 
   execSync(
     `signtool.exe sign /sha1 ${hash} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\\a\\swivvel-electron\\swivvel-electron\\dist\\Swivvel-win.exe"`
