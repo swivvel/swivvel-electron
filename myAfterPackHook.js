@@ -1,4 +1,4 @@
-export default async () => {
+exports.default = async function (context) {
   console.log('🐶 myBeforePackHook');
 
   const getEnv = (name) => process.env[name.toUpperCase()] || null;
