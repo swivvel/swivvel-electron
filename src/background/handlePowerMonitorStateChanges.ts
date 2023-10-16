@@ -31,67 +31,55 @@ export default (state: State, windowService: WindowService): void => {
   //    windows will make sure that an unauthenticated user is presented with
   //    the log in page when they unlock/resume their computer on Monday
   //    morning.
-  //
 
   let timeout: NodeJS.Timeout | null = null;
 
+  const handleLockOrSuspend = (action: `lock-screen` | `suspend`): void => {
+    log.info(`Power monitor: ${action} detected`);
+
+    if (timeout) {
+      log.info(
+        `Power monitor: ${action}: window close timeout exists; clearing timeout`
+      );
+      clearTimeout(timeout);
+    }
+
+    log.info(`Power monitor: ${action}: setting new window close timeout`);
+    timeout = setTimeout(() => {
+      log.info(`Power monitor: ${action}: window close timeout reached`);
+      windowService.closeAllWindows();
+      log.info(
+        `Power monitor: ${action}: setting window close timeout to null`
+      );
+      timeout = null;
+    }, TEN_MIN_MS);
+  };
+
+  const handleUnlockOrResume = (action: `unlock-screen` | `resume`): void => {
+    log.info(`Power monitor: ${action} detected`);
+
+    if (timeout) {
+      log.info(`Power monitor: ${action}: clearing timeout`);
+      clearTimeout(timeout);
+    }
+
+    windowService.openTransparentWindow();
+  };
+
   powerMonitor.on(`lock-screen`, () => {
-    log.info(`Power monitor: lock-screen detected`);
-
-    if (timeout) {
-      log.info(
-        `Power monitor: lock-screen: window close timeout already exists; clearing timeout`
-      );
-      clearTimeout(timeout);
-    }
-
-    log.info(`Power monitor: lock-screen: setting new window close timeout...`);
-    timeout = setTimeout(() => {
-      log.info(`Power monitor: lock-screen: window close timeout reached`);
-      windowService.closeAllWindows();
-      log.info(
-        `Power monitor: lock-screen: setting window close timeout to null`
-      );
-      timeout = null;
-    }, TEN_MIN_MS);
+    handleLockOrSuspend(`lock-screen`);
   });
+
   powerMonitor.on(`suspend`, () => {
-    log.info(`Power monitor: suspend detected`);
-
-    if (timeout) {
-      log.info(
-        `Power monitor: suspend: window close timeout already exists; clearing timeout`
-      );
-      clearTimeout(timeout);
-    }
-
-    log.info(`Power monitor: suspend: setting new window close timeout...`);
-    timeout = setTimeout(() => {
-      log.info(`Power monitor: suspend: window close timeout reached`);
-      windowService.closeAllWindows();
-      log.info(`Power monitor: suspend: setting window close timeout to null`);
-      timeout = null;
-    }, TEN_MIN_MS);
+    handleLockOrSuspend(`suspend`);
   });
+
   powerMonitor.on(`unlock-screen`, () => {
-    log.info(`Power monitor: unlock-screen detected`);
-
-    if (timeout) {
-      log.info(`Power monitor: unlock-screen: clearing timeout`);
-      clearTimeout(timeout);
-    }
-
-    windowService.openTransparentWindow();
+    handleUnlockOrResume(`unlock-screen`);
   });
+
   powerMonitor.on(`resume`, () => {
-    log.info(`Power monitor: resume detected`);
-
-    if (timeout) {
-      log.info(`Power monitor: resume: clearing timeout`);
-      clearTimeout(timeout);
-    }
-
-    windowService.openTransparentWindow();
+    handleUnlockOrResume(`resume`);
   });
 
   // Without this, Macs would hang when trying to shut down because the

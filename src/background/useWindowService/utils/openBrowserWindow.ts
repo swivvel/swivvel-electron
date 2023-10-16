@@ -25,8 +25,13 @@ export default async (
   const existingWindow = state.windows[browserWindowName];
 
   if (existingWindow && !existingWindow.isDestroyed()) {
-    log.info(`Showing existing window: ${browserWindowName}`);
-    existingWindow.show();
+    if (browserWindowOptions.show !== false) {
+      log.info(`Showing existing window w/ focus: ${browserWindowName}`);
+      existingWindow.show();
+    } else {
+      log.info(`Showing existing window w/o focus: ${browserWindowName}`);
+      existingWindow.showInactive();
+    }
     return existingWindow;
   }
 
