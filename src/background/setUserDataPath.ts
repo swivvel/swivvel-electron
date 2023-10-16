@@ -19,9 +19,6 @@ export default (): void => {
     app.setPath(`userData`, userDataDev);
     app.setPath(`logs`, logsDev);
 
-    console.log(`---------------------------------`);
-    console.log(logsDev);
-
     // Make sure the main logger writes to the new log path
     log.transports.file.resolvePath = (): string => {
       return path.join(logsDev, `main.log`);
