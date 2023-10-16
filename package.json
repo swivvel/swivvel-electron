@@ -1,7 +1,7 @@
 {
   "name": "swivvel",
   "productName": "Swivvel",
-  "version": "1.2.21",
+  "version": "1.0.998",
   "author": {
     "name": "Swivvel",
     "email": "support@swivvel.io"
@@ -42,7 +42,8 @@
     },
     "win": {
       "artifactName": "${productName}-win.${ext}",
-      "icon": "build/icon.ico"
+      "icon": "build/icon.ico",
+      "sign": "./signWindows.js"
     },
     "linux": {
       "icon": "build/icon.icns",
