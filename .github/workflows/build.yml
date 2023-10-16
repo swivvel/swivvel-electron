@@ -102,10 +102,10 @@ jobs:
           APPLE_API_KEY: ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
           SM_CODE_SIGNING_CERT_SHA1_HASH: ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}
 
-    - name: Print notarization error log
-      if: startsWith(matrix.os, 'macos') && steps.build.outcome == 'failure'
-      run: |
-        if [ -f "notarization-error.log" ]; then
-          cat notarization-error.log
-        fi
-        exit 1
+      - name: Print notarization error log
+        if: startsWith(matrix.os, 'macos') && steps.build.outcome == 'failure'
+        run: |
+          if [ -f "notarization-error.log" ]; then
+            cat notarization-error.log
+          fi
+          exit 1
