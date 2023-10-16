@@ -48,6 +48,11 @@ contextBridge.exposeInMainWorld(`electron`, {
   isLinux: process.platform === `linux`,
 
   /**
+   * True if desktop app is running on Mac
+   */
+  isMac: process.platform === `darwin`,
+
+  /**
    * Inform the transparent window that the user is requesting to join the
    * audio room for the given pod. Allows users to join audio room from other
    * windows.
@@ -162,6 +167,15 @@ contextBridge.exposeInMainWorld(`electron`, {
     return (): void => {
       ipcRenderer.removeListener(`meetLeft`, callback);
     };
+  },
+
+  /**
+   * Allows the transparent window to report when the mouse is over a
+   * transparent area or an element so that the Electron process can decide
+   * whether to ignore mouse events.
+   */
+  onMouseOverTransparentArea: (isOverTransparency: boolean) => {
+    ipcRenderer.send(`onMouseOverTransparentArea`, isOverTransparency);
   },
 });
 
