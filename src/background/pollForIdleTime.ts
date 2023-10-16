@@ -49,13 +49,12 @@ export default (state: State): void => {
       state.windows.transparent &&
       !state.windows.transparent.isDestroyed()
     ) {
-      // Note: we are purposefully not logging when the transparent window is
-      // missing because we close the transparent window when someone locks
-      // or sleeps their computer, so we could end up writing a log line every
-      // second for hours.
-      log.info(
-        `Reporting ${buffer.size} idle change events to transparent window`
-      );
+      // Note: we are purposefully not logging when we send the idle change
+      // events to the transparent window because the transparent window may
+      // be in a state where it can't process the event (e.g. the user is
+      // logged out). This would cause the log to get spammed with a log line
+      // every second until the transparent window can successfully process
+      // the event.
       state.windows.transparent.webContents.send(
         `idleChangeEventsBuffered`,
         Array.from(buffer.values())
