@@ -1,5 +1,5 @@
 module.exports = {
-  ignorePatterns: [`.eslintrc.js`, `compiled/`, `dist/`],
+  ignorePatterns: [`.eslintrc.js`, `compiled/`, `dist/`, `myAfterPackHook.js`],
   overrides: [
     {
       files: `*.{js,ts}`,
