@@ -54,10 +54,17 @@ jobs:
           mkdir -p ~/private_keys/
           echo '${{ env.APPLE_API_KEY }}' > ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
 
-      - name: Setup Windows Signing Certificate and set env variables
+      - name: Setup Windows Signing Certificate
         if: startsWith(matrix.os, 'windows')
         run: |
           echo "${{ env.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
+          cat  /d/Certificate_pkcs12.p12
+        shell: bash
+
+      - name: Set variables
+        if: startsWith(matrix.os, 'windows')
+        id: variables
+        run: |
           echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_ENV"
           echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV"
           echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH
