@@ -43,7 +43,7 @@
     "win": {
       "artifactName": "${productName}-win.${ext}",
       "icon": "build/icon.ico",
-      "sign": "./signWindows.ts"
+      "sign": "./signing/signWindows.ts"
     },
     "linux": {
       "icon": "build/icon.icns",
