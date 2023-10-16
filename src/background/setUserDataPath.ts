@@ -7,15 +7,21 @@ import { isProduction } from './utils';
 
 export default (): void => {
   if (!isProduction()) {
-    // Electron stores everything related to the app (cache, local storage,
-    // databases, logs, etc.) in a directory in the user's home directory.
-    // Prevent dev from colliding with prod by adding a suffix.
-    const userDataPath = `${app.getPath(`userData`)}-development`;
-    app.setPath(`userData`, userDataPath);
+    const userDataProd = app.getPath(`userData`);
+    const logsProd = app.getPath(`logs`);
 
-    // Make sure the main logger writes to the new user data path
+    // The paths that Electron uses for storing app data are derived from
+    // the app name, Swivvel. To prevent development data from colliding
+    // with prod data, we add a suffix.
+    const userDataDev = userDataProd.replace(`Swivvel`, `Swivvel-development`);
+    const logsDev = logsProd.replace(`Swivvel`, `Swivvel-development`);
+
+    app.setPath(`userData`, userDataDev);
+    app.setPath(`logs`, logsDev);
+
+    // Make sure the main logger writes to the new log path
     log.transports.file.resolvePath = (): string => {
-      return path.join(userDataPath, `logs`, `main.log`);
+      return path.join(logsDev, `main.log`);
     };
   }
 };
