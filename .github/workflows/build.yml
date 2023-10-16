@@ -120,8 +120,8 @@ jobs:
       - name: Signing using Signtool
         if: startsWith(matrix.os, 'windows')
         run: |
-          signtool.exe sign /sha1 ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\swivvel-electron\swivvel-electron\dist\win-unpacked\Swivvel.exe"
-          signtool.exe verify /v /pa "D:\a\swivvel-electron\swivvel-electron\dist\win-unpacked\Swivvel.exe"
+          signtool.exe sign /sha1 ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\swivvel-electron\swivvel-electron\dist\Swivvel-win.exe"
+          signtool.exe verify /v /pa "D:\a\swivvel-electron\swivvel-electron\dist\Swivvel-win.exe"
 
       - name: Upload artifacts
         if: startsWith(matrix.os, 'windows')
@@ -129,7 +129,9 @@ jobs:
         with:
           name: ${{ matrix.os }}
           path: |
-            dist
+            dist/Swivvel-win.exe
+            dist/Swivvel-win.exe.blockmap
+            dist/latest.yml
 
     # - name: Print notarization error log
     #   if: startsWith(matrix.os, 'macos') && steps.build.outcome == 'failure'
