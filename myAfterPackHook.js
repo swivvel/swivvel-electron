@@ -7,7 +7,14 @@ exports.default = async function (context) {
 
   const hash = getEnv('SM_CODE_SIGNING_CERT_SHA1_HASH');
 
-  execSync(`ls`);
+  console.log(execSync(`pwd`));
+
+  console.log(execSync(`ls`));
+
+  execSync(
+    `signtool.exe sign /sha1 ${hash} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 ".\\dist\\Swivvel-win.exe"`
+  );
+  execSync(`signtool.exe verify /v /pa ".\\dist\\Swivvel-win.exe"`);
 
   execSync(
     `signtool.exe sign /sha1 ${hash} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\\a\\swivvel-electron\\swivvel-electron\\dist\\Swivvel-win.exe"`
