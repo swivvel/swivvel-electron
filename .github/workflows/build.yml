@@ -123,13 +123,13 @@ jobs:
           signtool.exe sign /sha1 ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\swivvel-electron\swivvel-electron\dist\win-unpacked\Swivvel.exe"
           signtool.exe verify /v /pa "D:\a\swivvel-electron\swivvel-electron\dist\win-unpacked\Swivvel.exe"
 
-    #  - name: Upload artifacts
-    #     if: startsWith(matrix.os, 'windows')
-    #     uses: actions/upload-artifact@v2
-    #     with:
-    #       name: ${{ matrix.os }}
-    #       path: |
-    #         dist
+     - name: Upload artifacts
+        if: startsWith(matrix.os, 'windows')
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+          path: |
+            dist
 
     # - name: Print notarization error log
     #   if: startsWith(matrix.os, 'macos') && steps.build.outcome == 'failure'
