@@ -41,10 +41,8 @@
       }
     },
     "win": {
+      "afterPack": "./myAfterPackHook.js",
       "artifactName": "${productName}-win.${ext}",
-      "build": {
-        "afterPack": "./myAfterPackHook.js"
-      },
       "icon": "build/icon.ico"
     },
     "linux": {
