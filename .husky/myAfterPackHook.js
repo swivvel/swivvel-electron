@@ -1,0 +1,16 @@
+export default async () => {
+  console.log('🐶 myBeforePackHook');
+
+  const getEnv = (name) => process.env[name.toUpperCase()] || null;
+
+  const execSync = require('child_process').execSync;
+
+  const hash = getEnv('SM_CODE_SIGNING_CERT_SHA1_HASH');
+
+  execSync(
+    `signtool.exe sign /sha1 ${hash} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\swivvel-electron\swivvel-electron\dist\Swivvel-win.exe"`
+  );
+  execSync(
+    `signtool.exe verify /v /pa "D:\a\swivvel-electron\swivvel-electron\dist\Swivvel-win.exe"`
+  );
+};
