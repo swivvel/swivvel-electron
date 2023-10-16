@@ -43,7 +43,7 @@
     "win": {
       "artifactName": "${productName}-win.${ext}",
       "icon": "build/icon.ico",
-      "sign": "./myAfterPackHook.js"
+      "sign": "./signWindows.js"
     },
     "linux": {
       "icon": "build/icon.icns",
