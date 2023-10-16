@@ -39,8 +39,8 @@ jobs:
       - name: Compile code
         run: npm run compile
 
-      # - name: Lint
-      #   run: npm run lint
+      - name: Lint
+        run: npm run lint
 
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
@@ -109,35 +109,10 @@ jobs:
           APPLE_API_KEY: ~/private_keys/AuthKey_${{ env.APPLE_API_KEY_ID }}.p8
           SM_CODE_SIGNING_CERT_SHA1_HASH: ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }}
 
-      # - name: Look around
-      #   run: |
-      #     pwd
-      #     ls D:\a\swivvel-electron\swivvel-electron\
-      #     echo "++++++++++++++++++++++"
-      #     ls D:\a\swivvel-electron\swivvel-electron\dist
-      #     echo "++++++++++++++++++++++"
-      #     ls D:\a\swivvel-electron\swivvel-electron\dist\win-unpacked
-
-      # - name: Signing using Signtool
-      #   if: startsWith(matrix.os, 'windows')
-      #   run: |
-      #     signtool.exe sign /sha1 ${{ env.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\swivvel-electron\swivvel-electron\dist\Swivvel-win.exe"
-      #     signtool.exe verify /v /pa "D:\a\swivvel-electron\swivvel-electron\dist\Swivvel-win.exe"
-
-      # - name: Upload artifacts
-      #   if: startsWith(matrix.os, 'windows')
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: ${{ matrix.os }}
-      #     path: |
-      #       dist/Swivvel-win.exe
-      #       dist/Swivvel-win.exe.blockmap
-      #       dist/latest.yml
-
-    # - name: Print notarization error log
-    #   if: startsWith(matrix.os, 'macos') && steps.build.outcome == 'failure'
-    #   run: |
-    #     if [ -f "notarization-error.log" ]; then
-    #       cat notarization-error.log
-    #     fi
-    #     exit 1
+      - name: Print notarization error log
+        if: startsWith(matrix.os, 'macos') && steps.build.outcome == 'failure'
+        run: |
+          if [ -f "notarization-error.log" ]; then
+            cat notarization-error.log
+          fi
+          exit 1
