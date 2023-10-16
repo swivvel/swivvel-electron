@@ -1,5 +1,11 @@
-exports.default = async function (context) {
+// eslint-disable-next-line
+import { CustomWindowsSignTaskConfiguration } from 'electron-builder';
+
+/** @param configuration {CustomWindowsSignTaskConfiguration} */
+exports.default = async (configuration) => {
   console.log('🐶 myBeforePackHook');
+
+  console.log(JSON.stringify(configuration, null, 2));
 
   const getEnv = (name) => process.env[name.toUpperCase()] || null;
 
