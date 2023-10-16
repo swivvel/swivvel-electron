@@ -22,6 +22,7 @@ setUserDataPath();
 const run = async (): Promise<void> => {
   log.info(`App v=${app.getVersion()} starting...`);
   log.info(`User Data: ${app.getPath(`userData`)}`);
+  log.info(`Logs: ${app.getPath(`logs`)}`);
 
   // Call at the beginning so that all exceptions are captured
   configureSentry();

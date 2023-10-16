@@ -10,12 +10,14 @@ let globalLogger: log.ElectronLog | null = null;
  */
 export default (name: string): log.ElectronLog => {
   if (!globalLogger) {
-    log.info(`Initializing logger: ${name}`);
+    const logPath = path.join(app.getPath(`logs`), `${name}.log`);
+
+    log.info(`Initializing logger '${name}' at path ${logPath}`);
 
     globalLogger = log.create(name);
     globalLogger.transports.console.level = false;
     globalLogger.transports.file.resolvePath = (): string => {
-      return path.join(app.getPath(`userData`), `logs`, `${name}.log`);
+      return logPath;
     };
   }
 
