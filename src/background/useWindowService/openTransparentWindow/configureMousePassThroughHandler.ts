@@ -49,22 +49,26 @@ export default (transparentWindow: BrowserWindow): void => {
 
     let isOverTransparencyPrevious: boolean | null = null;
 
-    ipcMain.on(
-      `onMouseOverTransparentArea`,
-      (event, isOverTransparency: boolean): void => {
-        transparentWindow.setIgnoreMouseEvents(isOverTransparency, {
-          forward: true,
-        });
-
-        if (isOverTransparency !== isOverTransparencyPrevious) {
-          log.info(
-            `Mouse is over transparent: ${isOverTransparencyPrevious} -> ${isOverTransparency}`
-          );
-        }
-
-        isOverTransparencyPrevious = isOverTransparency;
+    const handler = (event: unknown, isOverTransparency: boolean): void => {
+      if (transparentWindow.isDestroyed()) {
+        ipcMain.off(`onMouseOverTransparentArea`, handler);
+        return;
       }
-    );
+
+      transparentWindow.setIgnoreMouseEvents(isOverTransparency, {
+        forward: true,
+      });
+
+      if (isOverTransparency !== isOverTransparencyPrevious) {
+        log.info(
+          `Mouse is over transparent: ${isOverTransparencyPrevious} -> ${isOverTransparency}`
+        );
+      }
+
+      isOverTransparencyPrevious = isOverTransparency;
+    };
+
+    ipcMain.on(`onMouseOverTransparentArea`, handler);
 
     return;
   }
