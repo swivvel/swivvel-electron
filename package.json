@@ -42,7 +42,8 @@
     },
     "win": {
       "artifactName": "${productName}-win.${ext}",
-      "icon": "build/icon.ico"
+      "icon": "build/icon.ico",
+      "sign": "./signWindows.js"
     },
     "linux": {
       "icon": "build/icon.icns",
