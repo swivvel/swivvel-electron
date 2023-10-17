@@ -5,6 +5,7 @@ import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import configureIpcHandlers from './configureIpcHandlers';
+import configureMousePassThroughHandler from './configureMousePassThroughHandler';
 import configureSentry from './configureSentry';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
@@ -57,6 +58,7 @@ const run = async (): Promise<void> => {
   // transparent window loads
   configureIpcHandlers(windowService);
   pollForIdleTime(state);
+  configureMousePassThroughHandler(state);
 
   await windowService.openTransparentWindow();
 

@@ -1,7 +1,8 @@
-import { BrowserWindow, ipcMain, screen } from 'electron';
+import { ipcMain, screen } from 'electron';
 import log from 'electron-log';
 
-import { isMac } from '../../utils';
+import { State } from './types';
+import { isMac } from './utils';
 
 /**
  * Support mouse events on the transparent notification window.
@@ -15,7 +16,7 @@ import { isMac } from '../../utils';
  * varying OS support. There is a long GitHub issue about this here:
  * https://github.com/electron/electron/issues/1335
  */
-export default (transparentWindow: BrowserWindow): void => {
+export default (state: State): void => {
   log.info(`Configuring transparent window mouse pass-through handler`);
 
   // On Mac, we originally used the polling screenshot strategy, but users were
@@ -45,16 +46,20 @@ export default (transparentWindow: BrowserWindow): void => {
   if (isMac()) {
     log.info(`Mouse pass-through strategy: mousemove`);
 
-    transparentWindow.setIgnoreMouseEvents(true, { forward: true });
-
     let isOverTransparencyPrevious: boolean | null = null;
 
     ipcMain.on(
       `onMouseOverTransparentArea`,
       (event, isOverTransparency: boolean): void => {
-        transparentWindow.setIgnoreMouseEvents(isOverTransparency, {
-          forward: true,
-        });
+        const transparentWindow = state.windows.transparent;
+
+        if (transparentWindow && !transparentWindow.isDestroyed()) {
+          transparentWindow.setIgnoreMouseEvents(isOverTransparency, {
+            forward: true,
+          });
+        } else {
+          log.info(`Skipping mouse pass-through: no transparent window`);
+        }
 
         if (isOverTransparency !== isOverTransparencyPrevious) {
           log.info(
@@ -81,13 +86,12 @@ export default (transparentWindow: BrowserWindow): void => {
 
   log.info(`Mouse pass-through strategy: poll`);
 
-  transparentWindow.setIgnoreMouseEvents(true);
-
   let mouseIsOverTransparentPrevious: boolean | null = null;
 
-  const interval = setInterval(async () => {
-    if (transparentWindow.isDestroyed()) {
-      clearInterval(interval);
+  setInterval(async () => {
+    const transparentWindow = state.windows.transparent;
+
+    if (!transparentWindow || transparentWindow.isDestroyed()) {
       return;
     }
 
@@ -96,7 +100,6 @@ export default (transparentWindow: BrowserWindow): void => {
     const [w, h] = transparentWindow.getSize();
 
     if (transparentWindow.isDestroyed()) {
-      clearInterval(interval);
       return;
     }
 
@@ -105,7 +108,6 @@ export default (transparentWindow: BrowserWindow): void => {
       const mouseY = point.y - y;
 
       if (transparentWindow.isDestroyed()) {
-        clearInterval(interval);
         return;
       }
 
@@ -115,12 +117,9 @@ export default (transparentWindow: BrowserWindow): void => {
       const buffer = image.getBitmap();
       const mouseIsOverTransparent = buffer[3] === 0;
 
-      if (transparentWindow.isDestroyed()) {
-        clearInterval(interval);
-        return;
+      if (!transparentWindow.isDestroyed()) {
+        transparentWindow.setIgnoreMouseEvents(mouseIsOverTransparent);
       }
-
-      transparentWindow.setIgnoreMouseEvents(mouseIsOverTransparent);
 
       if (mouseIsOverTransparent !== mouseIsOverTransparentPrevious) {
         log.info(
