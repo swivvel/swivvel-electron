@@ -2,7 +2,6 @@ import { getSiteUrl, isLinux, loadUrl, sleep } from '../../utils';
 import { openBrowserWindow } from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';
-import configureMousePassThroughHandler from './configureMousePassThroughHandler';
 import getLogger from './getLogger';
 import getTransparentBrowserWindowOptions from './getTransparentBrowserWindowOptions';
 import resizeOnDisplayChange from './resizeOnDisplayChange';
@@ -16,6 +15,8 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const options = getTransparentBrowserWindowOptions();
 
   return openBrowserWindow(state, `transparent`, options, async (window) => {
+    window.setIgnoreMouseEvents(true, { forward: true });
+
     // Prevent the transparent window from appearing in screenshots
     // See: https://www.electronjs.org/docs/latest/api/browser-window#winsetcontentprotectionenable-macos-windows
     window.setContentProtection(true);
@@ -45,7 +46,6 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
 
     showOnAllWorkspaces(window);
     configureCloseHandler(window, state);
-    configureMousePassThroughHandler(window, state);
     resizeOnDisplayChange(window);
 
     await loadUrl(`${getSiteUrl()}/notifications`, window, state, {
