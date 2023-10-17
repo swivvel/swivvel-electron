@@ -1,6 +1,7 @@
 import { BrowserWindow, ipcMain, screen } from 'electron';
 import log from 'electron-log';
 
+import { State } from '../../types';
 import { isMac } from '../../utils';
 
 /**
@@ -15,7 +16,7 @@ import { isMac } from '../../utils';
  * varying OS support. There is a long GitHub issue about this here:
  * https://github.com/electron/electron/issues/1335
  */
-export default (transparentWindow: BrowserWindow): void => {
+export default (transparentWindow: BrowserWindow, state: State): void => {
   log.info(`Configuring transparent window mouse pass-through handler`);
 
   // On Mac, we originally used the polling screenshot strategy, but users were
@@ -49,29 +50,28 @@ export default (transparentWindow: BrowserWindow): void => {
 
     let isOverTransparencyPrevious: boolean | null = null;
 
-    const handler = (event: unknown, isOverTransparency: boolean): void => {
-      if (transparentWindow.isDestroyed()) {
-        log.info(
-          `Transparent window destroyed: unregistering mouse pass-through handler`
-        );
-        ipcMain.off(`onMouseOverTransparentArea`, handler);
-        return;
+    ipcMain.on(
+      `onMouseOverTransparentArea`,
+      (event: unknown, isOverTransparency: boolean): void => {
+        if (
+          state.windows.transparent &&
+          !state.windows.transparent.isDestroyed()
+        ) {
+          log.info(`Skipping mouse pass-through: no transparent window`);
+          state.windows.transparent.setIgnoreMouseEvents(isOverTransparency, {
+            forward: true,
+          });
+        }
+
+        if (isOverTransparency !== isOverTransparencyPrevious) {
+          log.info(
+            `Mouse is over transparent: ${isOverTransparencyPrevious} -> ${isOverTransparency}`
+          );
+        }
+
+        isOverTransparencyPrevious = isOverTransparency;
       }
-
-      transparentWindow.setIgnoreMouseEvents(isOverTransparency, {
-        forward: true,
-      });
-
-      if (isOverTransparency !== isOverTransparencyPrevious) {
-        log.info(
-          `Mouse is over transparent: ${isOverTransparencyPrevious} -> ${isOverTransparency}`
-        );
-      }
-
-      isOverTransparencyPrevious = isOverTransparency;
-    };
-
-    ipcMain.on(`onMouseOverTransparentArea`, handler);
+    );
 
     return;
   }

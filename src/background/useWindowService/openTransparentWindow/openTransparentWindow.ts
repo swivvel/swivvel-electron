@@ -45,7 +45,7 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
 
     showOnAllWorkspaces(window);
     configureCloseHandler(window, state);
-    configureMousePassThroughHandler(window);
+    configureMousePassThroughHandler(window, state);
     resizeOnDisplayChange(window);
 
     await loadUrl(`${getSiteUrl()}/notifications`, window, state, {
