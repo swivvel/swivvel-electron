@@ -1,4 +1,5 @@
 import { autoUpdater } from 'electron-updater';
+import ms from 'ms';
 
 /**
  * Check if there are any updates available for the app. If so, download
@@ -10,5 +11,5 @@ export default (): NodeJS.Timeout => {
 
   return setInterval(() => {
     autoUpdater.checkForUpdatesAndNotify();
-  }, 1000 * 60);
+  }, ms(`10 minutes`));
 };

@@ -20,10 +20,6 @@ export default (state: State): void => {
     log.info(`Update available`);
   });
 
-  autoUpdater.on(`update-not-available`, () => {
-    log.info(`Update not available`);
-  });
-
   autoUpdater.on(`error`, (err) => {
     log.info(`Error in auto-updater: ${err}`);
   });
