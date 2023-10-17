@@ -51,6 +51,9 @@ export default (transparentWindow: BrowserWindow): void => {
 
     const handler = (event: unknown, isOverTransparency: boolean): void => {
       if (transparentWindow.isDestroyed()) {
+        log.info(
+          `Transparent window destroyed: unregistering mouse pass-through handler`
+        );
         ipcMain.off(`onMouseOverTransparentArea`, handler);
         return;
       }
