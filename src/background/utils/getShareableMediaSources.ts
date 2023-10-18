@@ -5,6 +5,7 @@ import { ShareableMediaSource } from '../../types';
 export default async (): Promise<Array<ShareableMediaSource>> => {
   return desktopCapturer
     .getSources({
+      thumbnailSize: { height: 200, width: 300 },
       types: [`window`, `screen`],
     })
     .then((sources) => {
@@ -13,7 +14,7 @@ export default async (): Promise<Array<ShareableMediaSource>> => {
           id: source.id,
           name: source.name,
           appIconUrl: source?.appIcon?.toDataURL(),
-          thumbnailUrl: source?.thumbnail?.resize({ height: 250 }).toDataURL(),
+          thumbnailUrl: source?.thumbnail?.toDataURL(),
         };
       });
     });

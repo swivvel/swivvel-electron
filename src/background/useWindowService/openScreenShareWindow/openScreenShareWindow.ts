@@ -38,9 +38,6 @@ const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
 
     window.maximize();
 
-    // todo
-    window.webContents.openDevTools();
-
     return window;
   };
 

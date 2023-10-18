@@ -61,9 +61,7 @@ const run = async (): Promise<void> => {
   pollForIdleTime(state);
   configureMousePassThroughHandler(state);
 
-  // todo
-  // await windowService.openTransparentWindow();
-  await windowService.temp();
+  await windowService.openTransparentWindow();
 
   trayService.createTray();
   configureAutoUpdates(state);
