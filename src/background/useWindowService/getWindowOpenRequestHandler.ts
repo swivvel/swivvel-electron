@@ -22,10 +22,11 @@ export default (callbacks: {
     podId: string | null,
     meetingUrl: string | null
   ) => void;
-  onHqPageRequested: () => void;
-  onLogInPageRequested: () => void;
-  onSettingsPageRequested: () => void;
-  onSetupPageRequested: () => void;
+  onHqRequested: () => void;
+  onLogInRequested: () => void;
+  onScreenShareRequested: (companyId: string, podId: string) => void;
+  onSettingsRequested: () => void;
+  onSetupRequested: () => void;
 }): WindowOpenRequestHandler => {
   return (url, log) => {
     log(`Caught URL opened by window: ${url}`);
@@ -33,39 +34,54 @@ export default (callbacks: {
     const siteUrl = getSiteUrl();
 
     if (removeQueryParams(url) === `${siteUrl}/electron/google-meet`) {
-      log(`Create Google Meet page requested`);
+      log(`Google Meet requested`);
       const urlParams = parseQueryParams(url);
+      const podId = urlParams.get(`podId`) || null;
+      const meetingUrl = urlParams.get(`meetingUrl`) || null;
       log(`URL params=${JSON.stringify(urlParams)}`);
-      const podId = urlParams.podId;
-      log(`Pod ID=${podId}`);
-      const meetingUrl = urlParams.meetingUrl;
-      log(`Meeting URL=${meetingUrl}`);
-      callbacks.onGoogleMeetRequested(podId, meetingUrl || null);
+      log(`podId=${podId}`);
+      log(`meetingUrl=${meetingUrl}`);
+      callbacks.onGoogleMeetRequested(podId, meetingUrl);
       return { action: `deny` };
     }
 
     if (removeQueryParams(url) === `${siteUrl}/electron/hq`) {
       log(`HQ page requested`);
-      callbacks.onHqPageRequested();
+      callbacks.onHqRequested();
       return { action: `deny` };
     }
 
     // See main repo README for description of desktop log in flow
     if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
       log(`Log in page requested`);
-      callbacks.onLogInPageRequested();
+      callbacks.onLogInRequested();
+      return { action: `deny` };
+    }
+
+    if (removeQueryParams(url) === `${siteUrl}/electron/screen-share`) {
+      log(`Screen share page requested`);
+      const urlParams = parseQueryParams(url);
+      const companyId = urlParams.get(`companyId`);
+      const podId = urlParams.get(`podId`);
+      log(`URL params=${JSON.stringify(urlParams)}`);
+      log(`companyId=${companyId}`);
+      log(`podId=${podId}`);
+      if (!companyId || !podId) {
+        throw new Error(`Missing companyId or podId query params`);
+      }
+      callbacks.onScreenShareRequested(companyId, podId);
       return { action: `deny` };
     }
 
     if (removeQueryParams(url) === `${siteUrl}/electron/settings`) {
       log(`Settings page requested`);
-      callbacks.onSettingsPageRequested();
+      callbacks.onSettingsRequested();
       return { action: `deny` };
     }
 
     if (removeQueryParams(url) === `${siteUrl}/electron/setup`) {
       log(`Setup page requested`);
-      callbacks.onSetupPageRequested();
+      callbacks.onSetupRequested();
       return { action: `deny` };
     }
 

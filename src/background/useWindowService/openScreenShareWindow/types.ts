@@ -8,6 +8,8 @@ export type OpenScreenShareWindow = (
 ) => Promise<BrowserWindow>;
 
 export interface OpenScreenShareWindowArgs {
+  companyId: string;
+  podId: string;
   state: State;
   windowOpenRequestHandler: WindowOpenRequestHandler;
 }
