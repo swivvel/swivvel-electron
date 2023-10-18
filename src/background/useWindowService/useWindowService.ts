@@ -72,5 +72,14 @@ export default (state: State, trayService: TrayService): WindowService => {
     openTransparentWindow: async (): Promise<BrowserWindow> => {
       return openTransparentWindow({ state, windowOpenRequestHandler });
     },
+    // todo
+    temp: async (): Promise<BrowserWindow> => {
+      return openScreenShareWindow({
+        companyId: `clg10ovxn0000pz0ivl5ocgrq`,
+        podId: `clg10vd2s000d6a17p4bfv2cn`,
+        state,
+        windowOpenRequestHandler,
+      });
+    },
   };
 };
