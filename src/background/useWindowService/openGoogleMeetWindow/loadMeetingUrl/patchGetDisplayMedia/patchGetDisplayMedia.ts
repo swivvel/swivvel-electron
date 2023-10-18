@@ -2,10 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 import { BrowserWindow } from 'electron';
-import log from 'electron-log';
 
-export default async (meetWindow: BrowserWindow): Promise<void> => {
-  log.info(`Patching getDisplayMedia...`);
+import { Log } from '../../../utils';
+
+export default async (meetWindow: BrowserWindow, log: Log): Promise<void> => {
+  log(`Patching getDisplayMedia...`);
 
   const filesContents = fs.readFileSync(
     path.join(__dirname, `getDisplayMedia.js`),

@@ -5,16 +5,14 @@ import {
   openBrowserWindow,
 } from '../utils';
 
-import configureAppActivateHandler from './configureAppActivateHandler';
 import configureCloseHandler from './configureCloseHandler';
 import getBrowserWindowOptions from './getBrowserWindowOptions';
-import { OpenSetupWindow } from './types';
-import updateTray from './updateTray';
+import { OpenScreenShareWindow } from './types';
 
-const openSetupWindow: OpenSetupWindow = async (args) => {
-  const { state, trayService, windowOpenRequestHandler } = args;
+const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
+  const { state, windowOpenRequestHandler } = args;
 
-  const windowId = `setup` as const;
+  const windowId = `screenShare` as const;
   const log = getBrowserWindowLogger(windowId);
   const windowOptions = getBrowserWindowOptions();
 
@@ -23,9 +21,7 @@ const openSetupWindow: OpenSetupWindow = async (args) => {
       return windowOpenRequestHandler(url, log);
     });
 
-    configureCloseHandler(window, state, log);
-    configureAppActivateHandler(openSetupWindow, args, log);
-    updateTray(openSetupWindow, args, trayService, log);
+    configureCloseHandler(window, log);
 
     await loadUrl(`${getSiteUrl()}/setup`, window, state, log, {
       // The setup window is opened automatically by the transparent window
@@ -50,4 +46,4 @@ const openSetupWindow: OpenSetupWindow = async (args) => {
   );
 };
 
-export default openSetupWindow;
+export default openScreenShareWindow;

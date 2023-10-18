@@ -1,16 +1,18 @@
 import { BrowserWindow } from 'electron';
 
-import { State } from '../../types';
-import { loadUrl } from '../../utils';
+import { State } from '../../../types';
+import { loadUrl } from '../../../utils';
+import { Log } from '../../utils';
 
 import patchGetDisplayMedia from './patchGetDisplayMedia';
 
 export default async (
   url: string,
   window: BrowserWindow,
-  state: State
+  state: State,
+  log: Log
 ): Promise<void> => {
-  await loadUrl(url, window, state, {
+  await loadUrl(url, window, state, log, {
     // Since the Google Meet window is opened from a user action, we must
     // display an error message to inform the user that their action failed.
     // Since the Google Meet window is temporary and the user can retry the
@@ -28,5 +30,5 @@ export default async (
   // dialog. We injected the dialog into the DOM as a part of the patch to
   // getDisplayMedia.
   // Inspired by: https://github.com/nativefier/nativefier/issues/927
-  await patchGetDisplayMedia(window);
+  await patchGetDisplayMedia(window, log);
 };

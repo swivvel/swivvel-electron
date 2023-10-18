@@ -1,22 +1,22 @@
 import { BrowserWindow } from 'electron';
-import log from 'electron-log';
 
 import { State } from '../../types';
+import { Log } from '../utils';
 
-export default (transparentWindow: BrowserWindow, state: State): void => {
-  log.info(`Configuring window close handler...`);
+export default (window: BrowserWindow, state: State, log: Log): void => {
+  log(`Configuring window close handler...`);
 
   // The transparent window should never be destroyed until the app quits
-  transparentWindow.on(`close`, (event) => {
-    log.info(`Transparent window close event received`);
+  window.on(`close`, (event) => {
+    log(`Window close event received`);
 
-    if (transparentWindow.isDestroyed()) {
-      log.info(`Transparent window destroyed, not closing`);
+    if (window.isDestroyed()) {
+      log(`Window destroyed, not closing`);
     } else if (!state.allowQuit) {
-      log.info(`allowQuit=false, preventing transparent window from closing`);
+      log(`allowQuit=false, preventing window from closing`);
       event.preventDefault();
     } else {
-      log.info(`Closing transparent window...`);
+      log(`Closing window...`);
     }
   });
 };

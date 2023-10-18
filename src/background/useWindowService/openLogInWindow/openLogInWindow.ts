@@ -1,9 +1,13 @@
 import { getSiteUrl, loadUrl } from '../../utils';
-import { openBrowserWindow } from '../utils';
+import {
+  InstantiateWindow,
+  getBrowserWindowLogger,
+  openBrowserWindow,
+} from '../utils';
 
 import configureAppActivateHandler from './configureAppActivateHandler';
 import configureCloseHandler from './configureCloseHandler';
-import getLogInWindowBrowserOptions from './getLogInWindowBrowserOptions';
+import getBrowserWindowOptions from './getBrowserWindowOptions';
 import listenForRedirects from './listenForRedirects';
 import { OpenLogInWindow } from './types';
 import updateTray from './updateTray';
@@ -13,21 +17,25 @@ import updateTray from './updateTray';
 const openLogInWindow: OpenLogInWindow = async (args) => {
   const { state, trayService, windowOpenRequestHandler } = args;
 
-  const options = getLogInWindowBrowserOptions();
+  const windowId = `logIn` as const;
+  const log = getBrowserWindowLogger(windowId);
+  const windowOptions = getBrowserWindowOptions();
 
-  return openBrowserWindow(state, `logIn`, options, async (window) => {
-    window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
+  const instantiateWindow: InstantiateWindow = async (window) => {
+    window.webContents.setWindowOpenHandler(({ url }) => {
+      return windowOpenRequestHandler(url, log);
+    });
 
-    configureCloseHandler(window, state);
-    listenForRedirects(window, args, state);
-    configureAppActivateHandler(openLogInWindow, args);
-    updateTray(openLogInWindow, args, trayService);
+    configureCloseHandler(window, state, log);
+    listenForRedirects(window, args, state, log);
+    configureAppActivateHandler(openLogInWindow, args, log);
+    updateTray(openLogInWindow, args, trayService, log);
 
     // Currently, the only way to display the log in page is to load the home
     // page. We only open the log in window if the user is unauthenticated,
     // so navigating to the home page here should always result in the log in
     // page being displayed.
-    await loadUrl(`${getSiteUrl()}/`, window, state, {
+    await loadUrl(`${getSiteUrl()}/`, window, state, log, {
       // The log in window is opened automatically by the transparent window
       // when the app first launches. If it fails to load the URL, we don't want
       // to keep retrying because the user would see a blank window. Instead,
@@ -39,7 +47,15 @@ const openLogInWindow: OpenLogInWindow = async (args) => {
     });
 
     return window;
-  });
+  };
+
+  return openBrowserWindow(
+    state,
+    windowId,
+    windowOptions,
+    log,
+    instantiateWindow
+  );
 };
 
 export default openLogInWindow;

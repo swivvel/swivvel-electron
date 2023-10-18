@@ -22,9 +22,10 @@ export interface State {
    */
   windows: {
     /**
-     * Creates and joins a new Google Meet meeting
+     * Window for opening existing Google Meet URLs and creating new
+     * ad-hoc Google Meets.
      */
-    createGoogleMeet: BrowserWindow | null;
+    googleMeet: BrowserWindow | null;
 
     /**
      * The window that displays the HQ page of the web app
@@ -35,6 +36,11 @@ export interface State {
      * The window that displays the Swivvel log in page.
      */
     logIn: BrowserWindow | null;
+
+    /**
+     * Displays local and remote user screen sharing.
+     */
+    screenShare: BrowserWindow | null;
 
     /**
      * The window where new individual-auth users can set up their account.

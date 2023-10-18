@@ -1,27 +1,35 @@
 import { getSiteUrl, loadUrl } from '../../utils';
-import { openBrowserWindow } from '../utils';
+import {
+  InstantiateWindow,
+  getBrowserWindowLogger,
+  openBrowserWindow,
+} from '../utils';
 
 import configureAppActivateHandler from './configureAppActivateHandler';
 import configureCloseHandler from './configureCloseHandler';
-import getHqWindowBrowserOptions from './getHqWindowBrowserOptions';
+import getBrowserWindowOptions from './getBrowserWindowOptions';
 import { OpenHqWindow } from './types';
 import updateTray from './updateTray';
 
 const openHqWindow: OpenHqWindow = async (args) => {
   const { show, state, trayService, windowOpenRequestHandler } = args;
 
-  const options = getHqWindowBrowserOptions(show);
+  const windowId = `hq` as const;
+  const log = getBrowserWindowLogger(windowId);
+  const windowOptions = getBrowserWindowOptions(show);
 
-  return openBrowserWindow(state, `hq`, options, async (window) => {
-    window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
+  const instantiateWindow: InstantiateWindow = async (window) => {
+    window.webContents.setWindowOpenHandler(({ url }) => {
+      return windowOpenRequestHandler(url, log);
+    });
 
-    configureCloseHandler(window, state);
-    configureAppActivateHandler(openHqWindow, args);
-    updateTray(openHqWindow, args, trayService);
+    configureCloseHandler(window, state, log);
+    configureAppActivateHandler(openHqWindow, args, log);
+    updateTray(openHqWindow, args, trayService, log);
 
     // By the time we open the HQ window the user should be logged in, so
     // the home page will redirect the user to their company's HQ page
-    await loadUrl(`${getSiteUrl()}/`, window, state, {
+    await loadUrl(`${getSiteUrl()}/`, window, state, log, {
       // The HQ window is opened automatically when the app starts, and it
       // defaults to being hidden. If it fails to load the URL, we don't want
       // to display an error message to the user because they probably don't
@@ -32,7 +40,15 @@ const openHqWindow: OpenHqWindow = async (args) => {
     });
 
     return window;
-  });
+  };
+
+  return openBrowserWindow(
+    state,
+    windowId,
+    windowOptions,
+    log,
+    instantiateWindow
+  );
 };
 
 export default openHqWindow;

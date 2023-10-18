@@ -1,12 +1,11 @@
-import log from 'electron-log';
-
 import { State } from '../../../types';
+import { Log } from '../../utils';
 
-export default (state: State, meetingUrl: string): void => {
+export default (state: State, meetingUrl: string, log: Log): void => {
   if (state.windows.transparent) {
-    log.info(`Sending meeting left event to transparent window...`);
+    log(`Sending meeting left event to transparent window...`);
     state.windows.transparent.webContents.send(`meetLeft`, meetingUrl);
   } else {
-    log.info(`Transparent window not found, could not send left event`);
+    log(`Transparent window not found, could not send left event`);
   }
 };

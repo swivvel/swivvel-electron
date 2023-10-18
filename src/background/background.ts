@@ -33,9 +33,10 @@ const run = async (): Promise<void> => {
     logInFlowCompleted: false,
     tray: null,
     windows: {
-      createGoogleMeet: null,
+      googleMeet: null,
       hq: null,
       logIn: null,
+      screenShare: null,
       setup: null,
       transparent: null,
     },
