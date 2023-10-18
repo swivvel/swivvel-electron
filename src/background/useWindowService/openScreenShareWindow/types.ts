@@ -9,6 +9,8 @@ export type OpenScreenShareWindow = (
 
 export interface OpenScreenShareWindowArgs {
   companyId: string;
+  employeeId: string;
+  employeeName: string;
   podId: string;
   state: State;
   windowOpenRequestHandler: WindowOpenRequestHandler;

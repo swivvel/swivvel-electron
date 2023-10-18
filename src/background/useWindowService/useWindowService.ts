@@ -39,9 +39,11 @@ export default (state: State, trayService: TrayService): WindowService => {
     onLogInRequested: () => {
       openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
-    onScreenShareRequested: (companyId, podId) => {
+    onScreenShareRequested: (companyId, employeeId, employeeName, podId) => {
       openScreenShareWindow({
         companyId,
+        employeeId,
+        employeeName,
         podId,
         state,
         windowOpenRequestHandler,

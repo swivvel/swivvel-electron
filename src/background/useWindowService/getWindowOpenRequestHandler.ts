@@ -24,7 +24,12 @@ export default (callbacks: {
   ) => void;
   onHqRequested: () => void;
   onLogInRequested: () => void;
-  onScreenShareRequested: (companyId: string, podId: string) => void;
+  onScreenShareRequested: (
+    companyId: string,
+    employeeId: string,
+    employeeName: string,
+    podId: string
+  ) => void;
   onSettingsRequested: () => void;
   onSetupRequested: () => void;
 }): WindowOpenRequestHandler => {
@@ -38,7 +43,6 @@ export default (callbacks: {
       const urlParams = parseQueryParams(url);
       const podId = urlParams.get(`podId`) || null;
       const meetingUrl = urlParams.get(`meetingUrl`) || null;
-      log(`URL params=${JSON.stringify(urlParams)}`);
       log(`podId=${podId}`);
       log(`meetingUrl=${meetingUrl}`);
       callbacks.onGoogleMeetRequested(podId, meetingUrl);
@@ -62,14 +66,22 @@ export default (callbacks: {
       log(`Screen share page requested`);
       const urlParams = parseQueryParams(url);
       const companyId = urlParams.get(`companyId`);
+      const employeeId = urlParams.get(`employeeId`);
+      const employeeName = urlParams.get(`employeeName`);
       const podId = urlParams.get(`podId`);
-      log(`URL params=${JSON.stringify(urlParams)}`);
       log(`companyId=${companyId}`);
+      log(`employeeId=${employeeId}`);
+      log(`employeeName=${employeeName}`);
       log(`podId=${podId}`);
-      if (!companyId || !podId) {
-        throw new Error(`Missing companyId or podId query params`);
+      if (!companyId || !employeeId || !employeeName || !podId) {
+        throw new Error(`Missing required query params`);
       }
-      callbacks.onScreenShareRequested(companyId, podId);
+      callbacks.onScreenShareRequested(
+        companyId,
+        employeeId,
+        employeeName,
+        podId
+      );
       return { action: `deny` };
     }
 

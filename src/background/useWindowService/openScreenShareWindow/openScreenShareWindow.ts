@@ -1,4 +1,4 @@
-import { getSiteUrl, loadUrl } from '../../utils';
+import { getSiteUrl, loadUrl, makeQueryString } from '../../utils';
 import {
   InstantiateWindow,
   getBrowserWindowLogger,
@@ -10,7 +10,14 @@ import getBrowserWindowOptions from './getBrowserWindowOptions';
 import { OpenScreenShareWindow } from './types';
 
 const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
-  const { companyId, podId, state, windowOpenRequestHandler } = args;
+  const {
+    companyId,
+    employeeId,
+    employeeName,
+    podId,
+    state,
+    windowOpenRequestHandler,
+  } = args;
 
   const windowId = `screenShare` as const;
   const log = getBrowserWindowLogger(windowId);
@@ -23,8 +30,15 @@ const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
 
     configureCloseHandler(window, log);
 
+    const queryString = makeQueryString({
+      companyId,
+      employeeId,
+      employeeName,
+      podId,
+    });
+
     await loadUrl(
-      `${getSiteUrl()}/screen-share?companyId=${companyId}&podId=${podId}`,
+      `${getSiteUrl()}/screen-share?${queryString}`,
       window,
       state,
       log,
