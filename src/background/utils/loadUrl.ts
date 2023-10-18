@@ -27,16 +27,16 @@ const loadUrl = async (
 
   const windowName = getBrowserWindowName(state, browserWindow.id);
 
-  log(`Loading URL into window '${windowName}': ${urlNoParams}`);
+  log(`Loading URL: ${urlNoParams}`);
 
   try {
     await browserWindow.loadURL(url);
   } catch (err) {
-    log(`Failed to load URL into window '${windowName}': ${urlNoParams}`);
+    log(`Failed to load URL: ${urlNoParams}`);
     log(`onError=${options.onError}`);
 
     if (browserWindow.isDestroyed()) {
-      log(`Skipping error handling: window '${windowName}' is destroyed`);
+      log(`Skipping error handling: window is destroyed`);
       return;
     }
 
@@ -71,7 +71,7 @@ const loadUrl = async (
     }
 
     if (options.onError === `destroyWindow`) {
-      log(`Destroy window '${windowName}'...`);
+      log(`Destroying window`);
       browserWindow.destroy();
       if (windowName) {
         state.windows[windowName] = null;
@@ -80,7 +80,7 @@ const loadUrl = async (
     }
 
     if (options.onError === `warnAndDestroyWindow`) {
-      log(`Warning and closing window '${windowName}'...`);
+      log(`Warning and closing window`);
       browserWindow.destroy();
       if (windowName) {
         state.windows[windowName] = null;

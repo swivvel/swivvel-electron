@@ -36,6 +36,9 @@ const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
       }
     );
 
+    // todo
+    window.webContents.openDevTools();
+
     return window;
   };
 

@@ -177,12 +177,7 @@ module.exports = {
         'no-throw-literal': `error`,
         'no-unneeded-ternary': `error`,
         'no-useless-return': `error`,
-        'no-warning-comments': [
-          `error`,
-          {
-            terms: [`xxx`],
-          },
-        ],
+        'no-warning-comments': [`error`, { terms: [`todo`] }],
         'object-curly-spacing': [`error`, `always`],
         'object-shorthand': [`error`, `always`],
         'one-var': [`error`, `never`],
