@@ -1,10 +1,12 @@
-import { app, systemPreferences } from 'electron';
+import { app } from 'electron';
 import log from 'electron-log';
 
+import askForMicrophoneAccess from './askForMicrophoneAccess';
 import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
 import configureIpcHandlers from './configureIpcHandlers';
+import configureMousePassThroughHandler from './configureMousePassThroughHandler';
 import configureSentry from './configureSentry';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
@@ -32,7 +34,7 @@ const run = async (): Promise<void> => {
     logInFlowCompleted: false,
     tray: null,
     windows: {
-      createGoogleMeet: null,
+      googleMeet: null,
       hq: null,
       logIn: null,
       setup: null,
@@ -48,15 +50,13 @@ const run = async (): Promise<void> => {
   listenForDeepLinks(state, getDeepLinkHandler(state, windowService));
 
   await app.whenReady();
-
-  if (systemPreferences.askForMediaAccess) {
-    await systemPreferences.askForMediaAccess(`microphone`);
-  }
+  await askForMicrophoneAccess();
 
   // These functions set up IPC handlers that must be registered before the
   // transparent window loads
   configureIpcHandlers(windowService);
   pollForIdleTime(state);
+  configureMousePassThroughHandler(state);
 
   await windowService.openTransparentWindow();
 

@@ -1,28 +1,37 @@
 import { BrowserWindow } from 'electron';
-import log from 'electron-log';
 
-export default (window: BrowserWindow): Promise<string> => {
+import { Log } from '../utils';
+
+export default (window: BrowserWindow, log: Log): Promise<string> => {
   return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
       if (window.isDestroyed()) {
-        log.info(`Create Google Meet window destroyed, stopping interval`);
+        log(`Create Google Meet window destroyed, stopping interval`);
         clearInterval(interval);
         reject();
         return;
       }
 
-      const rawMeetingUrl = await window.webContents.executeJavaScript(
-        `document.querySelector('[data-meeting-link]').dataset.meetingLink`
-      );
+      let rawMeetingUrl: unknown;
 
-      if (rawMeetingUrl) {
+      // Sometimes the user is prompted to sign in to their Google account
+      // before the `/getalink` page loads. If this happens, the document
+      // will not containing the meeting link and the JS will throw an error.
+      try {
+        rawMeetingUrl = await window.webContents.executeJavaScript(
+          `document.querySelector('[data-meeting-link]').dataset.meetingLink`
+        );
+      } catch (err) {
+        rawMeetingUrl = null;
+      }
+
+      if (rawMeetingUrl && typeof rawMeetingUrl === `string`) {
         const meetingUrl = rawMeetingUrl.startsWith(`http`)
           ? rawMeetingUrl
           : `https://${rawMeetingUrl}`;
 
-        resolve(meetingUrl);
-
         clearInterval(interval);
+        resolve(meetingUrl);
       }
     }, 50);
   });

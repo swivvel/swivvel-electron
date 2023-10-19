@@ -1,28 +1,26 @@
 import { BrowserWindow, screen } from 'electron';
-import log from 'electron-log';
 
 import { getFullscreenBounds } from '../../utils';
+import { Log } from '../utils';
 
 /**
  * Make sure the transparent window is always resized to fit the primary
  * display.
  */
-export default (window: BrowserWindow): void => {
+export default (window: BrowserWindow, log: Log): void => {
   const resizeWindow = (): void => {
-    log.info(`Display change detected`);
-    log.info(`All displays: ${JSON.stringify(screen.getAllDisplays())}`);
+    log(`Display change detected`);
+    log(`All displays: ${JSON.stringify(screen.getAllDisplays())}`);
 
     if (window.isDestroyed()) {
-      log.info(`Transparent window destroyed; skipping resize`);
+      log(`Transparent window destroyed; skipping resize`);
       return;
     }
 
     const bounds = getFullscreenBounds();
     const { height, width, x, y } = bounds;
 
-    log.info(
-      `Resizing transparent window to bounds: ${JSON.stringify(bounds)}`
-    );
+    log(`Resizing transparent window to bounds: ${JSON.stringify(bounds)}`);
     window.setSize(width, height, false);
     window.setPosition(x, y, false);
   };

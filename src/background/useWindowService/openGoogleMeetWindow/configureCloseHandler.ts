@@ -1,15 +1,14 @@
 import { BrowserWindow } from 'electron';
-import log from 'electron-log';
 
 import { State } from '../../types';
+import { Log } from '../utils';
 
-export default (logInWindow: BrowserWindow, state: State): void => {
-  log.info(`Configuring window close handler...`);
+export default (window: BrowserWindow, state: State, log: Log): void => {
+  log(`Configuring window close handler...`);
 
-  logInWindow.on(`close`, () => {
-    log.info(`Create Google Meet window close event received`);
-    log.info(`Closing Create Google Meet window...`);
-
-    state.windows.createGoogleMeet = null;
+  window.on(`close`, () => {
+    log(`Window close event received`);
+    log(`Closing window...`);
+    state.windows.googleMeet = null;
   });
 };

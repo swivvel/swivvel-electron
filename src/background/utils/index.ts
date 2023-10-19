@@ -8,6 +8,7 @@ import isLinux from './isLinux';
 import isMac from './isMac';
 import isProduction from './isProduction';
 import loadUrl from './loadUrl';
+import makeQueryString from './makeQueryString';
 import parseQueryParams from './parseQueryParams';
 import prepareToQuitApp from './prepareToQuitApp';
 import quitApp from './quitApp';
@@ -27,6 +28,7 @@ export {
   isMac,
   isProduction,
   loadUrl,
+  makeQueryString,
   parseQueryParams,
   prepareToQuitApp,
   quitApp,

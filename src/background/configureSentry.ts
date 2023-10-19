@@ -28,14 +28,20 @@ export default (): void => {
         return logFile.path;
       });
 
-      log.info(`Attaching log files: ${JSON.stringify(paths)}`);
+      if (!isProduction()) {
+        log.info(
+          `Not attaching log files in development: ${JSON.stringify(paths)}`
+        );
+      } else {
+        log.info(`Attaching log files: ${JSON.stringify(paths)}`);
 
-      hint.attachments = allLogs.map((logFile) => {
-        return {
-          filename: path.basename(logFile.path),
-          data: logFile.lines.join(`\n`),
-        };
-      });
+        hint.attachments = allLogs.map((logFile) => {
+          return {
+            filename: path.basename(logFile.path),
+            data: logFile.lines.join(`\n`),
+          };
+        });
+      }
     } catch (err) {
       log.error(`Error reading log files: ${err}`);
     }

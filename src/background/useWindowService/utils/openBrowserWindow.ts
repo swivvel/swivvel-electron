@@ -3,30 +3,34 @@ import {
   BrowserWindowConstructorOptions,
   shell,
 } from 'electron';
-import log from 'electron-log';
 
 import { State } from '../../types';
 import { removeQueryParams, shouldOpenUrlInBrowser } from '../../utils';
 
+export type InstantiateWindow = (
+  window: BrowserWindow
+) => Promise<BrowserWindow>;
+
 export default async (
   state: State,
-  browserWindowName: keyof State['windows'],
-  browserWindowOptions: BrowserWindowConstructorOptions,
-  instantiateBrowserWindow: (window: BrowserWindow) => Promise<BrowserWindow>,
+  windowId: keyof State['windows'],
+  windowOptions: BrowserWindowConstructorOptions,
+  log: (msg: string) => void,
+  instantiateWindow: InstantiateWindow,
   options?: {
     shouldOpenUrlInBrowser?: (url: string) => boolean | null;
   }
 ): Promise<BrowserWindow> => {
-  log.info(`Get or create window: ${browserWindowName}`);
+  log(`Get or create`);
 
-  const existingWindow = state.windows[browserWindowName];
+  const existingWindow = state.windows[windowId];
 
   if (existingWindow && !existingWindow.isDestroyed()) {
-    if (browserWindowOptions.show !== false) {
-      log.info(`Showing existing window w/ focus: ${browserWindowName}`);
+    if (windowOptions.show !== false) {
+      log(`Showing existing window w/ focus`);
       existingWindow.show();
     } else {
-      log.info(`Showing existing window w/o focus: ${browserWindowName}`);
+      log(`Showing existing window w/o focus`);
       existingWindow.showInactive();
     }
     return existingWindow;
@@ -37,19 +41,19 @@ export default async (
     !existingWindow.isDestroyed() &&
     existingWindow.webContents.isCrashed()
   ) {
-    log.info(`Window crashed, destroying and recreating: ${browserWindowName}`);
+    log(`Window crashed, destroying and recreating`);
     existingWindow.destroy();
   }
 
-  log.info(`Creating window: ${browserWindowName}`);
+  log(`Creating window`);
 
-  const browserWindow = new BrowserWindow(browserWindowOptions);
+  const browserWindow = new BrowserWindow(windowOptions);
 
-  state.windows[browserWindowName] = browserWindow;
+  state.windows[windowId] = browserWindow;
 
   if (!browserWindow.isDestroyed()) {
     browserWindow.webContents.on(`will-navigate`, async (event) => {
-      log.info(`Detected page navigation to: ${removeQueryParams(event.url)}`);
+      log(`Detected page navigation to: ${removeQueryParams(event.url)}`);
 
       let openUrlInBrowser: boolean | null = null;
       if (options?.shouldOpenUrlInBrowser) {
@@ -61,23 +65,23 @@ export default async (
       }
 
       if (openUrlInBrowser) {
-        log.info(`Opening URL in browser`);
+        log(`Opening URL in browser`);
         event.preventDefault();
         shell.openExternal(event.url);
         return;
       }
 
-      log.info(`Opening URL in Electron`);
+      log(`Opening URL in Electron`);
     });
   }
 
   if (!browserWindow.isDestroyed()) {
-    await instantiateBrowserWindow(browserWindow);
+    await instantiateWindow(browserWindow);
   }
 
-  log.info(`Created window: ${browserWindowName}`);
+  log(`Created window`);
 
-  if (!browserWindow.isDestroyed() && browserWindowOptions.show !== false) {
+  if (!browserWindow.isDestroyed() && windowOptions.show !== false) {
     browserWindow.show();
   }
 

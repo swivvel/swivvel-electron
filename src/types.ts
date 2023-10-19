@@ -1,6 +1,6 @@
-export type ShareableMediaSource = {
+export interface ShareableMediaSource {
   appIconUrl: string | null;
   id: string;
   name: string;
   thumbnailUrl: string | null;
-};
+}

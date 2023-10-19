@@ -1,10 +1,13 @@
 import { getSiteUrl, isLinux, loadUrl, sleep } from '../../utils';
-import { openBrowserWindow } from '../utils';
+import {
+  InstantiateWindow,
+  getBrowserWindowLogger,
+  openBrowserWindow,
+} from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';
-import configureMousePassThroughHandler from './configureMousePassThroughHandler';
-import getLogger from './getLogger';
-import getTransparentBrowserWindowOptions from './getTransparentBrowserWindowOptions';
+import getBrowserWindowOptions from './getBrowserWindowOptions';
+import getFileLogger from './getFileLogger';
 import resizeOnDisplayChange from './resizeOnDisplayChange';
 import showOnAllWorkspaces from './showOnAllWorkspaces';
 import { OpenTransparentWindow } from './types';
@@ -12,10 +15,14 @@ import { OpenTransparentWindow } from './types';
 const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const { state, windowOpenRequestHandler } = args;
 
-  const transparentWindowLog = getLogger(`transparent`);
-  const options = getTransparentBrowserWindowOptions();
+  const windowId = `transparent` as const;
+  const log = getBrowserWindowLogger(windowId);
+  const fileLogger = getFileLogger(windowId);
+  const windowOptions = getBrowserWindowOptions(log);
 
-  return openBrowserWindow(state, `transparent`, options, async (window) => {
+  const instantiateWindow: InstantiateWindow = async (window) => {
+    window.setIgnoreMouseEvents(true, { forward: true });
+
     // Prevent the transparent window from appearing in screenshots
     // See: https://www.electronjs.org/docs/latest/api/browser-window#winsetcontentprotectionenable-macos-windows
     window.setContentProtection(true);
@@ -31,10 +38,16 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     // Write all console messages to a log file so that we can include the file
     // in Sentry alerts.
     window.webContents.on(`console-message`, (event, level, message) => {
-      transparentWindowLog.info(message);
+      fileLogger.info(message);
     });
 
-    window.webContents.setWindowOpenHandler(windowOpenRequestHandler);
+    window.webContents.setWindowOpenHandler(({ url }) => {
+      return windowOpenRequestHandler(url, log);
+    });
+
+    showOnAllWorkspaces(window, log);
+    configureCloseHandler(window, state, log);
+    resizeOnDisplayChange(window, log);
 
     // Transparent windows don't work on Linux without some hacks
     // like this short delay
@@ -43,12 +56,7 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
       await sleep(1000);
     }
 
-    showOnAllWorkspaces(window);
-    configureCloseHandler(window, state);
-    configureMousePassThroughHandler(window);
-    resizeOnDisplayChange(window);
-
-    await loadUrl(`${getSiteUrl()}/notifications`, window, state, {
+    await loadUrl(`${getSiteUrl()}/notifications`, window, state, log, {
       // The transparent window is core to the application because it's
       // responsible for opening all of the other windows and displaying the
       // audio room. Retry loading the URL indefinitely if it fails.
@@ -56,7 +64,15 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     });
 
     return window;
-  });
+  };
+
+  return openBrowserWindow(
+    state,
+    windowId,
+    windowOptions,
+    log,
+    instantiateWindow
+  );
 };
 
 export default openTransparentWindow;
