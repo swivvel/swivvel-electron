@@ -36,7 +36,6 @@ const run = async (): Promise<void> => {
       googleMeet: null,
       hq: null,
       logIn: null,
-      screenShare: null,
       setup: null,
       transparent: null,
     },

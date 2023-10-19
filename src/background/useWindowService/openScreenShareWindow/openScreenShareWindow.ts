@@ -19,7 +19,7 @@ const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
     windowOpenRequestHandler,
   } = args;
 
-  const windowId = `screenShare` as const;
+  const windowId = `screenShare${employeeId}` as const;
   const log = getBrowserWindowLogger(windowId);
   const windowOptions = getBrowserWindowOptions();
 

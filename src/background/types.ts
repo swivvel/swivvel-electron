@@ -38,11 +38,6 @@ export interface State {
     logIn: BrowserWindow | null;
 
     /**
-     * Displays local and remote user screen sharing.
-     */
-    screenShare: BrowserWindow | null;
-
-    /**
      * The window where new individual-auth users can set up their account.
      */
     setup: BrowserWindow | null;
@@ -51,5 +46,5 @@ export interface State {
      * The transparent, always-on-top window
      */
     transparent: BrowserWindow | null;
-  };
+  } & Record<string, BrowserWindow | null>;
 }
