@@ -35,6 +35,17 @@ contextBridge.exposeInMainWorld(`electron`, {
   },
 
   /**
+   * Return the permission access status for the given media type.
+   */
+  getMediaAccessStatus: (
+    mediaType: 'microphone' | 'camera' | 'screen'
+  ): Promise<
+    'not-determined' | 'granted' | 'denied' | 'restricted' | 'unknown'
+  > => {
+    return ipcRenderer.invoke(`getMediaAccessStatus`, mediaType);
+  },
+
+  /**
    * Used by the app windows to inform the main process who the user is after
    * they authenticate. The user information is included in Sentry error
    * reports.

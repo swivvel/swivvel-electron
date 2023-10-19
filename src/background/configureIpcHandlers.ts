@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/electron/main';
-import { app, ipcMain } from 'electron';
+import { app, ipcMain, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import { ShareableMediaSource } from '../types';
@@ -17,6 +17,25 @@ export default (windowService: WindowService): void => {
     async (): Promise<Array<ShareableMediaSource>> => {
       log.info(`Received getDesktopSources event`);
       return getShareableMediaSources();
+    }
+  );
+
+  ipcMain.handle(
+    `getMediaAccessStatus`,
+    async (
+      event,
+      mediaType: 'microphone' | 'camera' | 'screen'
+    ): Promise<
+      'not-determined' | 'granted' | 'denied' | 'restricted' | 'unknown'
+    > => {
+      log.info(`Received getMediaAccessStatus event for '${mediaType}'`);
+      if (!systemPreferences.getMediaAccessStatus) {
+        log.info(`getMediaAccessStatus not available on this platform`);
+        return `unknown`;
+      }
+      const access = systemPreferences.getMediaAccessStatus(mediaType);
+      log.info(`Media access for '${mediaType}' is '${access}'`);
+      return access;
     }
   );
 
