@@ -55,7 +55,9 @@ const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
       }
     );
 
-    window.maximize();
+    if (!window.isDestroyed()) {
+      window.maximize();
+    }
 
     return window;
   };
