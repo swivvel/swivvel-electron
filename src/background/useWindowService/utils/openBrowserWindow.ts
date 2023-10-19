@@ -14,10 +14,7 @@ export default async (
   browserWindowOptions: BrowserWindowConstructorOptions,
   instantiateBrowserWindow: (window: BrowserWindow) => Promise<BrowserWindow>,
   options?: {
-    onWillNavigate?: (
-      window: BrowserWindow,
-      event: Electron.Event<Electron.WebContentsWillNavigateEventParams>
-    ) => Promise<boolean>;
+    shouldOpenUrlInBrowser?: (url: string) => boolean | null;
   }
 ): Promise<BrowserWindow> => {
   log.info(`Get or create window: ${browserWindowName}`);
@@ -52,16 +49,18 @@ export default async (
 
   if (!browserWindow.isDestroyed()) {
     browserWindow.webContents.on(`will-navigate`, async (event) => {
-      if (options?.onWillNavigate) {
-        const handled = await options.onWillNavigate(browserWindow, event);
-        if (handled) {
-          return;
-        }
-      }
-
       log.info(`Detected page navigation to: ${removeQueryParams(event.url)}`);
 
-      if (shouldOpenUrlInBrowser(event.url)) {
+      let openUrlInBrowser: boolean | null = null;
+      if (options?.shouldOpenUrlInBrowser) {
+        openUrlInBrowser = options.shouldOpenUrlInBrowser(event.url);
+      }
+
+      if (openUrlInBrowser === null) {
+        openUrlInBrowser = shouldOpenUrlInBrowser(event.url);
+      }
+
+      if (openUrlInBrowser) {
         log.info(`Opening URL in browser`);
         event.preventDefault();
         shell.openExternal(event.url);

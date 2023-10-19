@@ -71,16 +71,14 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
       return window;
     },
     {
-      onWillNavigate: async (window, event) => {
+      shouldOpenUrlInBrowser: (url: string) => {
         // Prevent click of rejoin button from opening in new tab
-        if (event.url.startsWith(window.webContents.getURL())) {
-          log.info(`Detected rejoin of meeting ${event.url}`);
-          event.preventDefault();
-          await loadMeetingUrl(event.url, window, state);
-          return true;
+        if (url.startsWith(`https://meet.google.com/`)) {
+          log.info(`Detected navigation to Google Meet URL: ${url}`);
+          return false;
         }
 
-        return false;
+        return null;
       },
     }
   );
