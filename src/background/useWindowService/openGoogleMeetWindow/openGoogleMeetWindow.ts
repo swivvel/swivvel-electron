@@ -73,7 +73,10 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
     {
       onWillNavigate: async (window, event) => {
         // Prevent click of rejoin button from opening in new tab
-        if (event.url.startsWith(window.webContents.getURL())) {
+        if (
+          event.url.startsWith(window.webContents.getURL()) &&
+          !event.url.includes(`accounts.google.com`)
+        ) {
           log(`Detected rejoin of meeting ${event.url}`);
           event.preventDefault();
           await loadMeetingUrl(event.url, window, state, log);
