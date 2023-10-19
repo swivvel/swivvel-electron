@@ -30,15 +30,18 @@ const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
 
     configureCloseHandler(window, log);
 
-    const queryString = makeQueryString({
+    const queryData: Record<string, string> = {
       companyId,
       employeeId,
-      employeeName,
       podId,
-    });
+    };
+
+    if (employeeName) {
+      queryData.employeeName = employeeName;
+    }
 
     await loadUrl(
-      `${getSiteUrl()}/screen-share?${queryString}`,
+      `${getSiteUrl()}/screen-share?${makeQueryString(queryData)}`,
       window,
       state,
       log,

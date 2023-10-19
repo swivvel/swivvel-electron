@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld(`electron`, {
   featureFlags: {
     loginFlowV2: true, // Remove when all clients on v1.2.0
     googleMeetsSupport: true, // Remove when all clients on v1.2.18
+    screenSharing: true, // Remove when all clients on v1.2.24
   },
 
   /**

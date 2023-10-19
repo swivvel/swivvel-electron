@@ -27,7 +27,7 @@ export default (callbacks: {
   onScreenShareRequested: (
     companyId: string,
     employeeId: string,
-    employeeName: string,
+    employeeName: string | null,
     podId: string
   ) => void;
   onSettingsRequested: () => void;
@@ -67,13 +67,13 @@ export default (callbacks: {
       const urlParams = parseQueryParams(url);
       const companyId = urlParams.get(`companyId`);
       const employeeId = urlParams.get(`employeeId`);
-      const employeeName = urlParams.get(`employeeName`);
+      const employeeName = urlParams.get(`employeeName`) || null;
       const podId = urlParams.get(`podId`);
       log(`companyId=${companyId}`);
       log(`employeeId=${employeeId}`);
       log(`employeeName=${employeeName}`);
       log(`podId=${podId}`);
-      if (!companyId || !employeeId || !employeeName || !podId) {
+      if (!companyId || !employeeId || !podId) {
         throw new Error(`Missing required query params`);
       }
       callbacks.onScreenShareRequested(
