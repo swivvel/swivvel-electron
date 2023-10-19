@@ -20,13 +20,6 @@ export default (
       const logInWindow = await windowService.openLogInWindow();
       const deepLinkUrl = convertDeepLinkUrlToHttps(url);
 
-      // log.info(logInWindow.webContents.session.cookies);
-      // await logInWindow.webContents.session.clearStorageData({
-      //   storages: [`cookies`],
-      // });
-      log.info(`Cleared cookies and local storage for log in window`);
-      log.info(`^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^`);
-
       log.info(`Loading OAuth callback URL into log in window...`);
       await loadUrl(deepLinkUrl, logInWindow, state, log.info, {
         // There is no easy way to recover if the OAuth callback URL fails to
