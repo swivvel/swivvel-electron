@@ -29,6 +29,11 @@ const loadUrl = async (
 
   log(`Loading URL: ${urlNoParams}`);
 
+  if (browserWindow.isDestroyed()) {
+    log(`Skipping load URL: window is destroyed`);
+    return;
+  }
+
   try {
     await browserWindow.loadURL(url);
   } catch (err) {

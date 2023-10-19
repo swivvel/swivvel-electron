@@ -46,10 +46,12 @@ const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
       state,
       log,
       {
-        // The screen share window is opened from a user action. If it fails to
-        // load, we should let the user know that we failed to complete their
-        // action and then close the window so they can try again.
-        onError: `warnAndDestroyWindow`,
+        // The screen share window is opened from a user action. Normally we
+        // should display an error if it fails to load the URL, but this
+        // can actually happen quite easily if the user closes the window
+        // while the URL is loading. So instead, we're just destroying the
+        // window without showing an error.
+        onError: `destroyWindow`,
       }
     );
 
