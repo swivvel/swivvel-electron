@@ -6,22 +6,22 @@ export default (
   state: State,
   browserWindowName: keyof State['windows']
 ): void => {
-  log.info(`Close window: ${browserWindowName}`);
+  log.info(`[${browserWindowName}] Close window`);
 
   const existingWindow = state.windows[browserWindowName];
 
   if (!existingWindow) {
-    log.info(`No existing window found: ${browserWindowName}`);
+    log.info(`[${browserWindowName}] No existing window found`);
     return;
   }
 
   if (existingWindow.isDestroyed()) {
-    log.info(`Window already destroyed: ${browserWindowName}`);
+    log.info(`[${browserWindowName}] Window already destroyed`);
     state.windows[browserWindowName] = null;
     return;
   }
 
-  log.info(`Destroying window: ${browserWindowName}`);
+  log.info(`[${browserWindowName}] Destroying window`);
   existingWindow.destroy();
   state.windows[browserWindowName] = null;
 };

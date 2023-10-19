@@ -18,9 +18,10 @@ export default (
       log.info(`Running log in callback handler...`);
 
       const logInWindow = await windowService.openLogInWindow();
+      const deepLinkUrl = convertDeepLinkUrlToHttps(url);
 
       log.info(`Loading OAuth callback URL into log in window...`);
-      await loadUrl(convertDeepLinkUrlToHttps(url), logInWindow, state, {
+      await loadUrl(deepLinkUrl, logInWindow, state, log.info, {
         // There is no easy way to recover if the OAuth callback URL fails to
         // load, so just close the app so that the user is re-prompted to log
         // in when they open it again.

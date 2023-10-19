@@ -8,6 +8,7 @@ import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
 import openGoogleMeetWindow from './openGoogleMeetWindow';
 import openHqWindow from './openHqWindow';
 import openLogInWindow from './openLogInWindow';
+import openScreenShareWindow from './openScreenShareWindow';
 import openSettingsPageInHqWindow from './openSettingsPageInHqWindow';
 import openSetupWindow from './openSetupWindow';
 import openTransparentWindow from './openTransparentWindow';
@@ -27,7 +28,7 @@ export default (state: State, trayService: TrayService): WindowService => {
         windowOpenRequestHandler,
       });
     },
-    onHqPageRequested: () => {
+    onHqRequested: () => {
       openHqWindow({
         show: false,
         state,
@@ -35,13 +36,23 @@ export default (state: State, trayService: TrayService): WindowService => {
         windowOpenRequestHandler,
       });
     },
-    onLogInPageRequested: () => {
+    onLogInRequested: () => {
       openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
-    onSetupPageRequested: () => {
+    onScreenShareRequested: (companyId, employeeId, employeeName, podId) => {
+      openScreenShareWindow({
+        companyId,
+        employeeId,
+        employeeName,
+        podId,
+        state,
+        windowOpenRequestHandler,
+      });
+    },
+    onSetupRequested: () => {
       openSetupWindow({ state, trayService, windowOpenRequestHandler });
     },
-    onSettingsPageRequested: async () => {
+    onSettingsRequested: async () => {
       openSettingsPageInHqWindow({
         state,
         trayService,

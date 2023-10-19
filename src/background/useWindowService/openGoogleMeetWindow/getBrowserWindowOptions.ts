@@ -7,14 +7,12 @@ export default (): BrowserWindowConstructorOptions => {
   const width = 1400;
 
   // Set min height/width to prevent the window from trying to auto-resize
-  // itself on the getalink page.
+  // itself on the `/getalink` page.
   return {
     height,
     minHeight: height,
     minWidth: width,
-    webPreferences: {
-      preload: getPreloadPath(),
-    },
+    webPreferences: { preload: getPreloadPath() },
     width,
   };
 };

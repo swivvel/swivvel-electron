@@ -1,3 +1,5 @@
+import log from 'electron-log';
+
 import { State } from '../types';
 import { TrayService } from '../useTrayService';
 import { getSiteUrl, loadUrl } from '../utils';
@@ -30,6 +32,7 @@ export default async ({
     `${getSiteUrl()}/?p=/office/<companyId>/settings/users`,
     hqWindow,
     state,
+    log.info,
     // Since the settings page is opened from a user action, we must display
     // an error message to inform the user that their action failed. We
     // destroy the window so that it gets recreated when the user tries to

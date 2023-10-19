@@ -1,24 +1,24 @@
 import { BrowserWindow } from 'electron';
-import log from 'electron-log';
 
 import { State } from '../../types';
+import { Log } from '../utils';
 
-export default (hqWindow: BrowserWindow, state: State): void => {
-  log.info(`Configuring window close handler...`);
+export default (window: BrowserWindow, state: State, log: Log): void => {
+  log(`Configuring window close handler...`);
 
   // Don't allow the user to close the HQ window - they can open it again
   // from the tray icon menu
-  hqWindow.on(`close`, (event) => {
-    log.info(`HQ window close event received`);
+  window.on(`close`, (event) => {
+    log(`Close event received`);
 
-    if (hqWindow.isDestroyed()) {
-      log.info(`HQ window destroyed, not closing`);
+    if (window.isDestroyed()) {
+      log(`Window destroyed, not closing`);
     } else if (!state.allowQuit) {
-      log.info(`allowQuit=false, preventing HQ window from closing`);
+      log(`allowQuit=false, preventing window from closing`);
       event.preventDefault();
-      hqWindow.hide();
+      window.hide();
     } else {
-      log.info(`Closing HQ window...`);
+      log(`Closing window...`);
     }
   });
 };

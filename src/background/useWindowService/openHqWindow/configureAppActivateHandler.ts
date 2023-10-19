@@ -1,13 +1,15 @@
 import { app } from 'electron';
-import log from 'electron-log';
+
+import { Log } from '../utils';
 
 import { OpenHqWindow, OpenHqWindowArgs } from './types';
 
 export default (
   openHqWindow: OpenHqWindow,
-  openHqWindowArgs: OpenHqWindowArgs
+  openHqWindowArgs: OpenHqWindowArgs,
+  log: Log
 ): void => {
-  log.info(`Configuring app activate handler...`);
+  log(`Configuring app activate handler...`);
 
   // We only want to open one specific window when the dock is clicked, so
   // we remove all other activate listeners.
@@ -15,7 +17,7 @@ export default (
 
   // Show the HQ window when user clicks on dock on Mac
   app.on(`activate`, () => {
-    log.info(`App activate event received`);
+    log(`App activate event received`);
     openHqWindow({ ...openHqWindowArgs, show: true });
   });
 };

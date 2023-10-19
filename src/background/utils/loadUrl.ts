@@ -1,5 +1,4 @@
 import { BrowserWindow } from 'electron';
-import log from 'electron-log';
 import ms from 'ms';
 
 import { State } from '../types';
@@ -20,6 +19,7 @@ const loadUrl = async (
   url: string,
   browserWindow: BrowserWindow,
   state: State,
+  log: (msg: string) => void,
   options: { onError: OnError },
   retryState?: { retryCount: number; retryCurrentBackoffMs: number }
 ): Promise<void> => {
@@ -27,16 +27,21 @@ const loadUrl = async (
 
   const windowName = getBrowserWindowName(state, browserWindow.id);
 
-  log.info(`Loading URL into window '${windowName}': ${urlNoParams}`);
+  log(`Loading URL: ${urlNoParams}`);
+
+  if (browserWindow.isDestroyed()) {
+    log(`Skipping load URL: window is destroyed`);
+    return;
+  }
 
   try {
     await browserWindow.loadURL(url);
   } catch (err) {
-    log.error(`Failed to load URL into window '${windowName}': ${urlNoParams}`);
-    log.info(`onError=${options.onError}`);
+    log(`Failed to load URL: ${urlNoParams}`);
+    log(`onError=${options.onError}`);
 
     if (browserWindow.isDestroyed()) {
-      log.info(`Skipping error handling: window '${windowName}' is destroyed`);
+      log(`Skipping error handling: window is destroyed`);
       return;
     }
 
@@ -55,14 +60,14 @@ const loadUrl = async (
       retryCurrentBackoffMs =
         retryCount > 60 ? ms(`1 minute`) : ms(`5 seconds`);
 
-      log.info(
+      log(
         `Retrying load URL in ${
           retryCurrentBackoffMs / 1000
         } seconds (retryCount=${retryCount})...`
       );
 
       await sleep(retryCurrentBackoffMs);
-      await loadUrl(url, browserWindow, state, options, {
+      await loadUrl(url, browserWindow, state, log, options, {
         retryCount,
         retryCurrentBackoffMs,
       });
@@ -71,7 +76,7 @@ const loadUrl = async (
     }
 
     if (options.onError === `destroyWindow`) {
-      log.info(`Destroy window '${windowName}'...`);
+      log(`Destroying window`);
       browserWindow.destroy();
       if (windowName) {
         state.windows[windowName] = null;
@@ -80,7 +85,7 @@ const loadUrl = async (
     }
 
     if (options.onError === `warnAndDestroyWindow`) {
-      log.info(`Warning and closing window '${windowName}'...`);
+      log(`Warning and closing window`);
       browserWindow.destroy();
       if (windowName) {
         state.windows[windowName] = null;
@@ -104,16 +109,15 @@ const loadUrl = async (
         !state.allowQuit &&
         (windowName !== `logIn` || !state.logInFlowCompleted);
 
-      log.info(`windowName=${windowName}`);
-      log.info(`state.allowQuit=${state.allowQuit}`);
-      log.info(`state.logInFlowCompleted=${state.logInFlowCompleted}`);
+      log(`state.allowQuit=${state.allowQuit}`);
+      log(`state.logInFlowCompleted=${state.logInFlowCompleted}`);
 
       if (!isFatal) {
-        log.info(`Ignoring error because it is not fatal`);
+        log(`Ignoring error because it is not fatal`);
         return;
       }
 
-      log.error(`Error is fatal, quitting app and showing error message...`);
+      log(`Error is fatal, quitting app and showing error message...`);
 
       // Eventually we may want to have better error handling if a URL fails to
       // load, but this is usually a fatal error so for now we're just killing

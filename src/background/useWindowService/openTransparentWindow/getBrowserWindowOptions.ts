@@ -1,15 +1,15 @@
 import { BrowserWindowConstructorOptions, screen } from 'electron';
-import log from 'electron-log';
 
 import { getFullscreenBounds, getPreloadPath, isLinux } from '../../utils';
+import { Log } from '../utils';
 
-export default (): BrowserWindowConstructorOptions => {
-  log.info(`All displays: ${JSON.stringify(screen.getAllDisplays())}`);
+export default (log: Log): BrowserWindowConstructorOptions => {
+  log(`All displays: ${JSON.stringify(screen.getAllDisplays())}`);
 
   const bounds = getFullscreenBounds();
   const { height, width, x, y } = bounds;
 
-  log.info(`Setting transparent window bounds: ${JSON.stringify(bounds)}`);
+  log(`Setting transparent window bounds: ${JSON.stringify(bounds)}`);
 
   return {
     alwaysOnTop: true,

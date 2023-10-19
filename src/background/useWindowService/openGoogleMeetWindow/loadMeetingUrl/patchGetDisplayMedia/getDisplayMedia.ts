@@ -1,4 +1,4 @@
-import { ShareableMediaSource } from '../../../../types';
+import { ShareableMediaSource } from '../../../../../types';
 
 async (): Promise<MediaStream | void> => {
   // This file _MUST_ contain just one top level function to be used

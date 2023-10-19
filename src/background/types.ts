@@ -22,9 +22,10 @@ export interface State {
    */
   windows: {
     /**
-     * Creates and joins a new Google Meet meeting
+     * Window for opening existing Google Meet URLs and creating new
+     * ad-hoc Google Meets.
      */
-    createGoogleMeet: BrowserWindow | null;
+    googleMeet: BrowserWindow | null;
 
     /**
      * The window that displays the HQ page of the web app
@@ -45,5 +46,5 @@ export interface State {
      * The transparent, always-on-top window
      */
     transparent: BrowserWindow | null;
-  };
+  } & Record<string, BrowserWindow | null>;
 }
