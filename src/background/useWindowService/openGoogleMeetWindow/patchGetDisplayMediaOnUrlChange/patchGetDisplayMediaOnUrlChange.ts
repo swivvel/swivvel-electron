@@ -1,25 +1,10 @@
 import { BrowserWindow } from 'electron';
 
-import { State } from '../../../types';
-import { loadUrl } from '../../../utils';
 import { Log } from '../../utils';
 
 import patchGetDisplayMedia from './patchGetDisplayMedia';
 
-export default async (
-  url: string,
-  window: BrowserWindow,
-  state: State,
-  log: Log
-): Promise<void> => {
-  await loadUrl(url, window, state, log, {
-    // Since the Google Meet window is opened from a user action, we must
-    // display an error message to inform the user that their action failed.
-    // Since the Google Meet window is temporary and the user can retry the
-    // action, we can just destroy the window so the user tries again.
-    onError: `warnAndDestroyWindow`,
-  });
-
+export default async (window: BrowserWindow, log: Log): Promise<void> => {
   // Out of the box, screen-sharing within the Meet does not work. To get around
   // this, we need to patch the window.getDisplayMedia function, which is
   // called when screen-sharing is requested. The patched function will invoke
@@ -31,4 +16,10 @@ export default async (
   // getDisplayMedia.
   // Inspired by: https://github.com/nativefier/nativefier/issues/927
   await patchGetDisplayMedia(window, log);
+
+  // Make sure we continue to patch getDisplayMedia if the page reloads or if
+  // the user is taken to another page (e.g. login page)
+  window.webContents.on(`did-finish-load`, async () => {
+    await patchGetDisplayMedia(window, log);
+  });
 };
