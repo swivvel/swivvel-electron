@@ -8,6 +8,14 @@ export interface State {
   allowQuit: boolean;
 
   /**
+   * Info about the logged in user, if any.
+   */
+  loggedInUser: {
+    email: string | null;
+    id: string;
+  } | null;
+
+  /**
    * True if the user has completed the log in flow and is authenticated.
    */
   logInFlowCompleted: boolean;

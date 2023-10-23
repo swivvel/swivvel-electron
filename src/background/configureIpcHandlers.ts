@@ -4,10 +4,11 @@ import log from 'electron-log';
 
 import { ShareableMediaSource } from '../types';
 
+import { State } from './types';
 import { WindowService } from './useWindowService';
 import { getShareableMediaSources, isProduction } from './utils';
 
-export default (windowService: WindowService): void => {
+export default (windowService: WindowService, state: State): void => {
   ipcMain.handle(`getDesktopAppVersion`, () => {
     return app.getVersion();
   });
@@ -48,6 +49,8 @@ export default (windowService: WindowService): void => {
       log.info(`Received identifyUser event, user=${JSON.stringify(user)}`);
       log.info(`Setting Sentry user context`);
       Sentry.setUser(user ? { ...user, email: user.email || undefined } : null);
+      log.info(`Updating electron state`);
+      state.loggedInUser = user ? user : null;
     }
   );
 

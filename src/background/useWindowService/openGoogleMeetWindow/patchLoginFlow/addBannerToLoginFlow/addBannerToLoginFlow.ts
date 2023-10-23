@@ -6,7 +6,7 @@ import { Log, loadRawJsFromFile } from '../../../utils';
 
 export default async (window: BrowserWindow, log: Log): Promise<boolean> => {
   if (!window.webContents.getURL().includes(`https://accounts.google.com/`)) {
-    log(`User is not in the login flow`);
+    log(`User is not in the login flow, cannot add banner`);
     return false;
   }
 

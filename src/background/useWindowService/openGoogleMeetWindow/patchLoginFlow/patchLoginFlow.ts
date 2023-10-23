@@ -4,6 +4,7 @@ import { Log } from '../../utils';
 
 import addBannerToLoginFlow from './addBannerToLoginFlow';
 import clickSignInIfInLobby from './clickSignInIfInLobby';
+import prefillEmailAndAdvance from './prefillEmailAndAdvance';
 
 export default async (window: BrowserWindow, log: Log): Promise<void> => {
   log(`Patching login flow...`);
@@ -12,6 +13,8 @@ export default async (window: BrowserWindow, log: Log): Promise<void> => {
     await clickSignInIfInLobby(window, log);
 
     await addBannerToLoginFlow(window, log);
+
+    await prefillEmailAndAdvance(window, log);
   };
 
   await patchLoginFlow();
