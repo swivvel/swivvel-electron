@@ -15,6 +15,7 @@ import pollForJoinAndLeaveEvents from './pollForJoinAndLeaveEvents';
 import scrapeAndSaveMeetingUrl from './scrapeAndSaveMeetingUrl';
 import triggerMeetingCreatedEvent from './triggerMeetingCreatedEvent';
 import { OpenGoogleMeetWindow } from './types';
+import patchLoginFlow from './patchLoginFlow';
 
 const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
   const { podId, meetingUrl, state, windowOpenRequestHandler } = args;
@@ -62,6 +63,9 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
     await loadMeetingUrl(meetingUrlToOpen, window, state, log);
 
     await patchGetDisplayMediaOnUrlChange(window, log);
+
+    await patchLoginFlow(window, log);
+
     // The get-a-link window will try to resize itself to be small, so we
     // need to create the window with a minimum size equal to the desired
     // size. Once we've loaded the meeting we can lower the minimum size
