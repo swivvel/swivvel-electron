@@ -11,11 +11,11 @@ import configureCloseHandler from './configureCloseHandler';
 import getBrowserWindowOptions from './getBrowserWindowOptions';
 import loadMeetingUrl from './loadMeetingUrl';
 import patchGetDisplayMediaOnUrlChange from './patchGetDisplayMediaOnUrlChange';
+import patchLoginFlow from './patchLoginFlow';
 import pollForJoinAndLeaveEvents from './pollForJoinAndLeaveEvents';
 import scrapeAndSaveMeetingUrl from './scrapeAndSaveMeetingUrl';
 import triggerMeetingCreatedEvent from './triggerMeetingCreatedEvent';
 import { OpenGoogleMeetWindow } from './types';
-import patchLoginFlow from './patchLoginFlow';
 
 const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
   const { podId, meetingUrl, state, windowOpenRequestHandler } = args;
