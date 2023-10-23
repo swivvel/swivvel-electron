@@ -38,6 +38,8 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
       await systemPreferences.askForMediaAccess(`camera`);
     }
 
+    await patchLoginFlow(window, state, log);
+
     if (!meetingUrlToOpen) {
       await loadUrl(`https://meet.google.com/getalink`, window, state, log, {
         // Since the Google Meet window is opened from a user action, we must
@@ -63,8 +65,6 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
     await loadMeetingUrl(meetingUrlToOpen, window, state, log);
 
     await patchGetDisplayMediaOnUrlChange(window, log);
-
-    await patchLoginFlow(window, log);
 
     // The get-a-link window will try to resize itself to be small, so we
     // need to create the window with a minimum size equal to the desired

@@ -35,7 +35,7 @@ async (): Promise<void> => {
   }
 
   .sign-in-flow-banner__header {
-    font-weight: 500;
+    font-weight: bold;
     margin-right: 40px;
   }
 

@@ -1,14 +1,24 @@
 import { BrowserWindow } from 'electron';
 
+import { State } from '../../../types';
 import { Log } from '../../utils';
 
-export default async (window: BrowserWindow, log: Log): Promise<boolean> => {
+export default async (
+  window: BrowserWindow,
+  state: State,
+  log: Log
+): Promise<boolean> => {
+  const email = state.loggedInUser?.email;
+
+  if (!email) {
+    log(`No email to prefill`);
+    return false;
+  }
+
   if (!window.webContents.getURL().includes(`https://accounts.google.com/`)) {
     log(`User is not in the login flow, cannot prefill email`);
     return false;
   }
-
-  const email = `eric@swivvel.io`;
 
   const prefilled = await window.webContents.executeJavaScript(`
   (() => {
