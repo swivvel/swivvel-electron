@@ -31,6 +31,7 @@ const run = async (): Promise<void> => {
 
   const state: State = {
     allowQuit: false,
+    loggedInUser: null,
     logInFlowCompleted: false,
     tray: null,
     windows: {
@@ -54,7 +55,7 @@ const run = async (): Promise<void> => {
 
   // These functions set up IPC handlers that must be registered before the
   // transparent window loads
-  configureIpcHandlers(windowService);
+  configureIpcHandlers(windowService, state);
   pollForIdleTime(state);
   configureMousePassThroughHandler(state);
 
