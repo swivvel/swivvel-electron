@@ -7,6 +7,7 @@ import getSiteUrl from './getSiteUrl';
 import isLinux from './isLinux';
 import isMac from './isMac';
 import isProduction from './isProduction';
+import isWindows from './isWindows';
 import loadUrl from './loadUrl';
 import makeQueryString from './makeQueryString';
 import parseQueryParams from './parseQueryParams';
@@ -27,6 +28,7 @@ export {
   isLinux,
   isMac,
   isProduction,
+  isWindows,
   loadUrl,
   makeQueryString,
   parseQueryParams,
