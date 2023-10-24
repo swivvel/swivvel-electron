@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/electron/main';
-import { MenuItemConstructorOptions, dialog } from 'electron';
+import { dialog, MenuItemConstructorOptions } from 'electron';
 import log from 'electron-log';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -44,7 +44,7 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
       });
       dialog.showErrorBox(
         `Bug report submitted`,
-        `Oh snap! Sorry about that. We'll look into this. Please send us a brief description and screenshot via your company's Slack Connect channel or email us at support@swivvel.io. We'll get back to you ASAP.`
+        `Oh snap! Sorry about that. We'll look into this. Please send us a brief description and screenshot via our live chat. We'll get back to you ASAP.`
       );
     },
   });
