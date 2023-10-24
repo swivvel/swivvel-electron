@@ -44,7 +44,7 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
       });
       dialog.showErrorBox(
         `Bug Report Sent`,
-        `Thanks for sending. If you haven't already, please use the Chat Support to send us a screenshot and quick description.`
+        `Thanks for sending. If you haven't already, please use the Chat Support to send us a screenshot and a quick description.`
       );
     },
   });
