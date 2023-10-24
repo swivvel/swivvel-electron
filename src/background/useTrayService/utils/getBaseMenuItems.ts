@@ -43,8 +43,8 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
         Sentry.captureException(new Error(message));
       });
       dialog.showErrorBox(
-        `Bug report submitted`,
-        `Oh snap! Sorry about that. We'll look into this. Please send us a brief description and screenshot via our live chat. We'll get back to you ASAP.`
+        `Bug Report Sent`,
+        `Thanks for sending. If you haven't already, please use the Chat Support to send us a screenshot and quick description.`
       );
     },
   });
