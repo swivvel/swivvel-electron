@@ -1,4 +1,5 @@
 import path from 'path';
+
 import isWindows from './isWindows';
 
 const LOGO_TEMPLATE_PATH = path.join(__dirname, `..`, `..`, `logoTemplate.png`);
