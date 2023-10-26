@@ -15,6 +15,11 @@ export default async (
   log(`Patching login flow...`);
 
   const patchLoginFlow = async (): Promise<void> => {
+    if (window.isDestroyed()) {
+      log(`Google Meet window destroyed; not patching login flow`);
+      return;
+    }
+
     // If the user is in the lobby and not signed in, click the sign in button
     // for them
     await clickSignInIfInLobby(window, log);
