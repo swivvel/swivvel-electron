@@ -17,6 +17,7 @@ import removeQueryParams from './removeQueryParams';
 import shouldOpenUrlInBrowser from './shouldOpenUrlInBrowser';
 import showErrorMessage from './showErrorMessage';
 import sleep from './sleep';
+import triggerSentryError from './triggerSentryError';
 
 export {
   getBrowserWindowName,
@@ -38,4 +39,5 @@ export {
   shouldOpenUrlInBrowser,
   showErrorMessage,
   sleep,
+  triggerSentryError,
 };

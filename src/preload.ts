@@ -7,9 +7,10 @@ import { ShareableMediaSource } from './types';
 
 contextBridge.exposeInMainWorld(`electron`, {
   featureFlags: {
-    loginFlowV2: true, // Remove when all clients on v1.2.0
     googleMeetsSupport: true, // Remove when all clients on v1.2.18
+    loginFlowV2: true, // Remove when all clients on v1.2.0
     screenSharing: true, // Remove when all clients on v1.2.24
+    triggerErrorSupport: true, // Remove when all clients on v1.2.27
   },
 
   /**
@@ -188,6 +189,13 @@ contextBridge.exposeInMainWorld(`electron`, {
    */
   onMouseOverTransparentArea: (isOverTransparency: boolean) => {
     ipcRenderer.send(`onMouseOverTransparentArea`, isOverTransparency);
+  },
+
+  /**
+   * Trigger a Sentry error on behalf of the user so that we can see their logs
+   */
+  triggerSentryError: () => {
+    ipcRenderer.send(`triggerSentryError`);
   },
 });
 

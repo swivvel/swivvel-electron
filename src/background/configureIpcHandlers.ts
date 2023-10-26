@@ -6,7 +6,11 @@ import { ShareableMediaSource } from '../types';
 
 import { State } from './types';
 import { WindowService } from './useWindowService';
-import { getShareableMediaSources, isProduction } from './utils';
+import {
+  getShareableMediaSources,
+  isProduction,
+  triggerSentryError,
+} from './utils';
 
 export default (windowService: WindowService, state: State): void => {
   ipcMain.handle(`getDesktopAppVersion`, () => {
@@ -75,5 +79,11 @@ export default (windowService: WindowService, state: State): void => {
 
     log.info(`Sending launchAudioRoomFromSetup event to transparent window`);
     transparentWindow.webContents.send(`launchAudioRoomFromSetup`);
+  });
+
+  ipcMain.on(`triggerSentryError`, async (): Promise<void> => {
+    log.info(`Received triggerSentryError event`);
+    triggerSentryError();
+    log.info(`Triggering Sentry error`);
   });
 };

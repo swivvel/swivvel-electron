@@ -1,10 +1,13 @@
-import * as Sentry from '@sentry/electron/main';
 import { dialog, MenuItemConstructorOptions } from 'electron';
 import log from 'electron-log';
-import { v4 as uuidv4 } from 'uuid';
 
 import { State } from '../../types';
-import { isLinux, isProduction, quitApp } from '../../utils';
+import {
+  isLinux,
+  isProduction,
+  quitApp,
+  triggerSentryError,
+} from '../../utils';
 
 export default (state: State): Array<MenuItemConstructorOptions> => {
   const menuItems: Array<MenuItemConstructorOptions> = [];
@@ -32,16 +35,7 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
       log.info(
         `Detected click on Send Bug Report menu item; sending Sentry alert`
       );
-      Sentry.withScope((scope) => {
-        // Use a unique fingerprint to avoid grouping in Sentry so that we
-        // don't accidentally miss an alert about a manual bug report
-        scope.setFingerprint([uuidv4()]);
-
-        const userEmail = scope.getUser()?.email || `no user`;
-        const now = new Date().toISOString();
-        const message = `Manual bug report - ${userEmail} - ${now}`;
-        Sentry.captureException(new Error(message));
-      });
+      triggerSentryError();
       dialog.showErrorBox(
         `Bug Report Sent`,
         `Thanks for sending. If you haven't already, please use the Chat Support menu option to send us a screenshot and a quick description.`
