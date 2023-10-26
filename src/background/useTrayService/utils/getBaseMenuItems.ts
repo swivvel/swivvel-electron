@@ -35,7 +35,7 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
       log.info(
         `Detected click on Send Bug Report menu item; sending Sentry alert`
       );
-      triggerSentryError();
+      triggerSentryError(`Manual bug report`);
       dialog.showErrorBox(
         `Bug Report Sent`,
         `Thanks for sending. If you haven't already, please use the Chat Support menu option to send us a screenshot and a quick description.`

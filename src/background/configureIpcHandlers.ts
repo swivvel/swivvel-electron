@@ -83,7 +83,7 @@ export default (windowService: WindowService, state: State): void => {
 
   ipcMain.on(`triggerSentryError`, async (): Promise<void> => {
     log.info(`Received triggerSentryError event`);
-    triggerSentryError();
+    triggerSentryError(`Error triggered for user`);
     log.info(`Triggering Sentry error`);
   });
 };
