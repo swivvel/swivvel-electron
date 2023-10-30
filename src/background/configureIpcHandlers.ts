@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/electron/main';
-import { app, ipcMain, systemPreferences } from 'electron';
+import { app, ipcMain, net, shell, systemPreferences } from 'electron';
 import log from 'electron-log';
 
 import { ShareableMediaSource } from '../types';
@@ -79,6 +79,51 @@ export default (windowService: WindowService, state: State): void => {
 
     log.info(`Sending launchAudioRoomFromSetup event to transparent window`);
     transparentWindow.webContents.send(`launchAudioRoomFromSetup`);
+  });
+
+  ipcMain.on(`signIn`, async (): Promise<void> => {
+    const transparentWindow = await windowService.openTransparentWindow();
+
+    log.info(`Sending signIn event to transparent window`);
+    const requests = net.request({
+      method: `GET`,
+      url: `https://app.localhost.architect.sh/api/auth/login?desktop=true`,
+      redirect: `manual`,
+      session: transparentWindow.webContents.session,
+      useSessionCookies: true,
+    });
+
+    // const requests = net.request({
+    //   method: 'GET',
+    //   protocol: 'https:',
+    //   hostname: 'github.com',
+    //   port: 443,
+    //   path: '/',
+    // });
+
+    console.log(requests);
+
+    requests.on(`response`, (resp) => {
+      console.log(`^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^`);
+      console.log(resp);
+    });
+
+    requests.on(`redirect`, (code, method, url, responseHeaders) => {
+      console.log(`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`);
+      console.log(`OPENING URL: ${url}`);
+      console.log(
+        `response headers, ${JSON.stringify(responseHeaders, null, 2)}`
+      );
+      shell.openExternal(url);
+      requests.abort();
+    });
+
+    requests.on(`error`, (err) => {
+      console.log(`xxxxxxxxxxxx`);
+      console.log(err);
+    });
+
+    requests.end();
   });
 
   ipcMain.on(`triggerSentryError`, async (): Promise<void> => {

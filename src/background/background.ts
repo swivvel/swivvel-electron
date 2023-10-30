@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, session } from 'electron';
 import log from 'electron-log';
 
 import askForMicrophoneAccess from './askForMicrophoneAccess';
@@ -52,6 +52,8 @@ const run = async (): Promise<void> => {
 
   await app.whenReady();
   await askForMicrophoneAccess();
+
+  session.defaultSession.clearStorageData();
 
   // These functions set up IPC handlers that must be registered before the
   // transparent window loads

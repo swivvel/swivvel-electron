@@ -8,7 +8,7 @@ import { ShareableMediaSource } from './types';
 contextBridge.exposeInMainWorld(`electron`, {
   featureFlags: {
     googleMeetsSupport: true, // Remove when all clients on v1.2.18
-    loginFlowV2: true, // Remove when all clients on v1.2.0
+    loginFlowV3: true, // Remove when all clients on v1.2.28
     screenSharing: true, // Remove when all clients on v1.2.24
     triggerErrorSupport: true, // Remove when all clients on v1.2.27
   },
@@ -189,6 +189,10 @@ contextBridge.exposeInMainWorld(`electron`, {
    */
   onMouseOverTransparentArea: (isOverTransparency: boolean) => {
     ipcRenderer.send(`onMouseOverTransparentArea`, isOverTransparency);
+  },
+
+  signIn: () => {
+    ipcRenderer.send(`signIn`);
   },
 
   /**
