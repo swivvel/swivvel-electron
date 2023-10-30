@@ -8,8 +8,6 @@ import {
 import configureCloseHandler from './configureCloseHandler';
 import getBrowserWindowOptions from './getBrowserWindowOptions';
 import getFileLogger from './getFileLogger';
-import resizeOnDisplayChange from './resizeOnDisplayChange';
-import showOnAllWorkspaces from './showOnAllWorkspaces';
 import { OpenTransparentWindow } from './types';
 
 const openTransparentWindow: OpenTransparentWindow = async (args) => {
@@ -35,6 +33,14 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     // on top, so we have to explicitly re-enable the always-on-top setting.
     window.setAlwaysOnTop(true);
 
+    // Content in the transparent window is intended to be always visible, so
+    // we have to make sure that the window is visible on all workspaces.
+    window.setVisibleOnAllWorkspaces(true, {
+      visibleOnFullScreen: true,
+      // See: https://github.com/electron/electron/issues/25368
+      skipTransformProcessType: true,
+    });
+
     // Write all console messages to a log file so that we can include the file
     // in Sentry alerts.
     window.webContents.on(`console-message`, (event, level, message) => {
@@ -45,9 +51,7 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
       return windowOpenRequestHandler(url, log);
     });
 
-    showOnAllWorkspaces(window, log);
     configureCloseHandler(window, state, log);
-    resizeOnDisplayChange(window, log);
 
     // Transparent windows don't work on Linux without some hacks
     // like this short delay

@@ -8,6 +8,7 @@ import configureAutoUpdates from './configureAutoUpdates';
 import configureIpcHandlers from './configureIpcHandlers';
 import configureMousePassThroughHandler from './configureMousePassThroughHandler';
 import configureSentry from './configureSentry';
+import configureTransparentWindowResizeHandler from './configureTransparentWindowResizeHandler';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
@@ -53,11 +54,12 @@ const run = async (): Promise<void> => {
   await app.whenReady();
   await askForMicrophoneAccess();
 
-  // These functions set up IPC handlers that must be registered before the
-  // transparent window loads
+  // These functions must be called before the transparent window opens because
+  // they initialize listeners that must be registered
   configureIpcHandlers(windowService, state);
   pollForIdleTime(state);
   configureMousePassThroughHandler(state);
+  configureTransparentWindowResizeHandler(state);
 
   await windowService.openTransparentWindow();
 
