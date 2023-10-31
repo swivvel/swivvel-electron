@@ -4,9 +4,11 @@ import getLogoTemplatePath from './getLogoTemplatePath';
 import getPreloadPath from './getPreloadPath';
 import getShareableMediaSources from './getShareableMediaSources';
 import getSiteUrl from './getSiteUrl';
+import getUbuntuVersion from './getUbuntuVersion';
 import isLinux from './isLinux';
 import isMac from './isMac';
 import isProduction from './isProduction';
+import isUbuntuVersionGreaterOrEqual from './isUbuntuVersionGreaterOrEqual';
 import isWindows from './isWindows';
 import loadUrl from './loadUrl';
 import makeQueryString from './makeQueryString';
@@ -26,9 +28,11 @@ export {
   getPreloadPath,
   getShareableMediaSources,
   getSiteUrl,
+  getUbuntuVersion,
   isLinux,
   isMac,
   isProduction,
+  isUbuntuVersionGreaterOrEqual,
   isWindows,
   loadUrl,
   makeQueryString,
