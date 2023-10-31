@@ -30,7 +30,6 @@ export default (url: string): boolean => {
 
   if (isInternal) {
     const shouldOpenInBrowser = INTERNAL_URLS_IN_BROWSER.some((internalUrl) => {
-      console.log(`${getSiteUrl()}${internalUrl}`, url);
       return url.match(new RegExp(`${getSiteUrl()}${internalUrl}`, `i`));
     });
 

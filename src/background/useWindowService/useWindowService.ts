@@ -7,7 +7,6 @@ import { TrayService } from '../useTrayService';
 import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
 import openGoogleMeetWindow from './openGoogleMeetWindow';
 import openHqWindow from './openHqWindow';
-import openLogInWindow from './openLogInWindow';
 import openScreenShareWindow from './openScreenShareWindow';
 import openSettingsPageInHqWindow from './openSettingsPageInHqWindow';
 import openSetupWindow from './openSetupWindow';
@@ -35,9 +34,6 @@ export default (state: State, trayService: TrayService): WindowService => {
         trayService,
         windowOpenRequestHandler,
       });
-    },
-    onLogInRequested: () => {
-      openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
     onScreenShareRequested: (companyId, employeeId, employeeName, podId) => {
       openScreenShareWindow({
@@ -67,9 +63,6 @@ export default (state: State, trayService: TrayService): WindowService => {
       Object.keys(state.windows).forEach((windowName) => {
         closeBrowserWindow(state, windowName as keyof State['windows']);
       });
-    },
-    openLogInWindow: async (): Promise<BrowserWindow> => {
-      return openLogInWindow({ state, trayService, windowOpenRequestHandler });
     },
     openTransparentWindow: async (): Promise<BrowserWindow> => {
       return openTransparentWindow({ state, windowOpenRequestHandler });

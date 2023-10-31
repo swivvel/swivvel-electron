@@ -8,12 +8,14 @@ import configureAutoUpdates from './configureAutoUpdates';
 import configureIpcHandlers from './configureIpcHandlers';
 import configureMousePassThroughHandler from './configureMousePassThroughHandler';
 import configureSentry from './configureSentry';
+import configureTransparentWindowResizeHandler from './configureTransparentWindowResizeHandler';
 import getDeepLinkHandler from './getDeepLinkHandler';
 import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
 import setUserDataPath from './setUserDataPath';
 import { State } from './types';
+import useSignInService from './useSignInService';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
 
@@ -45,27 +47,30 @@ const run = async (): Promise<void> => {
 
   const trayService = useTrayService(state);
   const windowService = useWindowService(state, trayService);
+  const signInService = useSignInService(windowService);
 
   configureApp();
   configureAppQuitHandling(state);
-  listenForDeepLinks(state, getDeepLinkHandler(state, windowService));
+  listenForDeepLinks(state, getDeepLinkHandler(signInService));
 
   await app.whenReady();
   await askForMicrophoneAccess();
 
+  //TODO - testing remove
   session.defaultSession.clearStorageData();
 
-  // These functions set up IPC handlers that must be registered before the
-  // transparent window loads
-  configureIpcHandlers(windowService, state);
+  // These functions must be called before the transparent window opens because
+  // they initialize listeners that must be registered
+  configureIpcHandlers(windowService, signInService, state);
   pollForIdleTime(state);
   configureMousePassThroughHandler(state);
+  configureTransparentWindowResizeHandler(state);
 
   await windowService.openTransparentWindow();
 
   trayService.createTray();
-  configureAutoUpdates(state);
   handlePowerMonitorStateChanges(state, windowService);
+  await configureAutoUpdates(state);
 
   log.info(`App started`);
 };

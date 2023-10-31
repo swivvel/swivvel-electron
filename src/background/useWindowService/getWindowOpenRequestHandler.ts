@@ -23,7 +23,6 @@ export default (callbacks: {
     meetingUrl: string | null
   ) => void;
   onHqRequested: () => void;
-  onLogInRequested: () => void;
   onScreenShareRequested: (
     companyId: string,
     employeeId: string,
@@ -54,13 +53,6 @@ export default (callbacks: {
       callbacks.onHqRequested();
       return { action: `deny` };
     }
-
-    // See main repo README for description of desktop log in flow
-    // if (removeQueryParams(url) === `${siteUrl}/electron/login`) {
-    //   log(`Log in page requested`);
-    //   callbacks.onLogInRequested();
-    //   return { action: `deny` };
-    // }
 
     if (removeQueryParams(url) === `${siteUrl}/electron/screen-share`) {
       log(`Screen share page requested`);
