@@ -1,11 +1,14 @@
 import { screen } from 'electron';
 
+import getUbuntuVersion from './getUbuntuVersion';
 import isLinux from './isLinux';
+import isUbuntuVersionGreaterOrEqual from './isUbuntuVersionGreaterOrEqual';
 
-// We are unlikely to have any Linux users, so we're optimizing for Ubuntu for
-// now. The top bar may be different heights on other Linux distros, but we can
-// implement something more robust if that ever becomes a problem.
-const UBUNTU_TOP_BAR_HEIGHT = 27;
+// We have observed that the working area bounds reported to Electron on Ubuntu
+// do not take into account the OS top bar, so we have to manually subtract it.
+// Ubuntu increased the size of their top bar from 27px to 32px in v23.10.
+const UBUNTU_TOP_BAR_HEIGHT_LTE_23_04 = 27;
+const UBUNTU_TOP_BAR_HEIGHT_GTE_23_10 = 32;
 
 interface Bounds {
   height: number;
@@ -28,9 +31,25 @@ export default (): Bounds => {
     const workAreaHeightIsWrong =
       primaryDisplay.bounds.height === primaryDisplay.workArea.height;
 
-    const height = workAreaHeightIsWrong
-      ? primaryDisplay.bounds.height - UBUNTU_TOP_BAR_HEIGHT
-      : primaryDisplay.workArea.height;
+    let height: number;
+
+    if (!workAreaHeightIsWrong) {
+      height = primaryDisplay.workArea.height;
+    } else {
+      const ubuntuVersion = getUbuntuVersion();
+
+      let osTopBarHeight: number;
+
+      if (!ubuntuVersion) {
+        osTopBarHeight = 0;
+      } else if (isUbuntuVersionGreaterOrEqual(ubuntuVersion, [23, 10])) {
+        osTopBarHeight = UBUNTU_TOP_BAR_HEIGHT_GTE_23_10;
+      } else {
+        osTopBarHeight = UBUNTU_TOP_BAR_HEIGHT_LTE_23_04;
+      }
+
+      height = primaryDisplay.bounds.height - osTopBarHeight;
+    }
 
     const y = primaryDisplay.workArea.y;
 
