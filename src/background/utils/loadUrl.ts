@@ -105,12 +105,9 @@ const loadUrl = async (
       // The user might also have already completed authentication, at which
       // point it doesn't matter if the log in window encounters an error while
       // loading a URL.
-      const isFatal =
-        !state.allowQuit &&
-        (windowName !== `logIn` || !state.logInFlowCompleted);
+      const isFatal = !state.allowQuit;
 
       log(`state.allowQuit=${state.allowQuit}`);
-      log(`state.logInFlowCompleted=${state.logInFlowCompleted}`);
 
       if (!isFatal) {
         log(`Ignoring error because it is not fatal`);

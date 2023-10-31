@@ -1,10 +1,14 @@
 import { net, shell } from 'electron';
 
 import { WindowService } from '../useWindowService';
-import { getSiteUrl } from '../utils';
+import { getSiteUrl, isProduction } from '../utils';
 
 export default async (windowService: WindowService): Promise<boolean> => {
-  //TODO what to do about local?
+  if (!isProduction()) {
+    await windowService.openLogInWindow();
+    return true;
+  }
+
   const transparentWindow = await windowService.openTransparentWindow();
 
   const requests = net.request({

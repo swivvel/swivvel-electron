@@ -55,7 +55,11 @@ contextBridge.exposeInMainWorld(`electron`, {
     ipcRenderer.send(`identifyUser`, user);
   },
 
-  //TODO description
+  /**
+   * Used by the transparent window to inform the main process that the user
+   * has requested to log in via Google. The main process will open the log in
+   * the browser.
+   */
   initiateLogIn: () => {
     ipcRenderer.send(`initiateLogIn`);
   },
