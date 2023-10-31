@@ -5,7 +5,7 @@ import log from 'electron-log';
 import { ShareableMediaSource } from '../types';
 
 import { State } from './types';
-import { SignInService } from './useSignInService';
+import { LogInService } from './useLogInService';
 import { WindowService } from './useWindowService';
 import {
   getShareableMediaSources,
@@ -15,7 +15,7 @@ import {
 
 export default (
   windowService: WindowService,
-  signInService: SignInService,
+  logInService: LogInService,
   state: State
 ): void => {
   ipcMain.handle(`getDesktopAppVersion`, () => {
@@ -63,6 +63,12 @@ export default (
     }
   );
 
+  ipcMain.on(`initiateLogIn`, async (): Promise<void> => {
+    log.info(`Initiating log in flow`);
+    await logInService.initiateLogIn();
+    log.info(`Log in flow kicked off in browser`);
+  });
+
   ipcMain.handle(`isProduction`, isProduction);
 
   ipcMain.on(
@@ -84,12 +90,6 @@ export default (
 
     log.info(`Sending launchAudioRoomFromSetup event to transparent window`);
     transparentWindow.webContents.send(`launchAudioRoomFromSetup`);
-  });
-
-  ipcMain.on(`signIn`, async (): Promise<void> => {
-    log.info(`Initiating sign in flow`);
-    await signInService.initiateSignIn();
-    log.info(`Sign in flow kicked off in browser`);
   });
 
   ipcMain.on(`triggerSentryError`, async (): Promise<void> => {

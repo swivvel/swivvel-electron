@@ -1,13 +1,13 @@
 import log from 'electron-log';
 
-import { SignInService } from './useSignInService';
+import { LogInService } from './useLogInService';
 
 const convertDeepLinkUrlToHttps = (url: string): string => {
   return url.replace(/^swivvel:\/\//, `https://`);
 };
 
 export default (
-  signInService: SignInService
+  logInService: LogInService
 ): ((url: string) => Promise<void>) => {
   return async (url) => {
     // See main repo README for description of desktop log in flow
@@ -18,9 +18,9 @@ export default (
 
       log.info(`Proxying request to ${deepLinkUrl}...`);
 
-      await signInService.handleSignInOAuthCallback(deepLinkUrl);
+      await logInService.handleLogInOAuthCallback(deepLinkUrl);
 
-      log.info(`Sign in callback handler complete`);
+      log.info(`Log in callback handler complete`);
     }
   };
 };

@@ -15,7 +15,7 @@ import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
 import setUserDataPath from './setUserDataPath';
 import { State } from './types';
-import useSignInService from './useSignInService';
+import useLogInService from './useLogInService';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
 
@@ -47,11 +47,11 @@ const run = async (): Promise<void> => {
 
   const trayService = useTrayService(state);
   const windowService = useWindowService(state, trayService);
-  const signInService = useSignInService(windowService);
+  const logInService = useLogInService(windowService);
 
   configureApp();
   configureAppQuitHandling(state);
-  listenForDeepLinks(state, getDeepLinkHandler(signInService));
+  listenForDeepLinks(state, getDeepLinkHandler(logInService));
 
   await app.whenReady();
   await askForMicrophoneAccess();
@@ -61,7 +61,7 @@ const run = async (): Promise<void> => {
 
   // These functions must be called before the transparent window opens because
   // they initialize listeners that must be registered
-  configureIpcHandlers(windowService, signInService, state);
+  configureIpcHandlers(windowService, logInService, state);
   pollForIdleTime(state);
   configureMousePassThroughHandler(state);
   configureTransparentWindowResizeHandler(state);

@@ -4,6 +4,7 @@ import { WindowService } from '../useWindowService';
 import { getSiteUrl } from '../utils';
 
 export default async (windowService: WindowService): Promise<boolean> => {
+  //TODO what to do about local?
   const transparentWindow = await windowService.openTransparentWindow();
 
   const requests = net.request({
