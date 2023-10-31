@@ -9,7 +9,7 @@ import pollForUpdates from './pollForUpdates';
 /**
  * Configure automatic updates of the app.
  */
-export default (state: State): void => {
+export default async (state: State): Promise<void> => {
   log.info(`Configuring automatic updates...`);
 
   let checkForUpdatesInterval: NodeJS.Timeout | null = null;
@@ -59,7 +59,7 @@ export default (state: State): void => {
     }, msUntilMidnight);
   });
 
-  checkForUpdatesInterval = pollForUpdates();
+  checkForUpdatesInterval = await pollForUpdates();
 
   log.info(`Configured automatic updates`);
 };

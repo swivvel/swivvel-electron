@@ -64,8 +64,8 @@ const run = async (): Promise<void> => {
   await windowService.openTransparentWindow();
 
   trayService.createTray();
-  configureAutoUpdates(state);
   handlePowerMonitorStateChanges(state, windowService);
+  await configureAutoUpdates(state);
 
   log.info(`App started`);
 };
