@@ -1,4 +1,4 @@
-import { app, session } from 'electron';
+import { app } from 'electron';
 import log from 'electron-log';
 
 import askForMicrophoneAccess from './askForMicrophoneAccess';
@@ -54,9 +54,6 @@ const run = async (): Promise<void> => {
 
   await app.whenReady();
   await askForMicrophoneAccess();
-
-  //TODO - testing remove
-  session.defaultSession.clearStorageData();
 
   // These functions must be called before the transparent window opens because
   // they initialize listeners that must be registered
