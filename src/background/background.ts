@@ -15,6 +15,7 @@ import listenForDeepLinks from './listenForDeepLinks';
 import pollForIdleTime from './pollForIdleTime';
 import setUserDataPath from './setUserDataPath';
 import { State } from './types';
+import useLogInService from './useLogInService';
 import useTrayService from './useTrayService';
 import useWindowService from './useWindowService';
 
@@ -33,7 +34,6 @@ const run = async (): Promise<void> => {
   const state: State = {
     allowQuit: false,
     loggedInUser: null,
-    logInFlowCompleted: false,
     tray: null,
     windows: {
       googleMeet: null,
@@ -46,17 +46,18 @@ const run = async (): Promise<void> => {
 
   const trayService = useTrayService(state);
   const windowService = useWindowService(state, trayService);
+  const logInService = useLogInService(windowService);
 
   configureApp();
   configureAppQuitHandling(state);
-  listenForDeepLinks(state, getDeepLinkHandler(state, windowService));
+  listenForDeepLinks(state, getDeepLinkHandler(logInService));
 
   await app.whenReady();
   await askForMicrophoneAccess();
 
   // These functions must be called before the transparent window opens because
   // they initialize listeners that must be registered
-  configureIpcHandlers(windowService, state);
+  configureIpcHandlers(windowService, logInService, state);
   pollForIdleTime(state);
   configureMousePassThroughHandler(state);
   configureTransparentWindowResizeHandler(state);

@@ -5,17 +5,15 @@ import {
   openBrowserWindow,
 } from '../utils';
 
-import configureAppActivateHandler from './configureAppActivateHandler';
 import configureCloseHandler from './configureCloseHandler';
 import getBrowserWindowOptions from './getBrowserWindowOptions';
 import listenForRedirects from './listenForRedirects';
 import { OpenLogInWindow } from './types';
-import updateTray from './updateTray';
 
 // See main repo README for description of desktop log in flow
 
 const openLogInWindow: OpenLogInWindow = async (args) => {
-  const { state, trayService, windowOpenRequestHandler } = args;
+  const { state, windowOpenRequestHandler } = args;
 
   const windowId = `logIn` as const;
   const log = getBrowserWindowLogger(windowId);
@@ -28,8 +26,6 @@ const openLogInWindow: OpenLogInWindow = async (args) => {
 
     configureCloseHandler(window, state, log);
     listenForRedirects(window, args, state, log);
-    configureAppActivateHandler(openLogInWindow, args, log);
-    updateTray(openLogInWindow, args, trayService, log);
 
     // Currently, the only way to display the log in page is to load the home
     // page. We only open the log in window if the user is unauthenticated,

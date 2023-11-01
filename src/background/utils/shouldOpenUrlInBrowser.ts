@@ -5,6 +5,8 @@ const EXTERNAL_URLS_IN_ELECTRON = [
   `accounts.google.com`, // Google OAuth flow for SSO and integrations
 ];
 
+const INTERNAL_URLS_IN_BROWSER = [`/api/authSession/consumeAccessToken`];
+
 /**
  * Return true if the given URL should be opened in the user's default browser.
  *
@@ -24,6 +26,16 @@ export default (url: string): boolean => {
     );
 
     return !shouldOpenInElectron;
+  }
+
+  if (isInternal) {
+    const shouldOpenInBrowser = INTERNAL_URLS_IN_BROWSER.some((internalUrl) => {
+      return url.match(new RegExp(`${getSiteUrl()}${internalUrl}`, `i`));
+    });
+
+    if (shouldOpenInBrowser) {
+      return true;
+    }
   }
 
   // We are temporarily serving some HTML static files for support pages.

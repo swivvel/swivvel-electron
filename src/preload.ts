@@ -56,6 +56,15 @@ contextBridge.exposeInMainWorld(`electron`, {
   },
 
   /**
+   * Used by the transparent window to inform the main process that the user
+   * has requested to log in via Google. The main process will open the log in
+   * the browser.
+   */
+  initiateLogIn: () => {
+    ipcRenderer.send(`initiateLogIn`);
+  },
+
+  /**
    * True if desktop app is running on Linux
    */
   isLinux: process.platform === `linux`,

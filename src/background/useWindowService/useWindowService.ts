@@ -36,9 +36,6 @@ export default (state: State, trayService: TrayService): WindowService => {
         windowOpenRequestHandler,
       });
     },
-    onLogInRequested: () => {
-      openLogInWindow({ state, trayService, windowOpenRequestHandler });
-    },
     onScreenShareRequested: (companyId, employeeId, employeeName, podId) => {
       openScreenShareWindow({
         companyId,
@@ -69,7 +66,7 @@ export default (state: State, trayService: TrayService): WindowService => {
       });
     },
     openLogInWindow: async (): Promise<BrowserWindow> => {
-      return openLogInWindow({ state, trayService, windowOpenRequestHandler });
+      return openLogInWindow({ state, windowOpenRequestHandler });
     },
     openTransparentWindow: async (): Promise<BrowserWindow> => {
       return openTransparentWindow({ state, windowOpenRequestHandler });

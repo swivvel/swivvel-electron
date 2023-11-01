@@ -5,6 +5,7 @@ import log from 'electron-log';
 import { ShareableMediaSource } from '../types';
 
 import { State } from './types';
+import { LogInService } from './useLogInService';
 import { WindowService } from './useWindowService';
 import {
   getShareableMediaSources,
@@ -12,7 +13,11 @@ import {
   triggerSentryError,
 } from './utils';
 
-export default (windowService: WindowService, state: State): void => {
+export default (
+  windowService: WindowService,
+  logInService: LogInService,
+  state: State
+): void => {
   ipcMain.handle(`getDesktopAppVersion`, () => {
     return app.getVersion();
   });
@@ -57,6 +62,12 @@ export default (windowService: WindowService, state: State): void => {
       state.loggedInUser = user ? user : null;
     }
   );
+
+  ipcMain.on(`initiateLogIn`, async (): Promise<void> => {
+    log.info(`Initiating log in flow`);
+    await logInService.initiateLogIn();
+    log.info(`Log in flow kicked off in browser`);
+  });
 
   ipcMain.handle(`isProduction`, isProduction);
 
