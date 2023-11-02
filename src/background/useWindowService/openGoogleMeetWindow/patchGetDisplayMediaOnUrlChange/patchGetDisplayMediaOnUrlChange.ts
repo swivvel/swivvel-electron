@@ -17,6 +17,10 @@ export default async (window: BrowserWindow, log: Log): Promise<void> => {
   // Inspired by: https://github.com/nativefier/nativefier/issues/927
   await patchGetDisplayMedia(window, log);
 
+  if (window.isDestroyed()) {
+    return;
+  }
+
   // Make sure we continue to patch getDisplayMedia if the page reloads or if
   // the user is taken to another page (e.g. login page)
   window.webContents.on(`did-finish-load`, async () => {
