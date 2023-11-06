@@ -2,31 +2,27 @@ import { dialog, MenuItemConstructorOptions } from 'electron';
 import log from 'electron-log';
 
 import { State } from '../../types';
-import {
-  isLinux,
-  isProduction,
-  quitApp,
-  triggerSentryError,
-} from '../../utils';
+import { quitApp, triggerSentryError } from '../../utils';
 
 export default (state: State): Array<MenuItemConstructorOptions> => {
   const menuItems: Array<MenuItemConstructorOptions> = [];
 
-  // It is highly unlikely that we will have any real Linux users and there is
-  // currently no way to open the dev tools for the transparent window on prod,
-  // so for now we're allowing the dev tools menu item to show in production
-  // for Linux users.
-  if (!isProduction() || isLinux()) {
-    menuItems.push({
-      label: `Dev Tools`,
-      type: `normal`,
-      click: (): void => {
-        state.windows.transparent?.webContents.openDevTools({
-          mode: `undocked`,
-        });
-      },
-    });
-  }
+  // Normally we don't show debugging tools to end users, but it has been
+  // difficult to debug some issues that have been reported, so we're showing
+  // the dev tools menu item to everyone for now. This will allow us to have
+  // users open the dev tools on a screen share so that we have more visibility
+  // into what might be going wrong. Eventually we can hide this functionality
+  // a bit better, e.g. via a global keyboard shortcut, but showing it in the
+  // menu is simply the easiest thing to do right now.
+  menuItems.push({
+    label: `Dev Tools`,
+    type: `normal`,
+    click: (): void => {
+      state.windows.transparent?.webContents.openDevTools({
+        mode: `undocked`,
+      });
+    },
+  });
 
   menuItems.push({
     label: `Send Bug Report`,
