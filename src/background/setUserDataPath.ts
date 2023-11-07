@@ -20,7 +20,7 @@ export default (): void => {
     app.setPath(`logs`, logsDev);
 
     // Make sure the main logger writes to the new log path
-    log.transports.file.resolvePath = (): string => {
+    log.transports.file.resolvePathFn = (): string => {
       return path.join(logsDev, `main.log`);
     };
   }

@@ -5,6 +5,7 @@ import askForMicrophoneAccess from './askForMicrophoneAccess';
 import configureApp from './configureApp';
 import configureAppQuitHandling from './configureAppQuitHandling';
 import configureAutoUpdates from './configureAutoUpdates';
+import configureGlobalKeyboardShortcuts from './configureGlobalKeyboardShortcuts';
 import configureIpcHandlers from './configureIpcHandlers';
 import configureMousePassThroughHandler from './configureMousePassThroughHandler';
 import configureSentry from './configureSentry';
@@ -66,6 +67,7 @@ const run = async (): Promise<void> => {
 
   trayService.createTray();
   handlePowerMonitorStateChanges(state, windowService);
+  configureGlobalKeyboardShortcuts(state);
   await configureAutoUpdates(state);
 
   log.info(`App started`);
