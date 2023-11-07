@@ -83,6 +83,10 @@ module.exports = {
               match: true,
             },
           },
+          {
+            selector: 'import',
+            format: ['camelCase', 'PascalCase'],
+          },
         ],
         '@typescript-eslint/no-explicit-any': `error`,
         '@typescript-eslint/no-shadow': `error`,
