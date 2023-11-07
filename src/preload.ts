@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
 import { contextBridge, ipcRenderer } from 'electron';
 
 import { ShareableMediaSource } from './types';
 
 // NOTE: values exposed in the main world should be added to window.d.ts
 // in the web app
+
+console.log(`Preload script running...`);
 
 contextBridge.exposeInMainWorld(`electron`, {
   featureFlags: {
@@ -227,3 +230,5 @@ interface IdleChangeEvent {
   isIdle: boolean;
   timestamp: number;
 }
+
+console.log(`Preload script completed`);
