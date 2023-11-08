@@ -25,6 +25,10 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
   const windowOptions = getBrowserWindowOptions();
 
   const instantiateWindow: InstantiateWindow = async (window) => {
+    if (window.isDestroyed()) {
+      return window;
+    }
+
     window.webContents.setWindowOpenHandler(({ url }) => {
       return windowOpenRequestHandler(url, log);
     });
@@ -55,6 +59,10 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
       triggerMeetingCreatedEvent(state, podId, meetingUrlToOpen, log);
     }
 
+    if (window.isDestroyed()) {
+      return window;
+    }
+
     // We need to remove Swivvel and Electron from the user agent. Otherwise,
     // if the user doesn't have a valid google session, they won't be able to
     // join. This is likely because Google will infer that the user is a bot.
@@ -65,6 +73,10 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
     await loadMeetingUrl(meetingUrlToOpen, window, state, log);
 
     await patchGetDisplayMediaOnUrlChange(window, log);
+
+    if (window.isDestroyed()) {
+      return window;
+    }
 
     // The get-a-link window will try to resize itself to be small, so we
     // need to create the window with a minimum size equal to the desired
