@@ -2,7 +2,7 @@ import { State } from '../../../types';
 import { Log } from '../../utils';
 
 export default (state: State, meetingUrl: string, log: Log): void => {
-  if (state.windows.transparent) {
+  if (state.windows.transparent && !state.windows.transparent.isDestroyed()) {
     log(`Sending meeting left event to transparent window...`);
     state.windows.transparent.webContents.send(`meetLeft`, meetingUrl);
   } else {
