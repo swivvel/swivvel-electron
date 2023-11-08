@@ -46,7 +46,7 @@
       "sign": "./signWindows.js"
     },
     "linux": {
-      "icon": "build/icon.icns",
+      "icon": "build/icon-linux.icns",
       "category": "Utility",
       "desktop": {
         "MimeType": "x-scheme-handler/swivvel"
