@@ -204,6 +204,17 @@ contextBridge.exposeInMainWorld(`electron`, {
   },
 
   /**
+   * Allows the Electron app to toggle the muted state for the user (if they
+   * are in an audio room).
+   */
+  onMuteToggled: (callback: MuteToggledCallback) => {
+    ipcRenderer.on(`muteToggled`, callback);
+    return (): void => {
+      ipcRenderer.removeListener(`muteToggled`, callback);
+    };
+  },
+
+  /**
    * Trigger a Sentry error on behalf of the user so that we can see their logs
    */
   triggerSentryError: () => {
@@ -225,6 +236,7 @@ type MeetCreatedCallback = (
 ) => void;
 type MeetJoinedCallback = (event: unknown, meetUrl: string) => void;
 type MeetLeftCallback = (event: unknown, meetUrl: string) => void;
+type MuteToggledCallback = (event: unknown) => void;
 
 interface IdleChangeEvent {
   isIdle: boolean;
