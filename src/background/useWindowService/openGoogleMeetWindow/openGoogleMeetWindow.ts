@@ -103,6 +103,13 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
           return false;
         }
 
+        // If someone is signing in to Google via Okta, they will be redirected
+        // to a url on Google domain to consume access token
+        if (url.startsWith(`https://google.com/`)) {
+          log(`Detected navigation to Google URL: ${url}`);
+          return false;
+        }
+
         return null;
       },
     }
