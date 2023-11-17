@@ -20,7 +20,7 @@ interface Bounds {
 export default (): Bounds => {
   const primaryDisplay = screen.getPrimaryDisplay();
 
-  const x = 0;
+  const x = primaryDisplay.workArea.x;
   const width = primaryDisplay.workArea.width;
 
   if (isLinux()) {
