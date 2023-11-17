@@ -22,7 +22,7 @@ export default (callbacks: {
     podId: string | null,
     meetingUrl: string | null
   ) => void;
-  onHqRequested: () => void;
+  onHqRequested: (show: boolean) => void;
   onScreenShareRequested: (
     companyId: string,
     employeeId: string,
@@ -50,7 +50,10 @@ export default (callbacks: {
 
     if (removeQueryParams(url) === `${siteUrl}/electron/hq`) {
       log(`HQ page requested`);
-      callbacks.onHqRequested();
+      const urlParams = parseQueryParams(url);
+      const show = urlParams.get(`show`) === `true`;
+      log(`show=${show}`);
+      callbacks.onHqRequested(show);
       return { action: `deny` };
     }
 

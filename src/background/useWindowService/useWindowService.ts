@@ -28,9 +28,9 @@ export default (state: State, trayService: TrayService): WindowService => {
         windowOpenRequestHandler,
       });
     },
-    onHqRequested: () => {
+    onHqRequested: (show) => {
       openHqWindow({
-        show: false,
+        show,
         state,
         trayService,
         windowOpenRequestHandler,
