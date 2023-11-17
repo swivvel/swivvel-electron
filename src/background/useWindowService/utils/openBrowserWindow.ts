@@ -22,7 +22,7 @@ export default async (
   }
 ): Promise<BrowserWindow> => {
   log(`Get or create`);
-  log(JSON.stringify(windowOptions, null, 2));
+  log(JSON.stringify(windowOptions));
 
   const existingWindow = state.windows[windowId];
 

@@ -9,7 +9,7 @@ import { getFullscreenBounds } from './utils';
  * display.
  */
 export default (state: State): void => {
-  const resizeWindow = (): void => {
+  const resizeWindow = async (): Promise<void> => {
     log.info(`Display change detected`);
     log.info(`All displays: ${JSON.stringify(screen.getAllDisplays())}`);
 
@@ -20,7 +20,7 @@ export default (state: State): void => {
       return;
     }
 
-    const bounds = getFullscreenBounds();
+    const bounds = await getFullscreenBounds(log.info);
     const { height, width, x, y } = bounds;
 
     log.info(

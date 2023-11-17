@@ -3,10 +3,10 @@ import { BrowserWindowConstructorOptions, screen } from 'electron';
 import { getFullscreenBounds, getPreloadPath, isLinux } from '../../utils';
 import { Log } from '../utils';
 
-export default (log: Log): BrowserWindowConstructorOptions => {
+export default async (log: Log): Promise<BrowserWindowConstructorOptions> => {
   log(`All displays: ${JSON.stringify(screen.getAllDisplays())}`);
 
-  const bounds = getFullscreenBounds();
+  const bounds = await getFullscreenBounds(log);
   const { height, width, x, y } = bounds;
 
   log(`Setting transparent window bounds: ${JSON.stringify(bounds)}`);
