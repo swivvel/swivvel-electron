@@ -1,9 +1,10 @@
 import { BrowserWindowConstructorOptions } from 'electron';
 
-import { getFullscreenBounds, getPreloadPath } from '../../utils';
+import { getPrimaryDisplayWorkAreaBounds, getPreloadPath } from '../../utils';
+import { Log } from '../utils';
 
-export default (show: boolean): BrowserWindowConstructorOptions => {
-  const { height, width, x, y } = getFullscreenBounds();
+export default (show: boolean, log: Log): BrowserWindowConstructorOptions => {
+  const { height, width, x, y } = getPrimaryDisplayWorkAreaBounds(log);
 
   return {
     backgroundColor: `#ffffff`,

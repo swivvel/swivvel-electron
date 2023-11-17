@@ -2,7 +2,7 @@ import { screen } from 'electron';
 import log from 'electron-log';
 
 import { State } from './types';
-import { getFullscreenBounds } from './utils';
+import { getPrimaryDisplayWorkAreaBounds } from './utils';
 
 /**
  * Make sure the transparent window is always resized to fit the primary
@@ -20,7 +20,7 @@ export default (state: State): void => {
       return;
     }
 
-    const bounds = getFullscreenBounds();
+    const bounds = getPrimaryDisplayWorkAreaBounds(log.info);
     const { height, width, x, y } = bounds;
 
     log.info(

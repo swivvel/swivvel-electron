@@ -1,7 +1,7 @@
 import getBrowserWindowName from './getBrowserWindowName';
-import getFullscreenBounds from './getFullscreenBounds';
 import getLogoTemplatePath from './getLogoTemplatePath';
 import getPreloadPath from './getPreloadPath';
+import getPrimaryDisplayWorkAreaBounds from './getPrimaryDisplayWorkAreaBounds';
 import getShareableMediaSources from './getShareableMediaSources';
 import getSiteUrl from './getSiteUrl';
 import getUbuntuVersion from './getUbuntuVersion';
@@ -23,9 +23,9 @@ import triggerSentryError from './triggerSentryError';
 
 export {
   getBrowserWindowName,
-  getFullscreenBounds,
   getLogoTemplatePath,
   getPreloadPath,
+  getPrimaryDisplayWorkAreaBounds,
   getShareableMediaSources,
   getSiteUrl,
   getUbuntuVersion,
