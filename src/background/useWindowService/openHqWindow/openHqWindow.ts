@@ -16,7 +16,7 @@ const openHqWindow: OpenHqWindow = async (args) => {
 
   const windowId = `hq` as const;
   const log = getBrowserWindowLogger(windowId);
-  const windowOptions = getBrowserWindowOptions(show);
+  const windowOptions = await getBrowserWindowOptions(show, log);
 
   const instantiateWindow: InstantiateWindow = async (window) => {
     window.webContents.setWindowOpenHandler(({ url }) => {

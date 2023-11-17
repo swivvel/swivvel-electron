@@ -16,7 +16,7 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const windowId = `transparent` as const;
   const log = getBrowserWindowLogger(windowId);
   const fileLogger = getFileLogger(windowId);
-  const windowOptions = getBrowserWindowOptions(log);
+  const windowOptions = await getBrowserWindowOptions(log);
 
   const instantiateWindow: InstantiateWindow = async (window) => {
     window.setIgnoreMouseEvents(true, { forward: true });
