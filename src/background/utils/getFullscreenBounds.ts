@@ -57,6 +57,7 @@ export default async (log: (msg: string) => void): Promise<Bounds> => {
     log(`Creating temp window to determine work area bounds`);
 
     const tempBrowserWindow = new BrowserWindow({
+      closable: false,
       frame: false,
       transparent: true,
     });
