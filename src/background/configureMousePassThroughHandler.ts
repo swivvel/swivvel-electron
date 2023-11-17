@@ -1,4 +1,4 @@
-import { ipcMain, screen } from 'electron';
+import { NativeImage, ipcMain, screen } from 'electron';
 import log from 'electron-log';
 
 import { State } from './types';
@@ -113,7 +113,30 @@ export default (state: State): void => {
 
       // Capture 1x1 image of mouse position
       const capture = { x: mouseX, y: mouseY, width: 1, height: 1 };
-      const image = await transparentWindow.webContents.capturePage(capture);
+
+      let image: NativeImage | null;
+
+      try {
+        image = await transparentWindow.webContents.capturePage(capture);
+      } catch (err) {
+        // Sometimes the transparent window exists but cannot be captured for
+        // a legitimate reason, in which case we can safely ignore the error.
+        // The only way we could find to detect this scenario was based on the
+        // error message.
+        if (
+          err instanceof Error &&
+          err.message === `Current display surface not available for capture`
+        ) {
+          image = null;
+        } else {
+          throw err;
+        }
+      }
+
+      if (!image) {
+        return;
+      }
+
       const buffer = image.getBitmap();
       const mouseIsOverTransparent = buffer[3] === 0;
 
