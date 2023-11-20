@@ -16,7 +16,7 @@ export default async (): Promise<NodeJS.Timeout> => {
   // prevent them from reaching Sentry.
   autoUpdater.autoDownload = false;
 
-  const checkForAndDownloadUpdates = async (): Promise<void> => {
+  const checkForUpdatesAndDownload = async (): Promise<void> => {
     try {
       const result = await autoUpdater.checkForUpdates();
 
@@ -43,11 +43,11 @@ export default async (): Promise<NodeJS.Timeout> => {
     }
   };
 
-  await checkForAndDownloadUpdates();
+  await checkForUpdatesAndDownload();
 
   return setInterval(
     async () => {
-      await checkForAndDownloadUpdates();
+      await checkForUpdatesAndDownload();
     },
     // Some users have experienced issues when `checkForUpdatesAndNotify()` is
     // called while an update is already being downloaded. To avoid this, we
