@@ -77,30 +77,27 @@ export default async (log: (msg: string) => void): Promise<Bounds> => {
     setTimeout(() => {
       log(`Reached first timeout for temp window`);
 
-      tempBrowserWindow.on(`maximize`, () => {
-        log(`Temp window 'maximize' event received`);
-        log(`Setting second timeout for temp window`);
-
-        // We also needed to use a timeout after the window was maximized, or
-        // else the bounds would be the un-maximized values. This might be due
-        // to the window animating, or possibly it's a bug in Electron. Since
-        // we don't know the root cause, we don't know how long the timeout
-        // should be, so we just guessed.
-        setTimeout(() => {
-          log(`Reached second timeout for temp window`);
-
-          const bounds = tempBrowserWindow.getBounds();
-          log(`Temp window maximized bounds: ${JSON.stringify(bounds)}`);
-
-          log(`Closing temp window`);
-          tempBrowserWindow.close();
-
-          resolve(bounds);
-        }, 1000);
-      });
-
       log(`Maximizing temp window`);
       tempBrowserWindow.maximize();
+
+      log(`Setting second timeout for temp window`);
+
+      // We also needed to use a timeout after the window was maximized, or
+      // else the bounds would be the un-maximized values. This might be due
+      // to the window animating, or possibly it's a bug in Electron. Since
+      // we don't know the root cause, we don't know how long the timeout
+      // should be, so we just guessed.
+      setTimeout(() => {
+        log(`Reached second timeout for temp window`);
+
+        const bounds = tempBrowserWindow.getBounds();
+        log(`Temp window maximized bounds: ${JSON.stringify(bounds)}`);
+
+        log(`Destroying temp window`);
+        tempBrowserWindow.destroy();
+
+        resolve(bounds);
+      }, 2000);
     }, 2000);
   });
 };
