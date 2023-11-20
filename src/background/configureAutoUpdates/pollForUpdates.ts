@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/electron/main';
 import { autoUpdater } from 'electron-updater';
 import ms from 'ms';
 
@@ -8,22 +7,47 @@ import ms from 'ms';
  * version is available and can be installed by restarting the app.
  */
 export default async (): Promise<NodeJS.Timeout> => {
-  const checkForUpdatesAndNotify = async (): Promise<void> => {
-    Sentry.withScope(async (scope) => {
-      // Tag the error so we can ignore it before sending to Sentry. There's a
-      // bug where `checkForUpdatesAndNotify()` still throws an error even if
-      // it's wrapped in a try/catch, so we have to filter the error manually.
-      // See: https://github.com/electron-userland/electron-builder/issues/2451
-      scope.setTag(`autoUpdateError`, true);
-      await autoUpdater.checkForUpdatesAndNotify();
-    });
+  // We used to set `autoDownload=true`, but we ran into a bug where calling
+  // `autoUpdater.checkForUpdatesAndNotify()` would fail to `await` somewhere
+  // inside of the `electron-updater` code. This made it impossible to try/catch
+  // any errors that occurred during the update check. Setting `autoDownload`
+  // to `false` and manually calling `autoUpdater.downloadUpdate()` resolved
+  // this issue and allowed us to try/catch auto-update errors so that we can
+  // prevent them from reaching Sentry.
+  autoUpdater.autoDownload = false;
+
+  const checkForAndDownloadUpdates = async (): Promise<void> => {
+    try {
+      const result = await autoUpdater.checkForUpdates();
+
+      if (result?.cancellationToken) {
+        await autoUpdater.downloadUpdate(result.cancellationToken);
+      }
+    } catch (err) {
+      // It is very common for the auto-updater to encounter an error when
+      // checking for updates. It turns out that end users tend to have lots of
+      // sporadic network issues which can cause problems for an app that is
+      // always running. Examples of network errors we have seen include
+      // ERR_NETWORK_IO_SUSPENDED (which happens when the user's machine goes
+      // to sleep), ERR_NETWORK_CHANGED (which happens when the user's network
+      // settings have changed), and ERR_INTERNET_DISCONNECTED (which happens
+      // when the user's network is disconnected).
+      //
+      // Most of these errors are outside of our control, so we are willing to
+      // swallow the error without sending an alert to Sentry. Some errors, such
+      // as missing files in our release, are actionable, but would likely be
+      // caught by someone on the team because we would notice that we're not
+      // getting updated to the latest version. Also, even though the errors
+      // aren't sent to Sentry, they are still logged, so we would be bound to
+      // see the error at some point when reviewing log files.
+    }
   };
 
-  await checkForUpdatesAndNotify();
+  await checkForAndDownloadUpdates();
 
   return setInterval(
     async () => {
-      await checkForUpdatesAndNotify();
+      await checkForAndDownloadUpdates();
     },
     // Some users have experienced issues when `checkForUpdatesAndNotify()` is
     // called while an update is already being downloaded. To avoid this, we
