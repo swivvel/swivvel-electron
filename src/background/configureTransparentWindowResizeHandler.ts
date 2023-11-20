@@ -20,14 +20,36 @@ export default (state: State): void => {
       return;
     }
 
+    // The transparent window won't be the correct size while the new
+    // bounds are being calculated, so we hide it to prevent the widget
+    // from temporarily floating in the middle of the screen
+    log.info(`Hiding transparent window`);
+    transparentWindow.hide();
+
+    if (transparentWindow.isDestroyed()) {
+      log.info(`Transparent window destroyed; skipping resize`);
+      return;
+    }
+
     const bounds = await getFullscreenBounds(log.info);
-    const { height, width, x, y } = bounds;
+
+    if (transparentWindow.isDestroyed()) {
+      log.info(`Transparent window destroyed; skipping resize`);
+      return;
+    }
 
     log.info(
       `Resizing transparent window to bounds: ${JSON.stringify(bounds)}`
     );
-    transparentWindow.setSize(width, height, false);
-    transparentWindow.setPosition(x, y, false);
+    transparentWindow.setBounds(bounds, false);
+
+    if (transparentWindow.isDestroyed()) {
+      log.info(`Transparent window destroyed; skipping resize`);
+      return;
+    }
+
+    log.info(`Showing transparent window`);
+    transparentWindow.showInactive();
   };
 
   screen.on(`display-added`, resizeWindow);
