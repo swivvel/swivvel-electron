@@ -9,7 +9,7 @@ import ms from 'ms';
  */
 export default async (): Promise<NodeJS.Timeout> => {
   const checkForUpdatesAndNotify = async (): Promise<void> => {
-    Sentry.configureScope(async (scope) => {
+    Sentry.withScope(async (scope) => {
       // Tag the error so we can ignore it before sending to Sentry. There's a
       // bug where `checkForUpdatesAndNotify()` still throws an error even if
       // it's wrapped in a try/catch, so we have to filter the error manually.
