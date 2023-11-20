@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/electron/main';
 import { autoUpdater } from 'electron-updater';
 import ms from 'ms';
 
@@ -7,32 +8,22 @@ import ms from 'ms';
  * version is available and can be installed by restarting the app.
  */
 export default async (): Promise<NodeJS.Timeout> => {
-  // It is very common for the auto-updater to encounter an error when checking
-  // for updates. It turns out that end users tend to have lots of sporadic
-  // network issues which can cause problems for an app that is always running.
-  // Examples of network errors we have seen include ERR_NETWORK_IO_SUSPENDED
-  // (which happens when the user's machine goes to sleep), ERR_NETWORK_CHANGED
-  // (which happens when the user's network settings have changed), and
-  // ERR_INTERNET_DISCONNECTED (which happens when the user's network is
-  // disconnected).
-  //
-  // Most (possibly all) of these errors are outside of our control. As such,
-  // there is no need to send an error report. Each error is already logged
-  // by the auto-updater, so we can safely ignore them.
+  const checkForUpdatesAndNotify = async (): Promise<void> => {
+    Sentry.configureScope(async (scope) => {
+      // Tag the error so we can ignore it before sending to Sentry. There's a
+      // bug where `checkForUpdatesAndNotify()` still throws an error even if
+      // it's wrapped in a try/catch, so we have to filter the error manually.
+      // See: https://github.com/electron-userland/electron-builder/issues/2451
+      scope.setTag(`autoUpdateError`, true);
+      await autoUpdater.checkForUpdatesAndNotify();
+    });
+  };
 
-  try {
-    await autoUpdater.checkForUpdatesAndNotify();
-  } catch (err) {
-    // Ignore errors (see comment above)
-  }
+  await checkForUpdatesAndNotify();
 
   return setInterval(
     async () => {
-      try {
-        await autoUpdater.checkForUpdatesAndNotify();
-      } catch (err) {
-        // Ignore errors (see comment above)
-      }
+      await checkForUpdatesAndNotify();
     },
     // Some users have experienced issues when `checkForUpdatesAndNotify()` is
     // called while an update is already being downloaded. To avoid this, we
