@@ -113,9 +113,34 @@ export default (state: State): void => {
 
       // Capture 1x1 image of mouse position
       const capture = { x: mouseX, y: mouseY, width: 1, height: 1 };
-      const image = await transparentWindow.webContents.capturePage(capture);
-      const buffer = image.getBitmap();
-      const mouseIsOverTransparent = buffer[3] === 0;
+
+      let image: Electron.NativeImage | null;
+
+      try {
+        image = await transparentWindow.webContents.capturePage(capture);
+      } catch (error) {
+        // Sometimes we get the following error: "Current display surface not
+        // available for capture". We're not sure why this happens, but we got
+        // this error once during development and it seemed to be related to
+        // the transparent window being hidden or in a similar state. If we
+        // fail to capture a screenshot, there isn't much we can do about it
+        // so we're ignoring the error to reduce alerting noise and ignoring
+        // mouse events so that the user can interact with the rest of their
+        // system.
+        image = null;
+      }
+
+      let mouseIsOverTransparent: boolean;
+
+      if (image) {
+        const buffer = image.getBitmap();
+        mouseIsOverTransparent = buffer[3] === 0;
+      } else {
+        // If we fail to capture a screenshot, assume the mouse is over a
+        // transparent pixel to guard against the user getting stuck in a state
+        // where they can't click on anything underneath the transparent window.
+        mouseIsOverTransparent = true;
+      }
 
       if (!transparentWindow.isDestroyed()) {
         transparentWindow.setIgnoreMouseEvents(mouseIsOverTransparent);
