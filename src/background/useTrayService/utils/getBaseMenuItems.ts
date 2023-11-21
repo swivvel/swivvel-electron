@@ -9,10 +9,10 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
   const menuItems: Array<MenuItemConstructorOptions> = [];
 
   menuItems.push({
-    label: `Upgrade`,
+    label: `Check for Updates`,
     type: `normal`,
     click: async (): Promise<void> => {
-      log.info(`Detected click on Upgrade menu item`);
+      log.info(`Detected click on Check for Updates menu item`);
 
       const result = await autoUpdater.checkForUpdates();
 
@@ -21,12 +21,21 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
           state.windows.transparent &&
           !state.windows.transparent.isDestroyed()
         ) {
-          dialog.showMessageBoxSync(state.windows.transparent, {
-            title: `New version available`,
-            message: result
-              ? `Swivvel version ${result.updateInfo.version} is available. Click "OK" to download the update and restart Swivvel.`
-              : `A new version of Swivvel is available. Click "OK" to download the update and restart Swivvel.`,
-          });
+          const buttonIndex = dialog.showMessageBoxSync(
+            state.windows.transparent,
+            {
+              title: `New version available`,
+              message: result
+                ? `Swivvel version ${result.updateInfo.version} is available. Click "OK" to download the update and restart Swivvel.`
+                : `A new version of Swivvel is available. Click "OK" to download the update and restart Swivvel.`,
+              buttons: [`Cancel`, `OK`],
+            }
+          );
+          log.info(`Button index clicked: ${buttonIndex}`);
+          if (buttonIndex === 0) {
+            log.info(`Cancel button clicked. Aborting upgrade.`);
+            return;
+          }
         }
         await autoUpdater.downloadUpdate(result.cancellationToken);
         quitApp(state, { quitAndInstall: true });
