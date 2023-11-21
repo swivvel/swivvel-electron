@@ -1,4 +1,4 @@
-import { getSiteUrl, isLinux, loadUrl, sleep } from '../../utils';
+import { getSiteUrl, isLinux, isWindows, loadUrl, sleep } from '../../utils';
 import {
   getBrowserWindowLogger,
   InstantiateWindow,
@@ -21,9 +21,11 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const instantiateWindow: InstantiateWindow = async (window) => {
     window.setIgnoreMouseEvents(true, { forward: true });
 
-    // Without this, a blue bar appears at the top of the transparent window
-    // on Windows
-    window.setContentProtection(true);
+    if (isWindows()) {
+      // Without this, a blue bar appears at the top of the transparent window
+      // on Windows. See: https://github.com/electron/electron/issues/40286
+      window.setContentProtection(true);
+    }
 
     // Show the window but don't focus it because it would be confusing to users
     // if an invisible window took focus.
