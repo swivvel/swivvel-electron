@@ -1,11 +1,59 @@
-import { dialog, MenuItemConstructorOptions } from 'electron';
+import { MenuItemConstructorOptions, dialog } from 'electron';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
 
 import { State } from '../../types';
 import { quitApp, triggerSentryError } from '../../utils';
 
 export default (state: State): Array<MenuItemConstructorOptions> => {
   const menuItems: Array<MenuItemConstructorOptions> = [];
+
+  menuItems.push({
+    label: `Check for Updates`,
+    type: `normal`,
+    click: async (): Promise<void> => {
+      log.info(`Detected click on Check for Updates menu item`);
+
+      const result = await autoUpdater.checkForUpdates();
+
+      if (result?.cancellationToken) {
+        if (
+          state.windows.transparent &&
+          !state.windows.transparent.isDestroyed()
+        ) {
+          const buttonIndex = dialog.showMessageBoxSync(
+            state.windows.transparent,
+            {
+              title: `New version available`,
+              message: result
+                ? `Swivvel version ${result.updateInfo.version} is available. Click "OK" to download the update and restart Swivvel.`
+                : `A new version of Swivvel is available. Click "OK" to download the update and restart Swivvel.`,
+              buttons: [`Cancel`, `OK`],
+            }
+          );
+          log.info(`Button index clicked: ${buttonIndex}`);
+          if (buttonIndex === 0) {
+            log.info(`Cancel button clicked. Aborting upgrade.`);
+            return;
+          }
+        }
+        await autoUpdater.downloadUpdate(result.cancellationToken);
+        quitApp(state, { quitAndInstall: true });
+      } else {
+        if (
+          state.windows.transparent &&
+          !state.windows.transparent.isDestroyed()
+        ) {
+          dialog.showMessageBoxSync(state.windows.transparent, {
+            title: `You are up to date`,
+            message: result
+              ? `You are on the latest version of Swivvel (${result.updateInfo.version}).`
+              : `You are on the latest version of Swivvel.`,
+          });
+        }
+      }
+    },
+  });
 
   // Normally we don't show debugging tools to end users, but it has been
   // difficult to debug some issues that have been reported, so we're showing
