@@ -2,7 +2,8 @@ import isProduction from './isProduction';
 
 export default (): string => {
   if (isProduction()) {
-    return `https://app.swivvel.io`;
+    return `https://app.localhost.architect.sh`;
+    // return `https://app.swivvel.io`;
   }
 
   const appDevUrl = process.env.ELECTRON_APP_DEV_URL;

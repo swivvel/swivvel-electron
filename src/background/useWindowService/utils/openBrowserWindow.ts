@@ -27,23 +27,6 @@ export default async (
 
   const existingWindow = state.windows[windowId];
 
-  if (existingWindow && !existingWindow.isDestroyed()) {
-    const ifExists = options.ifExists ?? `show`;
-
-    if (ifExists === `hide`) {
-      // do nothing
-    } else if (ifExists === `show`) {
-      log(`Showing existing window w/ focus`);
-      existingWindow.show();
-    } else if (ifExists === `showInActive`) {
-      log(`Showing existing window w/o focus`);
-      existingWindow.showInactive();
-    } else {
-      const exhaustiveCheck: never = ifExists;
-      return exhaustiveCheck;
-    }
-  }
-
   if (
     existingWindow &&
     !existingWindow.isDestroyed() &&
@@ -52,6 +35,34 @@ export default async (
     log(`Window crashed, destroying and recreating`);
     existingWindow.destroy();
   }
+
+  if (existingWindow && !existingWindow.isDestroyed()) {
+    if (windowOptions.show !== false) {
+      log(`Showing existing window w/ focus`);
+      existingWindow.show();
+    } else {
+      log(`Showing existing window w/o focus`);
+      existingWindow.showInactive();
+    }
+    return existingWindow;
+  }
+
+  // if (existingWindow && !existingWindow.isDestroyed()) {
+  //   const ifExists = options.ifExists ?? `show`;
+
+  //   if (ifExists === `hide`) {
+  //     // do nothing
+  //   } else if (ifExists === `show`) {
+  //     log(`Showing existing window w/ focus`);
+  //     existingWindow.show();
+  //   } else if (ifExists === `showInActive`) {
+  //     log(`Showing existing window w/o focus`);
+  //     existingWindow.showInactive();
+  //   } else {
+  //     const exhaustiveCheck: never = ifExists;
+  //     return exhaustiveCheck;
+  //   }
+  // }
 
   log(`Creating window`);
 

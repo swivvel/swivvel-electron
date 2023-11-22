@@ -6,6 +6,7 @@ export default async (
   callbackUrl: string,
   windowService: WindowService
 ): Promise<boolean> => {
+  console.log(`calling transparent window login oAuth`);
   const transparentWindow = await windowService.openTransparentWindow();
 
   const requests = net.request({
