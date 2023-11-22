@@ -59,9 +59,11 @@ export default async (log: (msg: string) => void): Promise<Bounds> => {
     const tempBrowserWindow = new BrowserWindow({
       closable: false,
       frame: false,
+      show: false,
       transparent: true,
     });
 
+    tempBrowserWindow.showInactive();
     tempBrowserWindow.setIgnoreMouseEvents(true);
 
     const initialBounds = tempBrowserWindow.getBounds();
