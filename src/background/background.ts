@@ -13,6 +13,7 @@ import configureTransparentWindowResizeHandler from './configureTransparentWindo
 import getDeepLinkHandler from './getDeepLinkHandler';
 import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
+import logSystemInfo from './logSystemInfo';
 import pollForIdleTime from './pollForIdleTime';
 import setUserDataPath from './setUserDataPath';
 import { State } from './types';
@@ -26,8 +27,7 @@ setUserDataPath();
 
 const run = async (): Promise<void> => {
   log.info(`App v=${app.getVersion()} starting...`);
-  log.info(`User Data: ${app.getPath(`userData`)}`);
-  log.info(`Logs: ${app.getPath(`logs`)}`);
+  logSystemInfo();
 
   // Call at the beginning so that all exceptions are captured
   configureSentry();
