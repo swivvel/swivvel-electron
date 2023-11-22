@@ -2,8 +2,8 @@ import { systemPreferences } from 'electron';
 
 import { loadUrl } from '../../utils';
 import {
-  InstantiateWindow,
   getBrowserWindowLogger,
+  InstantiateWindow,
   openBrowserWindow,
 } from '../utils';
 
@@ -96,6 +96,7 @@ const openGoogleMeetWindow: OpenGoogleMeetWindow = async (args) => {
     log,
     instantiateWindow,
     {
+      ifExists: `show`,
       shouldOpenUrlInBrowser: (url: string) => {
         // Prevent click of rejoin button from opening in new tab
         if (url.startsWith(`https://meet.google.com/`)) {

@@ -1,7 +1,7 @@
 import { getSiteUrl, loadUrl, makeQueryString } from '../../utils';
 import {
-  InstantiateWindow,
   getBrowserWindowLogger,
+  InstantiateWindow,
   openBrowserWindow,
 } from '../utils';
 
@@ -67,7 +67,10 @@ const openScreenShareWindow: OpenScreenShareWindow = async (args) => {
     windowId,
     windowOptions,
     log,
-    instantiateWindow
+    instantiateWindow,
+    {
+      ifExists: `show`,
+    }
   );
 };
 

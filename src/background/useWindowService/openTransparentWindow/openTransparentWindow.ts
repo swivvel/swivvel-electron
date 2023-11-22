@@ -77,7 +77,10 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     windowId,
     windowOptions,
     log,
-    instantiateWindow
+    instantiateWindow,
+    {
+      ifExists: `showInactive`,
+    }
   );
 };
 
