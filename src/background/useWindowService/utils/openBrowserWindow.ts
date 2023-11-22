@@ -18,7 +18,7 @@ export default async (
   log: (msg: string) => void,
   instantiateWindow: InstantiateWindow,
   options: {
-    ifExists: `showInActive` | `show` | `hide`;
+    ifExists: `showInactive` | `show` | `hide`;
     shouldOpenUrlInBrowser?: (url: string) => boolean | null;
   }
 ): Promise<BrowserWindow> => {
@@ -37,14 +37,14 @@ export default async (
   }
 
   if (existingWindow && !existingWindow.isDestroyed()) {
-    const ifExists = options.ifExists ?? `show`;
+    const ifExists = options.ifExists;
 
     if (ifExists === `hide`) {
       log(`Not showing existing window from hide option`);
     } else if (ifExists === `show`) {
       log(`Showing existing window w/ focus`);
       existingWindow.show();
-    } else if (ifExists === `showInActive`) {
+    } else if (ifExists === `showInactive`) {
       log(`Showing existing window w/o focus`);
       existingWindow.showInactive();
     } else {
