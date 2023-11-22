@@ -1,7 +1,7 @@
 import { getSiteUrl, loadUrl } from '../../utils';
 import {
-  InstantiateWindow,
   getBrowserWindowLogger,
+  InstantiateWindow,
   openBrowserWindow,
 } from '../utils';
 
@@ -50,7 +50,10 @@ const openLogInWindow: OpenLogInWindow = async (args) => {
     windowId,
     windowOptions,
     log,
-    instantiateWindow
+    instantiateWindow,
+    {
+      ifExists: `show`,
+    }
   );
 };
 
