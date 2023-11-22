@@ -72,7 +72,6 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
     return window;
   };
 
-  console.log(`showing transparent window...`);
   return openBrowserWindow(
     state,
     windowId,
