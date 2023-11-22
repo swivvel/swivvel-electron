@@ -50,7 +50,8 @@ const openHqWindow: OpenHqWindow = async (args) => {
     windowId,
     windowOptions,
     log,
-    instantiateWindow
+    instantiateWindow,
+    { ifExists: show ? `show` : `hide` }
   );
 };
 

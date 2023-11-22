@@ -17,7 +17,8 @@ export default async (
   windowOptions: BrowserWindowConstructorOptions,
   log: (msg: string) => void,
   instantiateWindow: InstantiateWindow,
-  options?: {
+  options: {
+    ifExists: `showInactive` | `show` | `hide`;
     shouldOpenUrlInBrowser?: (url: string) => boolean | null;
   }
 ): Promise<BrowserWindow> => {
@@ -27,13 +28,21 @@ export default async (
   const existingWindow = state.windows[windowId];
 
   if (existingWindow && !existingWindow.isDestroyed()) {
-    if (windowOptions.show !== false) {
+    const ifExists = options?.ifExists ?? `show`;
+
+    if (ifExists === `hide`) {
+      // Do nothing
+    } else if (ifExists === `show`) {
       log(`Showing existing window w/ focus`);
       existingWindow.show();
-    } else {
+    } else if (ifExists === `showInactive`) {
       log(`Showing existing window w/o focus`);
       existingWindow.showInactive();
+    } else {
+      const exhaustiveCheck: never = ifExists;
+      return exhaustiveCheck;
     }
+
     return existingWindow;
   }
 
