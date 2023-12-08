@@ -38,6 +38,12 @@
         "NSCameraUsageDescription": "Your camera will only be accessed when you open a video breakout.",
         "com.apple.security.device.audio-input": true,
         "com.apple.security.device.camera": true
+      },
+      "target": {
+        "target": "default",
+        "arch": [
+          "universal"
+        ]
       }
     },
     "win": {
