@@ -15,6 +15,7 @@ import handlePowerMonitorStateChanges from './handlePowerMonitorStateChanges';
 import listenForDeepLinks from './listenForDeepLinks';
 import logSystemInfo from './logSystemInfo';
 import pollForIdleTime from './pollForIdleTime';
+import pollShareableMediaSources from './pollShareableMediaSources';
 import setUserDataPath from './setUserDataPath';
 import { State } from './types';
 import useLogInService from './useLogInService';
@@ -69,6 +70,7 @@ const run = async (): Promise<void> => {
   handlePowerMonitorStateChanges(state, windowService);
   configureGlobalKeyboardShortcuts(state);
   await configureAutoUpdates(state);
+  pollShareableMediaSources();
 
   log.info(`App started`);
 };

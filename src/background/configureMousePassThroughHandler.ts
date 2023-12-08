@@ -154,5 +154,5 @@ export default (state: State): void => {
 
       mouseIsOverTransparentPrevious = mouseIsOverTransparent;
     }
-  }, 50);
+  }, 100);
 };
