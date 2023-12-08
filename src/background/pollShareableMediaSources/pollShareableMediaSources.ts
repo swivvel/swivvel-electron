@@ -9,6 +9,8 @@ export default (): void => {
       types: [`window`],
     });
 
+    console.clear();
+    console.log(new Date().toLocaleTimeString());
     console.log(JSON.stringify(sources, null, 2));
-  }, 5000);
+  }, 1000);
 };
