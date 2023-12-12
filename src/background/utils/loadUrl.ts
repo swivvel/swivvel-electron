@@ -39,6 +39,7 @@ const loadUrl = async (
   } catch (err) {
     log(`Failed to load URL: ${urlNoParams}`);
     log(`onError=${options.onError}`);
+    log(`err=${err}`);
 
     if (browserWindow.isDestroyed()) {
       log(`Skipping error handling: window is destroyed`);
