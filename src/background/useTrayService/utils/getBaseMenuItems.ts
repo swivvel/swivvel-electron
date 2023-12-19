@@ -67,9 +67,14 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
     type: `normal`,
     click: (): void => {
       log.info(`Detected click on Dev Tools menu item`);
-      state.windows.transparent?.webContents.openDevTools({
-        mode: `undocked`,
-      });
+      if (
+        state.windows.transparent &&
+        !state.windows.transparent.isDestroyed()
+      ) {
+        state.windows.transparent.webContents.openDevTools({
+          mode: `undocked`,
+        });
+      }
     },
   });
 
