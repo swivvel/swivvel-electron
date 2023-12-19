@@ -1,4 +1,11 @@
-import { getSiteUrl, isLinux, isWindows, loadUrl, sleep } from '../../utils';
+import {
+  getSiteUrl,
+  isLinux,
+  isWindows,
+  loadUrl,
+  sleep,
+  store,
+} from '../../utils';
 import {
   getBrowserWindowLogger,
   InstantiateWindow,
@@ -19,7 +26,9 @@ const openTransparentWindow: OpenTransparentWindow = async (args) => {
   const windowOptions = await getBrowserWindowOptions(log);
 
   const instantiateWindow: InstantiateWindow = async (window) => {
-    window.setIgnoreMouseEvents(true, { forward: true });
+    if (!store.get(`windowedMode`)) {
+      window.setIgnoreMouseEvents(true, { forward: true });
+    }
 
     if (isWindows()) {
       // Without this, a blue bar appears at the top of the transparent window

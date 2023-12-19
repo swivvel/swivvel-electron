@@ -1,6 +1,11 @@
 import { BrowserWindowConstructorOptions, screen } from 'electron';
 
-import { getFullscreenBounds, getPreloadPath, isLinux } from '../../utils';
+import {
+  getFullscreenBounds,
+  getPreloadPath,
+  isLinux,
+  store,
+} from '../../utils';
 import { Log } from '../utils';
 
 export default async (log: Log): Promise<BrowserWindowConstructorOptions> => {
@@ -10,6 +15,17 @@ export default async (log: Log): Promise<BrowserWindowConstructorOptions> => {
   const { height, width, x, y } = bounds;
 
   log(`Setting transparent window bounds: ${JSON.stringify(bounds)}`);
+
+  if (store.get(`windowedMode`)) {
+    log(`Windowed mode is on; opening transparent window as normal window`);
+    return {
+      height,
+      webPreferences: { preload: getPreloadPath() },
+      width,
+      x,
+      y,
+    };
+  }
 
   return {
     alwaysOnTop: true,

@@ -36,6 +36,7 @@ const run = async (): Promise<void> => {
     allowQuit: false,
     loggedInUser: null,
     tray: null,
+    trayContextMenu: null,
     windows: {
       googleMeet: null,
       hq: null,
