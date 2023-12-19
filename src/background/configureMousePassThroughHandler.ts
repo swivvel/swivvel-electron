@@ -2,7 +2,7 @@ import { ipcMain, screen } from 'electron';
 import log from 'electron-log';
 
 import { State } from './types';
-import { isMac } from './utils';
+import { isMac, store } from './utils';
 
 /**
  * Support mouse events on the transparent notification window.
@@ -18,6 +18,11 @@ import { isMac } from './utils';
  */
 export default (state: State): void => {
   log.info(`Configuring transparent window mouse pass-through handler`);
+
+  if (store.get(`windowedMode`)) {
+    log.info(`Windowed mode is on; skipping mouse pass-through setup`);
+    return;
+  }
 
   // On Mac, we originally used the polling screenshot strategy, but users were
   // getting an issue trying to use the "Capture Selected Window" screenshot

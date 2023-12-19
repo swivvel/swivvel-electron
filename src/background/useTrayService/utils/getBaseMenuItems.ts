@@ -3,7 +3,7 @@ import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
 
 import { State } from '../../types';
-import { quitApp, triggerSentryError } from '../../utils';
+import { quitApp, store, triggerSentryError } from '../../utils';
 
 export default (state: State): Array<MenuItemConstructorOptions> => {
   const menuItems: Array<MenuItemConstructorOptions> = [];
@@ -66,9 +66,47 @@ export default (state: State): Array<MenuItemConstructorOptions> => {
     label: `Dev Tools`,
     type: `normal`,
     click: (): void => {
+      log.info(`Detected click on Dev Tools menu item`);
       state.windows.transparent?.webContents.openDevTools({
         mode: `undocked`,
       });
+    },
+  });
+
+  menuItems.push({
+    id: `windowedMode`,
+    label: `Windowed Mode`,
+    type: `checkbox`,
+    checked: Boolean(store.get(`windowedMode`)),
+    click: (): void => {
+      log.info(`Detected click on Windowed Mode menu item`);
+
+      const { tray, trayContextMenu } = state;
+
+      if (!tray) {
+        log.info(`No tray found in state; aborting`);
+        return;
+      }
+
+      if (!trayContextMenu) {
+        log.info(`No tray context menu found in state; aborting`);
+        return;
+      }
+
+      const windowedModeItem = trayContextMenu.items.find((item) => {
+        return item.id === `windowedMode`;
+      });
+
+      log.info(`windowedModeItem found: ${Boolean(windowedModeItem)}`);
+
+      if (windowedModeItem) {
+        const newWindowedMode = !store.get(`windowedMode`);
+        log.info(`Setting windowed mode to ${newWindowedMode}`);
+        store.set(`windowedMode`, newWindowedMode);
+        windowedModeItem.checked = newWindowedMode;
+        tray.setContextMenu(trayContextMenu);
+        quitApp(state, { relaunch: true });
+      }
     },
   });
 

@@ -21,6 +21,12 @@ export interface State {
   tray: Tray | null;
 
   /**
+   * The context menu displayed when clicking on the Swivvel item in the OS
+   * system tray.
+   */
+  trayContextMenu: Electron.Menu | null;
+
+  /**
    * The different windows that the app can open.
    */
   windows: {

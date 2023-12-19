@@ -17,6 +17,7 @@ import removeQueryParams from './removeQueryParams';
 import shouldOpenUrlInBrowser from './shouldOpenUrlInBrowser';
 import showErrorMessage from './showErrorMessage';
 import sleep from './sleep';
+import store from './store';
 import triggerSentryError from './triggerSentryError';
 
 export {
@@ -39,5 +40,6 @@ export {
   shouldOpenUrlInBrowser,
   showErrorMessage,
   sleep,
+  store,
   triggerSentryError,
 };

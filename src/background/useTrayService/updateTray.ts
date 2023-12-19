@@ -31,6 +31,7 @@ export default (
   ]);
 
   tray.setContextMenu(contextMenu);
+  state.trayContextMenu = contextMenu;
 
   log.info(`Updated tray`);
 };

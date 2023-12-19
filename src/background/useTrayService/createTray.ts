@@ -24,6 +24,7 @@ export default (state: State): Tray => {
   const contextMenu = Menu.buildFromTemplate(getBaseMenuItems(state));
 
   tray.setContextMenu(contextMenu);
+  state.trayContextMenu = contextMenu;
 
   log.info(`Created tray`);
 
