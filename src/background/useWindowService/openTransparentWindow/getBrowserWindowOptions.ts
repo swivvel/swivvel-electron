@@ -19,7 +19,6 @@ export default async (log: Log): Promise<BrowserWindowConstructorOptions> => {
   if (store.get(`windowedMode`)) {
     log(`Windowed mode is on; opening transparent window as normal window`);
     return {
-      closable: false,
       height,
       webPreferences: { preload: getPreloadPath() },
       width,
