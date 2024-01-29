@@ -52,7 +52,7 @@ const run = async (): Promise<void> => {
 
   configureApp();
   configureAppQuitHandling(state);
-  listenForDeepLinks(state, getDeepLinkHandler(logInService));
+  listenForDeepLinks(state, getDeepLinkHandler(logInService, windowService));
 
   await app.whenReady();
   await askForMicrophoneAccess();
