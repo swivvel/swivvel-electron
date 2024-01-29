@@ -36,7 +36,7 @@ export default (state: State, deepLinkHandler: (url: string) => void): void => {
     log.info(`Acquired the single instance lock`);
 
     app.on(`second-instance`, (event, commandLine) => {
-      const url = commandLine?.pop()?.slice(0, -1);
+      const url = commandLine?.pop();
       const urlNoParams = url ? removeQueryParams(url) : null;
 
       log.info(`Deep link detected from second-instance: ${urlNoParams}`);
