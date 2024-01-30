@@ -65,6 +65,7 @@ const run = async (): Promise<void> => {
   configureTransparentWindowResizeHandler(state);
 
   await windowService.openTransparentWindow();
+  await windowService.openScreenShareOverlayWindow();
 
   trayService.createTray();
   handlePowerMonitorStateChanges(state, windowService);

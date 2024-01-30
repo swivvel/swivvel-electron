@@ -4,4 +4,5 @@ export interface WindowService {
   closeAllWindows: () => void;
   openLogInWindow: () => Promise<BrowserWindow>;
   openTransparentWindow: () => Promise<BrowserWindow>;
+  openScreenShareOverlayWindow: () => Promise<BrowserWindow>;
 }

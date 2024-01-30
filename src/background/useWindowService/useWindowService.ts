@@ -8,6 +8,7 @@ import getWindowOpenRequestHandler from './getWindowOpenRequestHandler';
 import openGoogleMeetWindow from './openGoogleMeetWindow';
 import openHqWindow from './openHqWindow';
 import openLogInWindow from './openLogInWindow';
+import openScreenShareOverlayWindow from './openScreenShareOverlayWindow';
 import openScreenShareWindow from './openScreenShareWindow';
 import openSettingsPageInHqWindow from './openSettingsPageInHqWindow';
 import openSetupWindow from './openSetupWindow';
@@ -70,6 +71,12 @@ export default (state: State, trayService: TrayService): WindowService => {
     },
     openTransparentWindow: async (): Promise<BrowserWindow> => {
       return openTransparentWindow({ state, windowOpenRequestHandler });
+    },
+    openScreenShareOverlayWindow: async (): Promise<BrowserWindow> => {
+      return openScreenShareOverlayWindow({
+        state,
+        windowOpenRequestHandler,
+      });
     },
   };
 };
