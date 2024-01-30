@@ -22,8 +22,7 @@ const openScreenShareOverlayWindow: OpenScreenShareWindow = async (args) => {
 
   console.log(`<< Calling Function`);
   const windowCoordsAndSize = getWindowCoordsAndSizeFromWindowName(
-    screenShareWindowName,
-    log
+    screenShareWindowName
   );
   console.log(`<< Called Function`);
 
