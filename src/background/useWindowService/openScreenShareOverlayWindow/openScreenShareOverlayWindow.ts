@@ -6,6 +6,7 @@ import {
 } from '../utils';
 
 import configureCloseHandler from './configureCloseHandler';
+import fetchWindowData from './fetchWindowData';
 import getBrowserWindowOptions from './getBrowserWindowOptions';
 import getWindowCoordsAndSizeFromWindowName from './getWindowCoordsAndSizeFromWindowName';
 import { OpenScreenShareWindow } from './types';
@@ -20,11 +21,10 @@ const openScreenShareOverlayWindow: OpenScreenShareWindow = async (args) => {
   const windowId = `screenShareOverlay` as const;
   const log = getBrowserWindowLogger(windowId);
 
-  console.log(`<< Calling Function`);
-  const windowCoordsAndSize = getWindowCoordsAndSizeFromWindowName(
-    screenShareWindowName
-  );
-  console.log(`<< Called Function`);
+  // const windowCoordsAndSize = await getWindowCoordsAndSizeFromWindowName(
+  //   screenShareWindowName
+  // );
+  const windowCoordsAndSize = fetchWindowData(screenShareWindowName);
 
   const windowOptions = await getBrowserWindowOptions(log, windowCoordsAndSize);
 
@@ -49,7 +49,7 @@ const openScreenShareOverlayWindow: OpenScreenShareWindow = async (args) => {
       skipTransformProcessType: true,
     });
 
-    // ! window.setIgnoreMouseEvents(true, { forward: true });
+    window.setIgnoreMouseEvents(true, { forward: true });
 
     configureCloseHandler(window, log);
 

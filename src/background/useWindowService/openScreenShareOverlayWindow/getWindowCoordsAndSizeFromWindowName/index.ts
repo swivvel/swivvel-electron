@@ -1,0 +1,3 @@
+import getWindowCoordsAndSizeFromWindowName from './getWindowCoordsAndSizeFromWindowName';
+
+export default getWindowCoordsAndSizeFromWindowName;

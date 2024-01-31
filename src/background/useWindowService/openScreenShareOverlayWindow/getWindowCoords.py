@@ -1,16 +1,14 @@
 import sys
-import pygetwindow as getWindow
 import json
+import pygetwindow as getWindow
 
 requestedWindowName = sys.stdin.readline().strip()
 
+
 # targetWindow = getWindow.getWindowGeometry(requestedWindowName)
 targetWindow = getWindow.getActiveWindow()
-
-print(json.dumps(targetWindow))
-
-# windowGeometry = getWindow.getWindowGeometry(targetWindow)
 windowGeometry = getWindow.getWindowGeometry(targetWindow)
+# windowGeometry = getWindow.getWindowGeometry(targetWindow)
 
 data = {
     "x": windowGeometry[0],

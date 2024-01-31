@@ -12,3 +12,10 @@ export interface OpenScreenShareOverlayWindowArgs {
   state: State;
   windowOpenRequestHandler: WindowOpenRequestHandler;
 }
+
+export interface WindowCoordsAndSize {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
